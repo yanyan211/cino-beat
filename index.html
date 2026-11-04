@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" href="songs/babys_horizon.jpg">
 <style>
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+:root{box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
 body{margin:0;font-size:14px}
 img{max-width:100%}
@@ -39,11 +39,12 @@ img{max-width:100%}
   --f-en:"Fredoka","ZCOOL KuaiLe",system-ui,sans-serif;
   color-scheme:light;
 }
-html,body{height:100%;overflow:hidden}
+html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+#safeArea{position:fixed;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 body{margin:0;background:var(--cloth);color:var(--ink);font-family:var(--f-cn);overflow:hidden;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0;box-sizing:border-box;
-  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-font-smoothing:antialiased}
-#app{position:fixed;inset:0;transform-origin:50% 50%;will-change:transform,opacity;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));overflow:hidden}
+  padding:0;box-sizing:border-box;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-font-smoothing:antialiased}
+#app{position:fixed;left:0;top:0;transform-origin:0 0;will-change:transform,opacity;overflow:hidden;overscroll-behavior:none}
 .screen.off{visibility:hidden;pointer-events:none}
 canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #fx{z-index:0}
@@ -62,11 +63,11 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   color:#fff;-webkit-text-stroke:var(--sw) var(--leaf);paint-order:stroke fill;
   text-shadow:0 .05em 0 var(--accent),0 .08em 0 var(--forest),0 .14em .12em rgba(33,64,47,.25)}
 #touch{display:inline-flex;align-items:center;justify-content:center;gap:.5em;font-family:var(--f-cn);font-weight:400;font-size:clamp(20px,calc(3.8*var(--vmin)),28px);letter-spacing:.12em;
-  color:#fff;padding:.55em 1.6em;border-radius:999px;background:var(--forest);line-height:1;
-  box-shadow:0 4px 0 var(--accent),0 8px 18px rgba(33,64,47,.3);animation:breathe 1.6s ease-in-out infinite}
-#touch svg{width:.85em;height:.85em;flex:none;margin-left:-.2em}
+  color:#3c8c55;padding:.55em 1.6em;border-radius:.6em;border:.1em solid var(--forest);background:linear-gradient(#ffffff,#e6f3df);line-height:1;position:relative;overflow:hidden;
+  box-shadow:0 .18em 0 var(--forest),inset 0 -.2em 0 rgba(33,64,47,.12),0 .5em 1.2em rgba(33,64,47,.18);animation:breathe 1.6s ease-in-out infinite}
+#touch svg{width:.62em;height:.62em;flex:none;margin-left:-.25em;opacity:.85}
 #touch span{margin-right:-.12em;transform:translateY(.04em)}
-@keyframes breathe{50%{opacity:.6;transform:scale(.97)}}
+@keyframes breathe{50%{opacity:.82;transform:scale(.985)}}
 #title.enter .logo{animation:drop .8s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes drop{from{opacity:0;transform:translateY(-40px) scale(1.15)}}
 
@@ -87,16 +88,12 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #selFrame .hd{height:8cqw;font-size:2.3cqw}
 #selFrame .hd span{font-size:3.6cqw}
 #selBody{position:absolute;left:0;right:0;top:8cqw;bottom:0;display:flex;flex-direction:column;align-items:center}
-#flow{position:relative;width:100%;flex:1;perspective:900px;touch-action:pan-y;cursor:grab;overflow:hidden}
+#flow{position:relative;width:100%;flex:1;perspective:900px;touch-action:none;cursor:grab;overflow:hidden}
 #flow:active{cursor:grabbing}
 .card{position:absolute;left:50%;top:50%;width:25cqw;aspect-ratio:209/239;margin-left:-12.5cqw;margin-top:calc(-12.5cqw*239/209);
   will-change:transform;border-radius:1cqw;overflow:hidden;box-shadow:0 0 0 .3cqw rgba(255,255,255,.7),0 1cqw 2cqw rgba(0,0,0,.35);background:#163a25}
 .card img{width:100%;height:100%;display:block;object-fit:cover;pointer-events:none}
-.card.on{box-shadow:0 0 0 .35cqw #fff,0 0 0 .8cqw var(--mint),0 1cqw 3cqw rgba(0,0,0,.35)}
-.card .add{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1cqw;font-weight:400;font-size:2.6cqw;color:#fff;text-align:center;padding:0 2cqw;
-  background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 1cqw,transparent 1cqw 2cqw),linear-gradient(#3c8c55,#1d4a2f)}
-.card .add b{font-family:var(--f-en);font-weight:600;font-size:9cqw;line-height:1;color:var(--mint)}
-.card .add small{font-size:1.7cqw;font-weight:400;color:#d8f0cc}
+.card.on{box-shadow:0 0 0 .4cqw #f7faf6,0 0 0 .55cqw rgba(33,64,47,.22),0 1.2cqw 3cqw rgba(14,34,22,.32)}
 #selInfo{text-align:center;padding:.4cqw 0 1.6cqw;min-height:8cqw}
 #selName{font-family:var(--f-en);font-weight:700;font-size:3.4cqw;line-height:1.15;--sw:.14em;text-shadow:0 .07em 0 var(--forest)}
 #selMeta{font-size:1.8cqw;font-weight:400;color:#e6f7dc;margin-top:.5cqw;font-variant-numeric:tabular-nums;letter-spacing:.02em}
@@ -118,39 +115,40 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .calib{display:flex;align-items:center;gap:2.4cqw;font-size:3.8cqw;font-weight:400;color:#fff;width:100%}
 .calib input{flex:1;min-width:0;accent-color:var(--mint)}
 .calib output{font-family:var(--f-en);font-weight:600;width:15cqw;text-align:right}
-#lvClose{position:absolute;right:3.4cqw;top:4.2cqw;z-index:2;width:8.4cqw;height:8.4cqw;border-radius:50%;border:.6cqw solid var(--forest);background:#fff;color:var(--accent);cursor:pointer;display:grid;place-items:center;padding:0}
+#lvClose{position:absolute;right:3.4cqw;top:4.2cqw;z-index:2;width:8.4cqw;height:8.4cqw;border-radius:50%;border:0;background:rgba(247,250,246,.92);box-shadow:inset 0 0 0 1px rgba(33,64,47,.18);color:var(--forest);cursor:pointer;display:grid;place-items:center;padding:0}
 #lvClose svg{width:50%;height:50%}
 #lvBody .tips{font-size:2.9cqw;line-height:1.5;color:#eaf6e6;text-align:center}
 #lvBody .tips b{white-space:nowrap;font-weight:400;color:#fff;background:#3fcf7a;border-radius:.4em;padding:0 .35em;margin-right:.2em}
 #lvLoading{font-size:3.8cqw;font-weight:400;color:#fff;min-height:4.4cqw}
 
-/* ---------- 按钮（原版光泽按钮的样子，CSS 重画） ---------- */
-.gbtn{appearance:none;cursor:pointer;font-family:var(--f-cn);font-weight:400;color:#fff;letter-spacing:.16em;line-height:1;
-  display:inline-flex;align-items:center;justify-content:center;gap:.3em;
-  border:.12em solid var(--forest);border-radius:.6em;padding:.5em 1.2em .5em 1.36em;position:relative;overflow:hidden;
-  box-shadow:0 .18em 0 var(--forest),inset 0 -.2em 0 rgba(0,0,0,.16);transition:transform .12s,filter .12s;
-  --sw:.12em;-webkit-text-stroke:var(--sw) var(--forest);paint-order:stroke fill}
-.gbtn::before{content:"";position:absolute;left:5%;right:5%;top:7%;height:40%;border-radius:.45em;background:linear-gradient(rgba(255,255,255,.6),rgba(255,255,255,.1));pointer-events:none}
+/* ---------- 按钮：统一成难度按钮那种白底立体胶囊（深绿细边 + 底部厚边 + 顶部柔光），字不描边 ---------- */
+.gbtn{appearance:none;cursor:pointer;font-family:var(--f-cn);font-weight:400;letter-spacing:.16em;line-height:1;
+  display:inline-flex;align-items:center;justify-content:center;gap:.35em;
+  border:.1em solid var(--forest);border-radius:.6em;padding:.55em 1.25em .55em 1.41em;position:relative;overflow:hidden;
+  color:#3c8c55;background:linear-gradient(#ffffff,#e6f3df);
+  box-shadow:0 .18em 0 var(--forest),inset 0 -.2em 0 rgba(33,64,47,.12);
+  -webkit-text-stroke:0;text-shadow:none;transition:transform .12s,filter .12s}
+.gbtn::before{content:"";position:absolute;left:5%;right:5%;top:7%;height:40%;border-radius:.45em;background:linear-gradient(rgba(255,255,255,.9),rgba(255,255,255,0));pointer-events:none}
 .gbtn>*{position:relative}
-.gbtn:hover{filter:brightness(1.07)}
-.gbtn:active{transform:translateY(.12em);box-shadow:0 .06em 0 var(--forest)}
-.gbtn:focus-visible{outline:3px solid #fff;outline-offset:3px}
-.gbtn.normal{background:linear-gradient(#9fdcc4,#4a9e86)}
-/* 难度按钮：白底胶囊 + 彩色字 + 星级（同菇菇跳一跳的白按钮） */
-.gbtn.lv{background:linear-gradient(#ffffff,#e6f3df);-webkit-text-stroke:0;justify-content:space-between;padding:.5em 1em .5em 1.2em}
-.gbtn.lv::before{background:linear-gradient(rgba(255,255,255,.9),rgba(255,255,255,0))}
-.gbtn.lv i{font-style:normal;font-size:.5em;letter-spacing:.15em;margin-right:-.15em}
+.gbtn:hover{filter:brightness(1.04)}
+.gbtn:active{transform:translateY(.12em);box-shadow:0 .06em 0 var(--forest),inset 0 -.1em 0 rgba(33,64,47,.12)}
+.gbtn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.gbtn:disabled{opacity:.6;cursor:default}
+.gbtn.normal{color:#3c8c55}
+.gbtn.dark{color:var(--forest)}
+/* 难度按钮：同款白底胶囊 + 彩色字 + 星级 */
+.gbtn.lv{justify-content:space-between;padding:.5em 1em .5em 1.2em}
+.gbtn.lv i{font-style:normal;display:inline-flex;gap:.1em;font-size:.62em;color:currentColor;opacity:.85}
+.gbtn.lv i svg{width:1.05em;height:1.05em}
 .gbtn.easy{color:#3c9c5c}.gbtn.normal.lv{color:#21928a}.gbtn.hard{color:#1b4a2e}
-.gbtn.lv i{color:currentColor;opacity:.85}
-.gbtn.dark{background:linear-gradient(#468460,#1d3d2b);border-color:var(--forest);box-shadow:0 .18em 0 #10241a,inset 0 0 0 .08em rgba(169,230,189,.7)}
-.gbtn.dark::before{background:linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,0))}
 .gbtn svg{width:.8em;height:.8em;flex:none}
 #lvBody .gbtn{width:58cqw;font-size:7cqw}
 #pzBody .gbtn{width:26cqw;font-size:4.4cqw;padding-inline:0 0;padding-left:.16em}
 .rsBtns .gbtn{font-size:clamp(16px,calc(2.3*var(--vw)),22px);min-width:min(180px,calc(40*var(--vw)))}
 #selBack{font-size:15px;padding:.55em 1.2em .55em 1.1em;letter-spacing:.1em}
-.round{appearance:none;cursor:pointer;width:6.4cqw;height:6.4cqw;border-radius:50%;border:0;padding:0;background:#fff;box-shadow:0 .5cqw 1.2cqw rgba(20,50,30,.35);display:grid;place-items:center;transition:transform .12s}
-.round svg{width:45%;height:45%}
+.round{appearance:none;cursor:pointer;width:6.4cqw;height:6.4cqw;border-radius:50%;border:0;padding:0;color:var(--forest);background:rgba(247,250,246,.92);box-shadow:inset 0 0 0 1px rgba(33,64,47,.14),0 .35cqw 1cqw rgba(20,50,30,.22);display:grid;place-items:center;transition:transform .12s,background .2s}
+.round:hover{background:#fff}
+.round svg{width:46%;height:46%}
 .round:active{transform:scale(.92)}
 .round:focus-visible{outline:3px solid var(--mint)}
 
@@ -163,10 +161,11 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #hScore{font-family:var(--f-en);font-weight:700;font-size:clamp(26px,calc(4.6*var(--vmin)),40px);font-variant-numeric:tabular-nums;letter-spacing:.04em;
   color:#fff;text-shadow:0 0 12px rgba(124,240,166,.75),0 2px 0 rgba(10,40,20,.8)}
 #hRight{justify-self:end;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
-#skipEnd{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;font:15px var(--f-cn);color:#fff;letter-spacing:.08em;padding:7px 12px 7px 14px;border-radius:999px;border:2px solid rgba(255,255,255,.6);background:rgba(33,64,47,.8);cursor:pointer;animation:zoomIn .3s cubic-bezier(.2,1.3,.4,1) both}
+#skipEnd{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;font:15px var(--f-cn);color:#fff;letter-spacing:.08em;padding:7px 12px 7px 14px;border-radius:999px;border:1px solid rgba(169,220,189,.45);background:rgba(14,34,22,.6);cursor:pointer;animation:zoomIn .3s cubic-bezier(.2,1.3,.4,1) both}
 #skipEnd svg{width:14px;height:14px}
-#pauseBtn{pointer-events:auto;width:42px;height:42px;border-radius:50%;border:2px solid rgba(255,255,255,.6);background:rgba(33,64,47,.75);cursor:pointer;display:grid;place-items:center;padding:0}
-#pauseBtn::before{content:"";width:12px;height:14px;border-left:4px solid #fff;border-right:4px solid #fff;box-sizing:border-box}
+#pauseBtn{pointer-events:auto;width:40px;height:40px;border-radius:50%;border:1px solid rgba(169,220,189,.45);background:rgba(14,34,22,.55);color:#e9f3ec;cursor:pointer;display:grid;place-items:center;padding:0;transition:background .2s}
+#pauseBtn:hover{background:rgba(33,64,47,.8)}
+#pauseBtn svg{width:20px;height:20px}
 #prog{position:absolute;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--mint),#fff);box-shadow:0 0 8px var(--mint)}
 
 /* 开场曲名条（参考 Arcaea） */
@@ -255,11 +254,39 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #transPick button{appearance:none;cursor:pointer;font:13px var(--f-cn);color:var(--forest);background:rgba(255,255,255,.75);border:1.5px solid var(--forest);border-radius:999px;padding:4px 11px}
 #transPick button[aria-pressed="true"]{background:var(--forest);color:#fff}
 
+/* 新手教学：沿用现有薄荷面板与字体；提示不挡住判定线。 */
+#tutorialReplay{font-size:15px;min-height:40px}
+#tutorialSkip{pointer-events:auto;font:14px var(--f-cn);color:#fff;background:var(--forest);border:1px solid #dcefdf;border-radius:999px;padding:9px 13px;cursor:pointer}
+#tutorialCoach{position:absolute;z-index:3;top:calc(17*var(--vh));left:50%;transform:translateX(-50%);width:min(440px,calc(70*var(--vw)));padding:12px 20px 13px;text-align:center;
+  background:linear-gradient(180deg,rgba(28,58,40,.78),rgba(12,30,20,.82));-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border:1px solid rgba(169,220,189,.28);border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 30px rgba(0,0,0,.35);pointer-events:none}
+#tutorialCoach b{display:block;font:400 clamp(16px,calc(4.3*var(--vh)),22px) var(--f-cn);color:#fff;letter-spacing:.08em}
+#tutorialCoach p{margin:5px 0 0;font-size:clamp(12px,calc(3.3*var(--vh)),15px);line-height:1.5;color:rgba(233,243,236,.72);letter-spacing:.04em}
+#tutorialDialog{background:radial-gradient(ellipse at center,rgba(8,22,14,.45),rgba(6,16,10,.78))}
+#tutorialFrame{position:relative;width:min(460px,calc(80*var(--vw)));padding:clamp(18px,calc(5*var(--vh)),30px) clamp(20px,calc(4*var(--vw)),34px) clamp(16px,calc(4.4*var(--vh)),26px);text-align:center;color:#fff;
+  background:linear-gradient(180deg,rgba(32,66,46,.86),rgba(13,32,21,.9));-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border:1px solid rgba(169,220,189,.3);border-radius:22px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 0 0 6px rgba(143,211,170,.05),0 24px 60px rgba(0,0,0,.5);
+  animation:tfIn .42s cubic-bezier(.2,.9,.25,1.1) both}
+#tutorialFrame::before{content:"";position:absolute;left:18%;right:18%;top:-1px;height:1px;background:linear-gradient(90deg,transparent,#b4dcc0,transparent)}
+@keyframes tfIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+#tutorialFrame h2{font-weight:400;font-size:clamp(22px,calc(7*var(--vh)),30px);margin:0;letter-spacing:.12em;margin-right:-.12em;color:#fff;-webkit-text-stroke:0;text-shadow:0 0 18px rgba(143,211,170,.35)}
+#tutorialFrame p{font-size:clamp(13px,calc(3.6*var(--vh)),15px);line-height:1.65;margin:10px auto 0;max-width:24em;text-wrap:balance;color:rgba(233,243,236,.72);letter-spacing:.04em}
+.tsteps{display:flex;justify-content:center;gap:8px;margin:clamp(12px,calc(3.6*var(--vh)),18px) 0 0}
+.tsteps span{display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;border-radius:999px;font-size:13px;letter-spacing:.1em;color:rgba(233,243,236,.55);border:1px solid rgba(169,220,189,.2);background:rgba(255,255,255,.03);transition:.3s}
+.tsteps span::before{content:"";width:16px;height:16px;border-radius:50%;border:1px solid rgba(169,220,189,.4);box-sizing:border-box}
+#tutorialFrame.done .tsteps span{color:#e9f3ec;border-color:rgba(143,211,170,.45);background:rgba(143,211,170,.1)}
+#tutorialFrame.done .tsteps span::before{border:0;background:#8fd3aa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.3l2.3 2.2 4.7-5' fill='none' stroke='%230e2216' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
+#tutorialFrame.done .tsteps span:nth-child(2){transition-delay:.12s}
+#tutorialFrame.done .tsteps span:nth-child(3){transition-delay:.24s}
+#tutorialFrame .actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:clamp(14px,calc(4.4*var(--vh)),22px)}
+#tutorialFrame .actions button{font-size:15px;min-height:42px}
 /* ---------- 横屏：手机竖着拿时，把整个游戏转 90° 显示成横屏 ---------- */
 #app.rot{left:0;right:auto;top:0;bottom:auto;transform-origin:0 0}
 </style>
 </head>
 <body>
+<div id="safeArea" aria-hidden="true"></div>
 <div id="app">
   <canvas id="fx"></canvas>
   <canvas id="game" hidden></canvas>
@@ -267,7 +294,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   <!-- 标题 -->
   <section class="screen enter" id="title" tabindex="0" aria-label="点击开始">
     <h1 class="logo"><span class="en">Cino</span><span class="cn">节奏大师</span></h1>
-    <div id="touch"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="#7cf0a6"/></svg><span>点击开始</span></div>
+    <div id="touch"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6.2v11.6c0 .8.9 1.3 1.6.9l9.1-5.8a1 1 0 0 0 0-1.8l-9.1-5.8c-.7-.4-1.6.1-1.6.9z" fill="currentColor"/></svg><span id="touchLabel">点击开始</span></div>
   </section>
 
   <!-- 选曲 -->
@@ -278,23 +305,23 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
         <div id="flow"></div>
         <div id="selInfo"><div id="selName" class="ol">—</div><div id="selMeta">—</div></div>
       </div>
-      <button class="round" id="prev" aria-label="上一首"><svg viewBox="0 0 24 24"><path d="M15 4 7 12l8 8" fill="none" stroke="#3c8c55" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <button class="round" id="next" aria-label="下一首"><svg viewBox="0 0 24 24"><path d="m9 4 8 8-8 8" fill="none" stroke="#3c8c55" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="round" id="prev" aria-label="上一首"><svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="round" id="next" aria-label="下一首"><svg viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
     <div class="selBar">
-      <button class="gbtn dark" id="selBack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 7 12l8 8" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>返回</span></button>
+      <button class="gbtn dark" id="selBack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>返回</span></button>
       <span class="hint">左右滑动选歌，点中间的封面确认</span>
+      <button class="gbtn normal" id="tutorialReplay">重玩教学</button>
     </div>
-    <input type="file" id="file" accept="audio/*,.txt,text/plain" multiple>
 
     <div class="dim" id="level" hidden>
       <div class="frame" id="lvFrame">
         <div class="panel"><div class="hd"><span>选择难度</span></div></div>
-        <button id="lvClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="#3c8c55" stroke-width="4" stroke-linecap="round"/></svg></button>
+        <button id="lvClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         <div id="lvBody">
-          <div class="lvRow"><button class="gbtn lv easy" data-lv="0"><span>简单</span><i>★</i></button><span class="lvBest ol" id="best0">0</span></div>
-          <div class="lvRow"><button class="gbtn lv normal" data-lv="1"><span>普通</span><i>★★</i></button><span class="lvBest ol" id="best1">0</span></div>
-          <div class="lvRow"><button class="gbtn lv hard" data-lv="2"><span>困难</span><i>★★★</i></button><span class="lvBest ol" id="best2">0</span></div>
+          <div class="lvRow"><button class="gbtn lv easy" data-lv="0"><span>简单</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></i></button><span class="lvBest ol" id="best0">0</span></div>
+          <div class="lvRow"><button class="gbtn lv normal" data-lv="1"><span>普通</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></i></button><span class="lvBest ol" id="best1">0</span></div>
+          <div class="lvRow"><button class="gbtn lv hard" data-lv="2"><span>困难</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></i></button><span class="lvBest ol" id="best2">0</span></div>
           <div class="calib"><label for="offset">延迟</label><input type="range" id="offset" min="-200" max="200" step="5" value="0"><output id="offsetVal">0ms</output></div>
           <div class="tips"><b>绿色箭头</b>按下后往箭头方向滑<br><b>绿色折线</b>按住不放，手指跟着线换车道</div>
           <div id="lvLoading"></div>
@@ -309,11 +336,17 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
     <div class="bar">
       <div id="hSong"><b>—</b><span class="lvChip" id="hLv">普通</span></div>
       <div id="hScore">0000000</div>
-      <div id="hRight"><button id="pauseBtn" aria-label="暂停"></button><button id="skipEnd" hidden><span>跳过结尾</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l9 7-9 7zM15 5l0 14" fill="#fff" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg></button></div>
+      <div id="hRight"><button id="tutorialSkip" hidden>跳过教学</button><button id="pauseBtn" aria-label="暂停"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7v10M15 7v10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button><button id="skipEnd" hidden><span>跳过结尾</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 7.3v9.4c0 .8.9 1.3 1.6.8l6.6-4.7a1 1 0 0 0 0-1.6L8.1 6.5c-.7-.5-1.6 0-1.6.8z" fill="currentColor"/><path d="M17.5 6.5v11" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button></div>
     </div>
   </div>
   <div id="intro"><div class="strip"><b id="inName">—</b><span id="inLv">普通</span></div></div>
 
+  <aside id="tutorialCoach" hidden aria-live="polite"><b id="tutorialStep"></b><p id="tutorialTip"></p></aside>
+  <div class="dim" id="tutorialDialog" hidden role="dialog" aria-modal="true" aria-labelledby="tutorialHeading">
+    <div id="tutorialFrame"><h2 id="tutorialHeading">新手教学</h2><p id="tutorialMessage" role="status"></p><div class="tsteps" aria-hidden="true"><span>点按</span><span>长按</span><span>滑键</span></div>
+      <div class="actions"><button id="tutorialAction" class="gbtn normal" hidden>重试加载</button><button id="tutorialExit" class="gbtn dark">跳过教学</button></div>
+    </div>
+  </div>
   <div class="dim" id="pause" hidden>
     <div class="frame" id="pzFrame">
       <div class="panel plain"><div class="hd"><span>暂停</span></div></div>
@@ -382,35 +415,61 @@ const WIN=[0.045,0.085,0.125,0.17], PTS={4:500,3:250,2:100,1:50,0:0}, HOLD_TICK=
 const $=id=>document.getElementById(id);
 /* ===== 横屏适配 =====
    手机竖着拿时：把 #app 转 90°，宽高对调，游戏始终按横屏排版；手机横过来时恢复正常。
-   安卓上第一次点击时还会尝试全屏 + 锁定横屏（浏览器支持才会生效）。 */
+   支持的浏览器在开始、选难度、继续时会尝试全屏 + 锁定横屏（浏览器支持才会生效）。 */
 let ROT=false;
+const touchDevice=()=>navigator.maxTouchPoints>0 || matchMedia('(any-pointer:coarse)').matches;
+// 带触屏的电脑仍可能以鼠标为主，不能只凭 maxTouchPoints 旋转。
+const mobileDevice=()=>touchDevice() && (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
 function applyOrient(){
-  const app=$('app'), W=innerWidth, H=innerHeight, touch=matchMedia('(pointer:coarse)').matches;
-  ROT = touch && H>W;
-  const root=document.documentElement.style;
-  if(ROT){
-    app.classList.add('rot'); app.style.width=H+'px'; app.style.height=W+'px'; app.style.transform=`translateX(${W}px) rotate(90deg)`;
-    root.setProperty('--vw',H/100+'px'); root.setProperty('--vh',W/100+'px'); root.setProperty('--vmin',Math.min(W,H)/100+'px');
-  }else{
-    app.classList.remove('rot'); app.style.width=app.style.height=app.style.transform='';
-    root.setProperty('--vw','1vw'); root.setProperty('--vh','1vh'); root.setProperty('--vmin','1vmin');
-  }
+  const app=$('app'), v=window.visualViewport;
+  // Safari 地址栏展开/收起时，以真正可见的区域为准；不依赖设备或主指针类型。
+  const W=v?v.width:innerWidth, H=v?v.height:innerHeight;
+  const safe=getComputedStyle($('safeArea')), edge=mobileDevice()?16:0;
+  const left=Math.max(16,parseFloat(safe.paddingLeft)||0), right=Math.max(16,parseFloat(safe.paddingRight)||0);
+  const top=Math.max(edge,parseFloat(safe.paddingTop)||0), bottom=Math.max(edge,parseFloat(safe.paddingBottom)||0);
+  const w=Math.max(1,W-left-right), h=Math.max(1,H-top-bottom);
+  // 仅触屏设备竖屏时旋转；电脑的窄窗口保持正常阅读方向。
+  ROT=mobileDevice() && H>W;
+  const aw=ROT?h:w, ah=ROT?w:h, root=document.documentElement.style;
+  app.classList.toggle('rot',ROT);
+  app.style.left=((v?v.offsetLeft:0)+left)+'px';
+  app.style.top=((v?v.offsetTop:0)+top)+'px';
+  app.style.width=aw+'px'; app.style.height=ah+'px';
+  app.style.transform=ROT?`translateX(${w}px) rotate(90deg)`:'none';
+  root.setProperty('--vw',aw/100+'px'); root.setProperty('--vh',ah/100+'px');
+  root.setProperty('--vmin',Math.min(aw,ah)/100+'px');
 }
-/* 屏幕坐标 → 游戏里的坐标（旋转时要反过来换算） */
+/* 从实际旋转后的边界换算，包含安全区和 Safari 可视区域偏移。 */
 function toApp(cx,cy){
-  const app=$('app');
-  if(ROT) return {x:cy, y:innerWidth-cx};
-  const r=app.getBoundingClientRect(); return {x:cx-r.left, y:cy-r.top};
+  const r=$('app').getBoundingClientRect();
+  return ROT?{x:cy-r.top,y:r.right-cx}:{x:cx-r.left,y:cy-r.top};
 }
-let triedLock=false;
-function tryLandscape(){
-  if(triedLock) return; triedLock=true;
-  try{ const el=document.documentElement, fs=el.requestFullscreen||el.webkitRequestFullscreen;
-    if(fs&&matchMedia('(pointer:coarse)').matches) Promise.resolve(fs.call(el)).then(()=>screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape')).catch(()=>{}); }catch(e){}
+let landscapePending=false;
+async function tryLandscape(){
+  if(!mobileDevice()||landscapePending) return;
+  landscapePending=true;
+  try{
+    const el=document.documentElement, fs=el.requestFullscreen||el.webkitRequestFullscreen;
+    if(fs&&!document.fullscreenElement&&!document.webkitFullscreenElement){
+      try{ await fs.call(el); }catch(e){}
+    }
+    // iPhone 不支持时仍由 applyOrient 保证页面横排；失败后下次明确点击可重试。
+    try{ await screen.orientation?.lock?.('landscape'); }catch(e){}
+  }finally{ landscapePending=false; refreshViewport(); }
 }
-addEventListener('pointerdown',tryLandscape,{once:true,capture:true});
+let viewportFrame=0;
+function refreshViewport(){
+  cancelAnimationFrame(viewportFrame);
+  viewportFrame=requestAnimationFrame(()=>{ applyOrient(); resizeAll(); });
+}
 applyOrient();
-addEventListener('orientationchange',()=>setTimeout(()=>{ applyOrient(); resizeAll(); },120));
+addEventListener('orientationchange',()=>{ refreshViewport(); setTimeout(refreshViewport,250); });
+screen.orientation?.addEventListener('change',refreshViewport);
+window.visualViewport?.addEventListener('resize',refreshViewport);
+window.visualViewport?.addEventListener('scroll',refreshViewport);
+document.addEventListener('fullscreenchange',refreshViewport);
+document.addEventListener('webkitfullscreenchange',refreshViewport);
+addEventListener('pageshow',refreshViewport);
 const store={get(k,d){try{const v=localStorage.getItem('rr2-'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('rr2-'+k,JSON.stringify(v))}catch(e){}}};
 
 /* ---------- 图片 ---------- */
@@ -515,7 +574,7 @@ const stars=Array.from({length:90},()=>({x:Math.random(),y:Math.random()*.6,r:Ma
 
 function sizeCanvas(c,ctx){ const r={width:c.clientWidth,height:c.clientHeight}; c.width=Math.max(1,r.width*DPR); c.height=Math.max(1,r.height*DPR); ctx.setTransform(DPR,0,0,DPR,0,0); return r; }
 function resizeAll(){ DPR=Math.min(devicePixelRatio||1,2); const keep=DPR; DPR=1; const r=sizeCanvas(fx,fg); DPR=keep; FW=r.width;FH=r.height; fxBase=null; if(!$('game').hidden) resizeGame(); }
-addEventListener('resize',()=>{ applyOrient(); resizeAll(); });
+addEventListener('resize',refreshViewport);
 function cover(ctx,img,w,h,alpha=1){ if(!img.complete||!img.naturalWidth) return; const s=Math.max(w/img.naturalWidth,h/img.naturalHeight); const iw=img.naturalWidth*s,ih=img.naturalHeight*s; ctx.globalAlpha=alpha; ctx.drawImage(img,(w-iw)/2,(h-ih)/2,iw,ih); ctx.globalAlpha=1; }
 let fxOn=true;
 /* 静态部分（底色、格子布、地面）按分辨率只画一次；柔光点用预先画好的小图，避免每帧大量渐变计算 */
@@ -636,7 +695,7 @@ const isOn=id=>!$(id).classList.contains('off');
 /* =====================================================================
    标题
    ===================================================================== */
-function goSelect(){ ac().resume(); click(); shutter('',()=>{ show('select'); place(true); }); }
+function goSelect(){ if(swapping||tutorialLoading) return; tryLandscape(); ac().resume(); click(); if(!tutorialSeen){ beginTutorial(); return; } shutter('',()=>{ show('select'); place(true); }); }
 $('title').addEventListener('click',goSelect);
 
 $('title').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ') goSelect(); });
@@ -648,7 +707,6 @@ const flow=$('flow'); let cards=[], sel=store.get('sel',0), pos=0, target=0, ani
 function buildFlow(){
   flow.innerHTML=''; cards=[];
   songs.forEach((s,i)=>{ const d=document.createElement('div'); d.className='card'; d.innerHTML=`<img alt="">`; d.firstChild.src=s.cover; flow.appendChild(d); cards.push(d); });
-  const add=document.createElement('div'); add.className='card'; add.innerHTML='<div class="add"><b>+</b>导入自己的歌<small>同时选 mp3 和 txt 谱面</small></div>'; flow.appendChild(add); cards.push(add);
   sel=Math.min(Math.max(0,sel),cards.length-1); pos=target=sel; place(true);
 }
 function place(instant){
@@ -664,7 +722,7 @@ function place(instant){
 }
 function info(){
   const i=Math.round(target); const s=songs[i];
-  if(!s){ $('selName').textContent='导入自己的歌'; $('selMeta').textContent='选 mp3 和对应的 txt 谱面（可以一次多选）'; return; }
+  if(!s) return;
   const m=s.meta; if(!m) return;
   const holds=m.notes.filter(n=>n.hold).length;
   const best=Math.max(...[0,1,2].map(l=>store.get(`best-${key(s)}-${l}`,0)));
@@ -677,59 +735,138 @@ function animate(){ cancelAnimationFrame(anim); const step=()=>{ pos+=(target-po
 $('prev').onclick=()=>go(Math.round(target)-1); $('next').onclick=()=>go(Math.round(target)+1);
 $('selBack').onclick=()=>{ click('back'); shutter('',()=>{ show('title'); }); };
 // 拖动 / 滑动
-let drag=null;
-flow.addEventListener('pointerdown',e=>{ drag={x:toApp(e.clientX,e.clientY).x,start:target,moved:false,id:e.pointerId}; cancelAnimationFrame(anim); });
+let drag=null, suppressFlowClick=false;
+flow.addEventListener('pointerdown',e=>{ suppressFlowClick=false; drag={x:toApp(e.clientX,e.clientY).x,start:target,moved:false,id:e.pointerId}; cancelAnimationFrame(anim); });
 addEventListener('pointermove',e=>{ if(!drag||e.pointerId!==drag.id) return; const dx=toApp(e.clientX,e.clientY).x-drag.x; if(Math.abs(dx)>6) drag.moved=true; if(drag.moved){ const w=flow.clientWidth*.2; pos=Math.max(-.4,Math.min(cards.length-.6,drag.start-dx/w)); target=pos; place(); } });
 addEventListener('pointerup',e=>{ if(!drag||e.pointerId!==drag.id) return; const d=drag; drag=null;
-  if(d.moved){ go(Math.round(pos)); return; }
-  const card=e.target.closest?.('.card'); const i=cards.indexOf(card); if(i<0){ go(Math.round(target)); return; }
+  if(d.moved){ suppressFlowClick=true; go(Math.round(pos)); }
+});
+// 等 click 再打开弹窗，避免 pointerup 弹窗后同一次触摸的 click 穿透到难度按钮。
+flow.addEventListener('click',e=>{
+  if(suppressFlowClick){ suppressFlowClick=false; return; }
+  const card=e.target.closest?.('.card'), i=cards.indexOf(card);
+  if(i<0) return;
   if(i===Math.round(target)) confirmSong(i); else go(i);
 });
+addEventListener('pointercancel',e=>{ if(drag?.id===e.pointerId){ drag=null; suppressFlowClick=true; go(Math.round(pos)); } });
 flow.addEventListener('wheel',e=>{ e.preventDefault(); if(Math.abs(e.deltaX)+Math.abs(e.deltaY)<8) return; if(flow._w) return; flow._w=1; setTimeout(()=>flow._w=0,180); go(Math.round(target)+((e.deltaY||e.deltaX)>0?1:-1)); },{passive:false});
 addEventListener('keydown',e=>{
   if(!isOn('select')) return;
   if(!$('level').hidden){ if(e.key==='Escape') closeLevel(); if(['1','2','3'].includes(e.key)) pickLevel(+e.key-1); return; }
   if(e.key==='ArrowLeft') go(Math.round(target)-1); else if(e.key==='ArrowRight') go(Math.round(target)+1); else if(e.key==='Enter') confirmSong(Math.round(target));
 });
-// 导入
-$('file').addEventListener('change',async e=>{
-  const fs=[...e.target.files]; e.target.value='';
-  const auds=fs.filter(f=>/audio|\.mp3$|\.ogg$|\.wav$|\.m4a$/i.test(f.type+f.name)), txts=fs.filter(f=>/\.txt$/i.test(f.name));
-  if(!auds.length||!txts.length){ $('selMeta').textContent='需要同时选择音乐文件和 txt 谱面'; return; }
-  const stem=n=>n.replace(/\.[^.]+$/,'').toLowerCase();
-  for(const a of auds){
-    const t=txts.find(x=>stem(x.name)===stem(a.name))||(auds.length===1?txts[0]:null); if(!t) continue;
-    const meta=parseChart(await t.text()); const s={local:true,audioData:await a.arrayBuffer(),meta,buf:null};
-    s.cover=makeCover(meta.name,songs.length); songs.push(s);
-  }
-  buildFlow(); go(songs.length-1);
-});
-
 /* ---------- 难度面板 ---------- */
 let cur=null;
 function confirmSong(i){
   click();
-  if(i>=songs.length){ $('file').click(); return; }
+  if(i>=songs.length) return;
   cur=songs[i]; if(!cur.meta||!cur.meta.notes.length) return;
   [0,1,2].forEach(l=>$('best'+l).textContent=store.get(`best-${key(cur)}-${l}`,0).toLocaleString());
   $('lvLoading').textContent=''; $('level').hidden=false;
   getBuffer(cur).catch(()=>{});
 }
-function closeLevel(){ click('back'); $('level').hidden=true; }
+function closeLevel(){ click('back'); ++pickToken; lockLevels(false); $('lvLoading').textContent=''; $('level').hidden=true; }
 $('lvClose').onclick=closeLevel;
 $('level').addEventListener('click',e=>{ if(e.target.id==='level') closeLevel(); });
 document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>pickLevel(+b.dataset.lv));
 let offset=store.get('offset',0); $('offset').value=offset; $('offsetVal').textContent=offset+'ms';
 $('offset').oninput=e=>{ offset=+e.target.value; $('offsetVal').textContent=offset+'ms'; store.set('offset',offset); };
+// 选难度后加载期间锁住：再点任何难度都不理会，关面板会作废这次加载，避免同时开出多首歌
+let picking=false, pickToken=0;
+function lockLevels(on){ picking=on; document.querySelectorAll('[data-lv]').forEach(b=>b.disabled=on); }
 async function pickLevel(l){
-  click(); $('lvLoading').textContent='音乐加载中…';
-  let buf; try{ buf=await getBuffer(cur); }catch(e){ $('lvLoading').textContent='音乐加载失败：'+(e.message||'请换一个文件'); return; }
+  if(picking||swapping) return;
+  const song=cur, token=++pickToken; lockLevels(true);
+  tryLandscape(); click(); $('lvLoading').textContent='音乐加载中…';
+  const bail=msg=>{ if(token!==pickToken) return; lockLevels(false); $('lvLoading').textContent=msg; };
+  let buf; try{ buf=await getBuffer(song); }catch(e){ bail('音乐加载失败：'+(e.message||'请换一个文件')); return; }
+  let meta=song.meta;
+  if(song.charts){ try{ song.lvMeta=song.lvMeta||{}; meta=song.lvMeta[l]||(song.lvMeta[l]=parseChart(await fetch(song.charts[l]).then(r=>{if(!r.ok)throw 0;return r.text()}))); }catch(e){ bail('谱面加载失败'); return; } }
+  if(token!==pickToken) return;
   $('lvLoading').textContent='';
-  let meta=cur.meta;
-  if(cur.charts){ try{ cur.lvMeta=cur.lvMeta||{}; meta=cur.lvMeta[l]||(cur.lvMeta[l]=parseChart(await fetch(cur.charts[l]).then(r=>{if(!r.ok)throw 0;return r.text()}))); }catch(e){ $('lvLoading').textContent='谱面加载失败'; return; } }
-  startGame(cur,l,buf,meta);
+  startGame(song,l,buf,meta);
+  setTimeout(()=>lockLevels(false),1200);
 }
 
+/* 教学谱面与正式成绩分离；加载令牌确保跳过后异步结果不会重开游戏。 */
+let tutorialSeen=store.get('tutorial-v1',false), tutorialLoading=false, tutorialToken=0;
+function tutorialHint(title,message){
+  $('tutorialCoach').hidden=false; $('tutorialStep').textContent=title; $('tutorialTip').textContent=message;
+}
+function tutorialBusy(on){ // 加载教学时只在按钮上提示，不弹窗
+  const t=$('touchLabel'), r=$('tutorialReplay');
+  if(t) t.textContent=on?'加载中…':'点击开始';
+  if(r){ r.disabled=on; r.textContent=on?'加载中…':'重玩教学'; }
+}
+async function beginTutorial(){
+  if(tutorialLoading||swapping) return;
+  tryLandscape(); ac().resume();
+  const token=++tutorialToken; tutorialLoading=true; $('tutorialFrame').classList.remove('done');
+  $('tutorialDialog').hidden=true; tutorialBusy(true);
+  try{
+    const song=songs.find(s=>s.audio==='songs/wobuzhidao.mp3');
+    const [buf,text]=await Promise.all([getBuffer(song),fetch('songs/wobuzhidao_tutorial.txt').then(r=>{if(!r.ok) throw Error('chart');return r.text();})]);
+    if(token!==tutorialToken) return;
+    const meta=parseChart(text);
+    if(!meta.notes.length||!meta.notes.some(n=>n.hold)||!meta.notes.some(n=>n.flick)) throw Error('chart');
+    tutorialLoading=false; tutorialBusy(false); $('tutorialDialog').hidden=true;
+    startGame({...song,meta},0,buf,meta,true);
+  }catch(e){
+    if(token!==tutorialToken) return;
+    tutorialLoading=false; tutorialBusy(false); $('tutorialDialog').hidden=false; $('tutorialHeading').textContent='新手教学';
+    $('tutorialMessage').textContent='教学音乐或谱面暂时没加载成功，可以重试，也可以先去选歌。'; $('tutorialExit').hidden=false; $('tutorialExit').textContent='跳过教学';
+    $('tutorialAction').hidden=false; $('tutorialAction').textContent='重试加载'; $('tutorialAction').onclick=beginTutorial;
+  }
+}
+function exitTutorial(completed=false){
+  tutorialBusy(false);
+  ++tutorialToken; tutorialLoading=false; tutorialSeen=completed?'completed':'skipped'; store.set('tutorial-v1',tutorialSeen);
+  $('tutorialDialog').hidden=true; $('tutorialCoach').hidden=true; $('tutorialSkip').hidden=true;
+  shutter('',()=>{ if(G) leaveGame(); G=null; show('select'); place(true); });
+}
+$('tutorialReplay').onclick=()=>{ click(); beginTutorial(); };
+$('tutorialSkip').onclick=()=>exitTutorial(false);
+$('tutorialExit').onclick=()=>exitTutorial(false);
+function tutorialGate(){ const t=G?.tutorial; return t?t.gates[t.step]:null; }
+function tutorialFreeze(n,retry=false){
+  stopSong(); G.tutorial.frozen=n.t; clearGameInput();
+  n.judged=false; n.done=false; n.holding=false; n.broken=false; n.grade=-1; G.flickWait=[];
+  const labels=['点按','长按','滑键'], tips=[
+    '音符到了白色判定线，点击亮起的车道。',
+    '按住亮起的车道，直到长条尾部走完再松手。',
+    '按下绿色音符，再向右滑动；不用急，做对了再继续。'];
+  tutorialHint(`${labels[G.tutorial.step]} · ${G.tutorial.step+1} / 3`,(retry?'再试一次：':'')+tips[G.tutorial.step]);
+}
+function tutorialContinue(){
+  const t=G.tutorial.frozen; if(t==null) return;
+  G.tutorial.frozen=null;
+  const a=ac(), src=a.createBufferSource(); src.buffer=G.buf; src.connect(a.destination);
+  G.startAt=a.currentTime-t-offset/1000; src.start(0,Math.max(0,t+offset/1000)); G.src=src; a.resume();
+}
+function tutorialPassed(n){
+  if(!G.tutorial||n!==tutorialGate()) return;
+  G.tutorial.step++; tutorialContinue();
+  const messages=['点按学会了！跟着音乐，再试试接下来的音符。','长按学会了！看到长条，记得按住到尾部。','滑键也学会了！跟着音乐完成最后一小段吧。'];
+  tutorialHint('做到了！',messages[G.tutorial.step-1]);
+}
+function tutorialPress(l,fromSlide){
+  const n=tutorialGate(); if(!n||G.tutorial.frozen==null) return false;
+  if(fromSlide||l!==n.lane||n.judged) return true;
+  G.pressed[l]=1; G.flash[l]=1; n.judged=true; n.grade=4;
+  if(n.flick){ n.dt=0; n.at=n.t; G.flickWait=[n]; G.lastFlickPtr=n; return true; }
+  award(4,0,l); hitFx(l,4);
+  if(n.hold){ n.holding=true; n.next=n.t+HOLD_TICK; n.okAt=n.t; tutorialContinue(); tutorialHint('保持按住','等长条尾部到达白线，就可以松手了。'); }
+  else{ n.done=true; tutorialPassed(n); }
+  return true;
+}
+function finishTutorial(){
+  G.state='result'; stopSong(); clearGameInput(); try{wake?.release()}catch(e){}
+  tutorialSeen='completed'; store.set('tutorial-v1',tutorialSeen);
+  $('tutorialCoach').hidden=true; $('tutorialSkip').hidden=true; $('tutorialDialog').hidden=false; $('tutorialFrame').classList.remove('done'); requestAnimationFrame(()=>requestAnimationFrame(()=>$('tutorialFrame').classList.add('done')));
+  $('tutorialHeading').textContent='教学完成'; $('tutorialMessage').textContent='挑一首喜欢的歌，从简单难度开始吧。';
+  $('tutorialAction').hidden=false; $('tutorialAction').textContent='去选歌'; $('tutorialAction').onclick=()=>exitTutorial(true);
+  $('tutorialExit').hidden=true;
+}
 /* =====================================================================
    游戏
    ===================================================================== */
@@ -755,16 +892,19 @@ function buildStage(){
 }
 let G=null, raf=0, wake=null;
 
-function startGame(song,lv,buf,meta){
+function startGame(song,lv,buf,meta,teaching=false){
   meta=meta||song.meta;
   shutter(song.meta.name,()=>{
-    $('level').hidden=true; $('skipEnd').hidden=true; show(null); fxOn=false;
+    stopSong(); cancelAnimationFrame(raf);
+    $('level').hidden=true; $('skipEnd').hidden=true; $('tutorialCoach').hidden=true; $('tutorialSkip').hidden=!teaching; $('tutorialExit').hidden=false; show(null); fxOn=false;
     gc.hidden=false; $('hud').hidden=false; resizeGame();
     const L=LEVELS[lv];
     G={song,lv,lead:L.lead,buf,meta,notes:meta.notes.map(n=>({...n,judged:false,grade:-1,holding:false,broken:false,done:false,next:0})),
        score:0,combo:0,max:0,counts:{4:0,3:0,2:0,1:0,0:0},pressed:[0,0,0,0],flickWait:[],lastFlickPtr:null,flash:[0,0,0,0],fx:[],sparks:[],judge:null,comboPop:0,state:'play',
        born:performance.now(),src:null,startAt:0};
-    $('hSong').firstChild.textContent=song.meta.name; $('hLv').textContent=L.name; $('hLv').style.background=L.color;
+    G.tutorial=teaching?{step:0,frozen:null,gates:[G.notes.find(n=>!n.hold&&!n.flick),G.notes.find(n=>n.hold),G.notes.find(n=>n.flick)]}:null;
+    if(teaching) tutorialHint('跟着音乐试一试','先看音符落到白线，第一颗会停下来等你。');
+    $('hSong').firstChild.textContent=song.meta.name; $('hLv').textContent=teaching?'新手教学':L.name; $('hLv').style.background=L.color;
     $('inName').textContent=song.meta.name; $('inLv').textContent=L.name;
     const it=$('intro'); it.classList.remove('go'); void it.offsetWidth; it.classList.add('go');
     hud();
@@ -775,9 +915,9 @@ function startGame(song,lv,buf,meta){
     cancelAnimationFrame(raf); last=0; raf=requestAnimationFrame(loop);
   });
 }
-const songTime=()=>ac().currentTime-G.startAt-offset/1000;
+const songTime=()=>G.tutorial?.frozen??(ac().currentTime-G.startAt-offset/1000);
 function stopSong(){ try{G?.src?.stop();}catch(e){} if(G) G.src=null; }
-function hud(){ $('hScore').textContent=String(Math.round(G.score)).padStart(7,'0'); }
+function hud(){ $('hScore').textContent=G.tutorial?'新手教学':String(Math.round(G.score)).padStart(7,'0'); }
 
 /* 透视：z=0 判定线，z=1 远端 */
 const Z0=0.42;
@@ -809,9 +949,10 @@ function hitFx(lane,g){
 }
 const FLICK_WIN=0.3;   // 滑键：按下后多久内要滑到箭头方向
 const pathLane=(n,t)=>{ let l=n.path[0].l; for(const q of n.path){ if(q.t<=t+1e-4) l=q.l; else break; } return l; };
-function completeFlick(n){ if(n.done) return; n.done=true; award(n.grade,n.dt,n.lane); hitFx(n.lane,n.grade); hitFx(Math.max(0,Math.min(3,n.lane+n.flick)),n.grade); G.flickWait=G.flickWait.filter(x=>x!==n); }
+function completeFlick(n){ if(n.done) return; n.done=true; award(n.grade,n.dt,n.lane); hitFx(n.lane,n.grade); hitFx(Math.max(0,Math.min(3,n.lane+n.flick)),n.grade); G.flickWait=G.flickWait.filter(x=>x!==n); tutorialPassed(n); }
 function press(l,fromSlide){
   if(!G||G.state!=='play'||G.pressed[l]) return;
+  if(tutorialPress(l,fromSlide)) return;
   G.pressed[l]=1; G.flash[l]=1;
   const t=songTime();
   // 键盘滑键：先按音符所在键，再按箭头方向那一格的键
@@ -828,6 +969,7 @@ function press(l,fromSlide){
 }
 function arrowFlick(dir){   // 键盘方向键也能打滑键
   if(!G||G.state!=='play') return;
+  if(G.tutorial?.frozen!=null){ const n=tutorialGate(); if(n?.flick===dir){ tutorialPress(n.lane,false); completeFlick(n); } return; }
   const t=songTime();
   for(const f of G.flickWait){ if(f.flick===dir){ completeFlick(f); return; } }
   for(const n of G.notes){ if(n.t-t>WIN[3]) break; if(n.judged||!n.flick||n.flick!==dir) continue;
@@ -835,8 +977,9 @@ function arrowFlick(dir){   // 键盘方向键也能打滑键
 }
 function release(l){
   if(!G||!G.pressed[l]) return; G.pressed[l]=0; if(G.state!=='play') return;
-  const t=songTime();
-  for(const n of G.notes) if(n.lane===l&&n.holding&&!n.path){ n.holding=false; n.done=true; if(t<n.end-.12){ n.broken=true; award(0,null,l);} else hitFx(l,n.grade); }
+  const t=songTime(), gate=tutorialGate();
+  if(gate&&gate.lane===l&&((gate.holding&&t<gate.end-.02)||(gate.flick&&gate.judged&&!gate.done))){ tutorialFreeze(gate,true); return; }
+  for(const n of G.notes) if(n.lane===l&&n.holding&&!n.path){ n.holding=false; n.done=true; if(t<n.end-.12){ n.broken=true; award(0,null,l);} else{ hitFx(l,n.grade); tutorialPassed(n); } }
 }
 addEventListener('keydown',e=>{
   if(!G||$('game').hidden) return;
@@ -863,21 +1006,40 @@ gc.addEventListener('pointermove',e=>{
   if(!G.pressed[l]) press(l,true);
 });
 const pup=e=>{ const l=ptr.get(e.pointerId); if(l==null) return; ptr.delete(e.pointerId); ptrInfo.delete(e.pointerId); if(![...ptr.values()].includes(l)) release(l); };
-gc.addEventListener('pointerup',pup); gc.addEventListener('pointercancel',pup);
+gc.addEventListener('pointerup',pup);
+// 系统接管触摸时立即暂停，不把取消事件当成主动松开长按。
+gc.addEventListener('pointercancel',()=>pause());
+gc.addEventListener('lostpointercapture',e=>{ if(ptr.has(e.pointerId)) pause(); });
+// Safari 的滚动/缩放/长按菜单只在游戏及选歌拖动区域内阻止，保留按钮与延迟滑块。
+for(const surface of [gc,flow]){
+  const stopGesture=e=>{ if(e.cancelable) e.preventDefault(); };
+  surface.addEventListener('touchmove',stopGesture,{passive:false});
+  surface.addEventListener('contextmenu',stopGesture);
+  surface.addEventListener('dragstart',stopGesture);
+}
+gc.addEventListener('touchstart',e=>{ if(e.cancelable) e.preventDefault(); },{passive:false});
+function clearGameInput(){
+  ptr.clear(); ptrInfo.clear();
+  if(G){ G.pressed.fill(0); G.flash.fill(0); G.lastFlickPtr=null; }
+}
 
-function pause(){ if(!G||G.state!=='play') return; G.state='pause'; ac().suspend(); $('pause').hidden=false; }
-function resume(){ if(!G||G.state!=='pause') return; click(); $('pause').hidden=true; ac().resume(); G.state='play'; last=0; raf=requestAnimationFrame(loop); }
-function leaveGame(){ $('skipEnd').hidden=true; stopSong(); ac().resume(); cancelAnimationFrame(raf); gc.hidden=true; $('hud').hidden=true; $('pause').hidden=true; try{wake?.release()}catch(e){} fxOn=true; requestAnimationFrame(fxLoop); }
+function pause(){ if(!G||G.state!=='play') return; G.state='pause'; if(tutorialGate()?.holding||G.tutorial?.frozen!=null) tutorialFreeze(tutorialGate(),true); clearGameInput(); ac().suspend(); $('pause').hidden=false; }
+function resume(){ if(!G||G.state!=='pause') return; tryLandscape(); click(); $('pause').hidden=true; ac().resume(); G.state='play'; last=0; raf=requestAnimationFrame(loop); }
+function leaveGame(){ $('tutorialCoach').hidden=true; $('tutorialSkip').hidden=true; $('tutorialDialog').hidden=true; clearGameInput(); $('skipEnd').hidden=true; stopSong(); ac().resume(); cancelAnimationFrame(raf); gc.hidden=true; $('hud').hidden=true; $('pause').hidden=true; try{wake?.release()}catch(e){} fxOn=true; requestAnimationFrame(fxLoop); }
 $('pauseBtn').onclick=pause; $('skipEnd').onclick=()=>{ click(); if(G&&G.state==='play') finish(); }; $('pzGo').onclick=resume;
-$('pzRe').onclick=()=>{ click(); const s=G.song,l=G.lv,b=G.buf,m=G.meta; leaveGame(); fxOn=false; startGame(s,l,b,m); };
-$('pzSel').onclick=()=>{ click('back'); shutter('',()=>{ leaveGame(); G=null; show('select'); place(true); }); };
-document.addEventListener('visibilitychange',()=>{ if(document.hidden) pause(); });
+$('pzRe').onclick=()=>{ click(); const s=G.song,l=G.lv,b=G.buf,m=G.meta,t=!!G.tutorial; leaveGame(); fxOn=false; startGame(s,l,b,m,t); };
+$('pzSel').onclick=()=>{ if(G?.tutorial){ exitTutorial(false); return; } click('back'); shutter('',()=>{ leaveGame(); G=null; show('select'); place(true); }); };
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) pause(); else refreshViewport(); });
+addEventListener('pagehide',pause);
+addEventListener('blur',pause);
 
 let last=0;
 function loop(now){
   if(!G||G.state!=='play') return;
   const dt=last?Math.min(.05,(now-last)/1000):.016; last=now;
-  const t=songTime();
+  let t=songTime();
+  const gate=tutorialGate();
+  if(gate&&!gate.judged&&G.tutorial.frozen==null&&t>=gate.t){ tutorialFreeze(gate); t=songTime(); }
   for(const n of G.notes){
     if(n.t-t>1.5) break;
     if(!n.judged&&t-n.t>WIN[3]){ n.judged=true; n.grade=0; n.done=true; n.broken=n.hold; award(0,null,n.lane); }
@@ -889,7 +1051,7 @@ function loop(now){
     if(n.holding){
       while(n.next<=Math.min(t,n.end)){ G.combo++; G.max=Math.max(G.max,G.combo); G.score+=PTS[n.grade]/5*(G.combo>1?1.1:1); n.next+=HOLD_TICK; G.comboPop=.6; hud();
         if(Math.random()<.7){ const o=geo(), hl=n.path?pathLane(n,t):n.lane; const x=laneX(hl,1,o)+o.half*.25; G.sparks.push({x,y:o.hitY,vx:(Math.random()-.5)*160,vy:-200-Math.random()*200,life:.4,col:SKIN.lane[n.lane]}); } }
-      if(t>=n.end){ n.holding=false; n.done=true; hitFx(n.path?pathLane(n,n.end):n.lane,n.grade); }
+      if(t>=n.end){ n.holding=false; n.done=true; hitFx(n.path?pathLane(n,n.end):n.lane,n.grade); tutorialPassed(n); }
     }
   }
   for(const f of [...G.flickWait]) if(t-f.at>FLICK_WIN){ f.grade=1; completeFlick(f); }   // 没滑：算 BAD
@@ -898,7 +1060,7 @@ function loop(now){
   const lastEnd=G.meta.len;
   // 歌放完才结算；音符打完后出现「跳过结尾」
   const allDone=t>lastEnd+1.2 && G.notes.every(n=>n.done);
-  if(allDone && $('skipEnd').hidden && t<G.buf.duration-2) $('skipEnd').hidden=false;
+  if(!G.tutorial && allDone && $('skipEnd').hidden && t<G.buf.duration-2) $('skipEnd').hidden=false;
   if(t>G.buf.duration+.4){ finish(); return; }
   raf=requestAnimationFrame(loop);
 }
@@ -997,6 +1159,7 @@ function draw(t,dt,now){
     if(g.letterSpacing!==undefined) g.letterSpacing='0px'; g.restore();
     if(G.judge.el){ g.font='600 14px Fredoka,sans-serif'; g.fillStyle=G.judge.el==='EARLY'?'#9fe0ff':'#ffb8a8'; g.fillText(G.judge.el,o.cx,y+fs*.85); }
     g.globalAlpha=1; } }
+  drawTutorialTarget(o);
   // 连击
   if(G.combo>=2){
     G.comboPop=Math.max(0,G.comboPop-dt*5);
@@ -1006,6 +1169,12 @@ function draw(t,dt,now){
     g.fillStyle='rgba(10,40,20,.7)'; g.fillText(G.combo,o.cx+2,y+3); g.fillStyle=cg; g.fillText(G.combo,o.cx,y);
     g.font='16px "ZCOOL KuaiLe",sans-serif'; g.fillStyle='rgba(230,255,220,.9)'; g.fillText('连  击',o.cx,y+22);
   }
+}
+function drawTutorialTarget(o){
+  const n=tutorialGate(); if(!n||G.tutorial.frozen==null) return;
+  const x=laneX(n.lane,1,o), w=o.half*.5;
+  g.save(); g.strokeStyle='#fff'; g.lineWidth=2; g.fillStyle='rgba(180,220,192,.2)';
+  g.beginPath(); g.roundRect(x+3,o.hitY-19,w-6,38,8); g.fill(); g.stroke(); g.restore();
 }
 const FLICK_COL='#6cbf8c', PATH_COL='#8fd3aa';   // 低饱和的绿
 function drawFlick(n,z,o){
@@ -1070,6 +1239,7 @@ function drawNote(lane,z,o,col){
    结算
    ===================================================================== */
 function finish(){
+  if(G?.tutorial){ finishTutorial(); return; }
   $('skipEnd').hidden=true;
   G.state='result'; stopSong(); try{wake?.release()}catch(e){}
   const c=G.counts, total=Math.max(1,c[4]+c[3]+c[2]+c[1]+c[0]);
@@ -1090,19 +1260,17 @@ function finish(){
 $('rsRe').onclick=()=>{ click(); fxOn=false; startGame(G.song,G.lv,G.buf,G.meta); };
 $('rsSel').onclick=()=>{ click('back'); shutter('',()=>{ show('select'); info(); place(true); }); };
 
-/* 面板底纹：星星和音符（原版面板的图案，用矢量重画） */
+/* 面板底纹：右下角一圈圈细唱片纹（呼应「唱片滚过」转场），加一道很淡的斜光 */
 (function(){
-  const star=(cx,cy,r,rot)=>{ let d=''; for(let i=0;i<10;i++){ const a=rot+i*Math.PI/5-Math.PI/2, rr=i%2?r*.45:r; d+=(i?'L':'M')+(cx+Math.cos(a)*rr).toFixed(1)+' '+(cy+Math.sin(a)*rr).toFixed(1); } return `<path d="${d}Z"/>`; };
-  const note=(x,y,s,rot)=>`<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><ellipse cx="0" cy="40" rx="13" ry="9" transform="rotate(-20 0 40)"/><path d="M11 37V-10l22 9v10l-14-6v24"/></g>`;
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="#ffffff" stroke-opacity=".16" stroke-width="4" stroke-linejoin="round">`+
-    star(520,90,95,.2)+star(230,175,48,.5)+star(310,190,40,-.3)+star(170,290,34,.1)+star(600,260,26,.7)+star(420,300,20,0)+
-    `</g><g fill="#ffffff" fill-opacity=".1">`+note(60,120,1.6,-15)+note(110,230,1.1,10)+note(560,190,.9,-8)+note(380,40,.7,12)+`</g>`+
-    `<path d="M-40 260 Q 200 120 700 40" stroke="#ffffff" stroke-opacity=".07" stroke-width="60" fill="none"/></svg>`;
+  let rings=''; for(let r=70;r<=420;r+=16) rings+=`<circle cx="600" cy="330" r="${r}" stroke-opacity="${(r%48===22?.11:.06)}"/>`;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="#ffffff" stroke-width="1.2">${rings}</g>`+
+    `<circle cx="600" cy="330" r="40" fill="#ffffff" fill-opacity=".05"/>`+
+    `<path d="M-40 260 Q 200 120 700 40" stroke="#ffffff" stroke-opacity=".06" stroke-width="60" fill="none"/></svg>`;
   document.documentElement.style.setProperty('--pattern',`url("data:image/svg+xml,${encodeURIComponent(svg)}")`);
 })();
 /* 启动：等字体到位再显示，避免字体闪变 */
 resizeAll(); requestAnimationFrame(fxLoop); loadMeta();
-try{ ['20px "ZCOOL KuaiLe"','700 20px Fredoka','600 20px Fredoka'].forEach(f=>document.fonts.load(f,'节奏大师选择歌曲难度简单普通困难暂停继续重来选歌成绩总评本次得分最高分再来一次返回点击开始连击准确率新纪录导入自己的歌延迟音乐加载中Cino')); }catch(e){}
+try{ ['20px "ZCOOL KuaiLe"','700 20px Fredoka','600 20px Fredoka'].forEach(f=>document.fonts.load(f,'节奏大师选择歌曲难度简单普通困难暂停继续重来选歌成绩总评本次得分最高分再来一次返回点击开始连击准确率新纪录延迟音乐加载中Cino')); }catch(e){}
 </script>
 </body>
 </html>
