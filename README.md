@@ -4,6 +4,7 @@
 
 - 10 首歌，每首都有 **简单 / 普通 / 困难** 三份谱面
 - 音符：点按、长按、滑键（按下后往箭头方向滑）、折线长按（按住跟着线换车道）
+- 手机上始终横屏：竖着拿时整个游戏会自动转成横屏显示；安卓浏览器还会尝试全屏并锁定横屏
 - 纯静态网页（HTML + JS + Canvas），没有任何构建步骤和依赖
 
 ## 目录
@@ -20,7 +21,7 @@ tools/auto_chart.py 自动打谱脚本（Python + librosa）
 游戏要用 fetch 读取歌曲和谱面，不能直接双击打开 index.html，需要起一个本地服务器：
 
 ```bash
-cd cino-rhythm
+cd cino-beat
 python3 -m http.server 8000
 # 浏览器打开 http://localhost:8000
 ```
