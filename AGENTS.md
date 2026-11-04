@@ -14,6 +14,7 @@
 ```
 cino-beat/
   index.html              游戏本体（全部代码）
+  sw.js                   离线缓存（Service Worker）：音频/封面缓存优先、页面/谱面网络优先；替换同名媒体文件必须把 sw.js 里 VERSION 加一
   img/bump.png            音符底图（目前只用于部分绘制）
   songs/                  10 首歌：<slug>.mp3、<slug>.jpg（600×600 封面）、<slug>_easy/_normal/_hard.txt（三档谱面）
   tools/auto_chart.py     自动打谱脚本（Python + librosa）
@@ -113,7 +114,7 @@ python -m http.server 8000     # 不能双击打开，fetch 读歌和谱需要 h
 ## 8. 待办 / 下一步
 
 1. 用户试玩后按反馈微调谱面或手感（问清是哪首歌、哪一档、第几秒）。
-2. **上线到用户自己的服务器**（还没做，先和用户确认方案再动手）：
+2. **上线到用户自己的服务器**（静态站已上线 2026-11-05：`https://api.cino1018.com/cino/`，Caddy 静态托管、与老游戏接口隔离，GitHub Pages 保留作备份；剩 /api/rhythm 接口与分数后端、字体自托管未做）：
    - 服务器：腾讯云轻量 香港 2核2G Ubuntu 24.04，域名 `https://api.cino1018.com`（Caddy 反代，自动 HTTPS），一个纯 Node 标准库服务 `/opt/gugu-server/server.js`（systemd 管理）。
    - 上面**正在正式运营**两个游戏，**绝对不能改动或删除它们的接口和数据**：
      - 菇菇跳一跳：`/api/health`、`/api/board`、`/api/rank`、`/api/rpc/*`、`/api/avatar/*`、`/api/upload/*`、`/api/realtime/*`（数据在 Supabase）
@@ -121,6 +122,7 @@ python -m http.server 8000     # 不能双击打开，fetch 读歌和谱需要 h
    - 计划：静态页面放 `https://api.cino1018.com/<新游戏名>/`；新接口放 `/api/rhythm/...`（player / score / board / me / health），数据用**独立** SQLite（如 `/opt/gugu-server/data/rhythm/rhythm.db`）；新代码写成独立文件，`server.js` 只在请求入口加几行分流；改前备份 `server.js`；保持纯 Node 标准库、不加依赖。
    - 改完重启后**必须验证**：`/api/health` 正常、老游戏的 `/api/board` 和 `/api/stats` 都还能正常返回，才算交付。
    - 服务器是密钥登录 root，**需要 SSH 方式时直接问用户，不要猜密码或暴力尝试**。
+   - 加载优化（已做）：选歌停留 0.5 秒预加载居中歌曲（`getBuffer` 流式下载带进度，加载文案显示百分比）；`sw.js` 缓存音频/封面实现重复游玩秒开。换同名 mp3/jpg 内容时必须同步把 `sw.js` 的 `VERSION` 加一。
    - 上服务器时顺便把字体改成自托管（Google Fonts 在国内打不开），按用到的字裁剪。
    - 前端接口统一指向 `https://api.cino1018.com`，不要用任何旧的 Cloudflare 地址。
 3. 「我不知道」如果用户给了完整版音频，重新打谱。

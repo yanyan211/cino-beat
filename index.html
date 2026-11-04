@@ -546,7 +546,7 @@ function makeCover(name,i){
 }
 
 /* ---------- 歌曲载入 ---------- */
-const songs=SONGS.map(s=>({...s,meta:null,buf:null,cover:s.cover||null,local:false}));
+const songs=SONGS.map(s=>({...s,meta:null,buf:null,dlPct:0,cover:s.cover||null,local:false}));
 async function loadMeta(){
   try{ await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))]); }catch(e){}
   await Promise.all(songs.map(async(s,i)=>{
@@ -559,9 +559,21 @@ async function loadMeta(){
 function getBuffer(s){
   if(s.buf) return Promise.resolve(s.buf);
   if(!s.bufP) s.bufP=(async()=>{
-    const ab = s.local? s.audioData : await fetch(s.audio).then(r=>{if(!r.ok)throw new Error('音乐文件没找到');return r.arrayBuffer()});
+    let ab;
+    if(s.local){ ab=s.audioData; s.dlPct=1; }
+    else{
+      const r=await fetch(s.audio); if(!r.ok) throw new Error('音乐文件没找到');
+      const total=+r.headers.get('Content-Length')||0;
+      if(r.body&&r.body.getReader){ // 流式读：边下边记进度（s.dlPct 0~1），加载文案显示百分比
+        const rd=r.body.getReader(), chunks=[]; let got=0;
+        for(;;){ const {done,value}=await rd.read(); if(done) break; chunks.push(value); got+=value.length; s.dlPct=total?got/total:0; }
+        const u8=new Uint8Array(got); let off=0; for(const c of chunks){ u8.set(c,off); off+=c.length; }
+        ab=u8.buffer;
+      } else ab=await r.arrayBuffer();
+      s.dlPct=1;
+    }
     return s.buf=await ac().decodeAudioData(ab.slice(0));
-  })().catch(e=>{ s.bufP=null; throw e; });
+  })().catch(e=>{ s.bufP=null; s.dlPct=0; throw e; });
   return s.bufP;
 }
 const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -689,7 +701,7 @@ function shutter(text,mid){
     veil.className=''; veil.innerHTML=''; veil.style.pointerEvents='none'; swapping=false;
   });
 }
-function show(id){ ['title','select','result'].forEach(k=>$(k).classList.toggle('off',k!==id)); }
+function show(id){ ['title','select','result'].forEach(k=>$(k).classList.toggle('off',k!==id)); if(id==='select') schedulePrefetch(); }
 const isOn=id=>!$(id).classList.contains('off');
 
 /* =====================================================================
@@ -730,7 +742,10 @@ function info(){
   $('selMeta').textContent=`${fmt(m.len)} · ${m.notes.length} 个音符 · 长按 ${holds} · 最佳 ${best.toLocaleString()}`;
 }
 const key=s=>s.local?'local-'+s.meta.name:s.chart;
-function go(i){ i=Math.max(0,Math.min(cards.length-1,i)); if(i!==Math.round(target)) click('tap'); target=i; sel=i; store.set('sel',Math.min(i,songs.length-1)); animate(); }
+function go(i){ i=Math.max(0,Math.min(cards.length-1,i)); if(i!==Math.round(target)) click('tap'); target=i; sel=i; store.set('sel',Math.min(i,songs.length-1)); animate(); schedulePrefetch(); }
+/* 选歌停留半秒就后台预加载居中这首的音频（下载+解码），点难度时多半已就绪 */
+let pfTimer=0;
+function schedulePrefetch(){ clearTimeout(pfTimer); pfTimer=setTimeout(()=>{ const s=songs[Math.round(target)]; if(s&&!s.local&&!s.buf) getBuffer(s).catch(()=>{}); },500); }
 function animate(){ cancelAnimationFrame(anim); const step=()=>{ pos+=(target-pos)*.2; if(Math.abs(target-pos)<.002) pos=target; place(); if(pos!==target) anim=requestAnimationFrame(step); }; anim=requestAnimationFrame(step); }
 $('prev').onclick=()=>go(Math.round(target)-1); $('next').onclick=()=>go(Math.round(target)+1);
 $('selBack').onclick=()=>{ click('back'); shutter('',()=>{ show('title'); }); };
@@ -778,8 +793,10 @@ async function pickLevel(l){
   if(picking||swapping) return;
   const song=cur, token=++pickToken; lockLevels(true);
   tryLandscape(); click(); $('lvLoading').textContent='音乐加载中…';
-  const bail=msg=>{ if(token!==pickToken) return; lockLevels(false); $('lvLoading').textContent=msg; };
+  const lvTimer=setInterval(()=>{ if(token!==pickToken){ clearInterval(lvTimer); return; } const p=Math.round((song.dlPct||0)*100); $('lvLoading').textContent=song.buf?'音乐加载中…':(p>=100?'音乐解码中…':`音乐加载中 ${p}%`); },120);
+  const bail=msg=>{ clearInterval(lvTimer); if(token!==pickToken) return; lockLevels(false); $('lvLoading').textContent=msg; };
   let buf; try{ buf=await getBuffer(song); }catch(e){ bail('音乐加载失败：'+(e.message||'请换一个文件')); return; }
+  clearInterval(lvTimer);
   let meta=song.meta;
   if(song.charts){ try{ song.lvMeta=song.lvMeta||{}; meta=song.lvMeta[l]||(song.lvMeta[l]=parseChart(await fetch(song.charts[l]).then(r=>{if(!r.ok)throw 0;return r.text()}))); }catch(e){ bail('谱面加载失败'); return; } }
   if(token!==pickToken) return;
@@ -803,8 +820,10 @@ async function beginTutorial(){
   tryLandscape(); ac().resume();
   const token=++tutorialToken; tutorialLoading=true; $('tutorialFrame').classList.remove('done');
   $('tutorialDialog').hidden=true; tutorialBusy(true);
+  const tutSong=songs.find(s=>s.audio==='songs/wobuzhidao.mp3');
+  const tutTimer=setInterval(()=>{ if(!tutorialLoading){ clearInterval(tutTimer); return; } const p=Math.round((tutSong.dlPct||0)*100); $('touchLabel').textContent=p>=100?'教学解码中…':`教学加载中 ${p}%`; },120);
   try{
-    const song=songs.find(s=>s.audio==='songs/wobuzhidao.mp3');
+    const song=tutSong;
     const [buf,text]=await Promise.all([getBuffer(song),fetch('songs/wobuzhidao_tutorial.txt').then(r=>{if(!r.ok) throw Error('chart');return r.text();})]);
     if(token!==tutorialToken) return;
     const meta=parseChart(text);
@@ -1270,6 +1289,9 @@ $('rsSel').onclick=()=>{ click('back'); shutter('',()=>{ show('select'); info();
 })();
 /* 启动：等字体到位再显示，避免字体闪变 */
 resizeAll(); requestAnimationFrame(fxLoop); loadMeta();
+/* 离线缓存（Service Worker）：音频/封面下过一次就存本地、再玩秒开；页面/谱面仍优先网络保证更新。仅 https/本机注册 */
+if('serviceWorker' in navigator&&(location.protocol==='https:'||/^(localhost|127\.)/.test(location.hostname)))
+  addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 try{ ['20px "ZCOOL KuaiLe"','700 20px Fredoka','600 20px Fredoka'].forEach(f=>document.fonts.load(f,'节奏大师选择歌曲难度简单普通困难暂停继续重来选歌成绩总评本次得分最高分再来一次返回点击开始连击准确率新纪录延迟音乐加载中Cino')); }catch(e){}
 </script>
 </body>
