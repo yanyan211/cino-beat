@@ -116,7 +116,7 @@ python -m http.server 8000     # 不能双击打开，fetch 读歌和谱需要 h
 1. 用户试玩后按反馈微调谱面或手感（问清是哪首歌、哪一档、第几秒）。
 2. **上线到用户自己的服务器**（静态站已上线 2026-11-05：`https://api.cino1018.com/cino/`，Caddy 静态托管、与老游戏接口隔离，GitHub Pages 保留作备份；**排行榜与分数后端已上线 2026-11-05**，剩字体自托管未做）：
    - **排行榜（已上线）**：独立模块 `/opt/gugu-server/rhythm.js`（server.js 入口仅加分流、备份 `server.js.bak-20261105-pre-rhythm`），数据独立 SQLite `/opt/gugu-server/data/rhythm/rhythm.db`（players + scores 两表）。接口：`POST /api/rhythm/player`（建身份，返回 id+secret）、`POST /api/rhythm/score`、`POST /api/rhythm/name`、`GET /api/rhythm/board?song=<slug>&lv=0|1|2`（前 10 + 我的名次）、`GET /api/rhythm/health`。交分校验：counts 五档之和须等于谱面音符数、acc 按 counts 重算对账、分数须落在 counts 推出的上下界内（长按 tick 按谱面实算）。前端：身份存 localStorage `rr2-rhythm-player`、交分失败存 `rr2-rhythm-pending` 下次打开难度弹窗自动补交；本地导入歌曲不参与排行榜。
-   - **难度弹窗（已改版 2026-11-05）**：宽框三栏——左栏封面+歌名+时长/音符数+延迟滑块+玩法小贴士，中栏三档难度按钮（含本地最高分），右栏排行榜（难度选项卡切换、自己一行高亮、底部我的名次+改名）。`#lvFrame` 设了 `container-type:inline-size`，框内 cqw 按框宽计、矮屏自动等比缩，改尺寸时注意这一点。
+   - **难度弹窗（已改版 2026-11-05）**：宽框三栏——左栏封面+歌名+时长/音符数+延迟滑块+玩法小贴士，中栏三档难度按钮（含本地最高分），右栏排行榜（难度选项卡切换、自己一行高亮、底部我的名次+改名）。`#lvFrame` 设了 `container-type:inline-size`，框内 cqw 按框宽计、矮屏自动等比缩，改尺寸时注意这一点。中栏是网格等高三行（按钮在行内伸缩、不会互相穿），封面用圆角裁切容器 `.lvCoverW`（图轻微放大裁掉自带白/灰边角）；flex 子元素慎用 `overflow:hidden`（会被压成 0 高/0 宽，歌名与榜单名字都中过招，须 `flex:none`/给 min-width）。
    - 服务器：腾讯云轻量 香港 2核2G Ubuntu 24.04，域名 `https://api.cino1018.com`（Caddy 反代，自动 HTTPS），一个纯 Node 标准库服务 `/opt/gugu-server/server.js`（systemd 管理）。
    - 上面**正在正式运营**两个游戏，**绝对不能改动或删除它们的接口和数据**：
      - 菇菇跳一跳：`/api/health`、`/api/board`、`/api/rank`、`/api/rpc/*`、`/api/avatar/*`、`/api/upload/*`、`/api/realtime/*`（数据在 Supabase）

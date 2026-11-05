@@ -104,26 +104,26 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 
 /* ---------- 难度 ---------- */
 .dim{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;background:rgba(18,40,26,.6)}
-#lvFrame{container-type:inline-size;width:min(calc(175*var(--vw)),calc(185*var(--vh)),1020px);aspect-ratio:2.02;animation:zoomIn .3s cubic-bezier(.2,1.3,.4,1) both}
+#lvFrame{container-type:inline-size;width:min(calc(180*var(--vw)),calc(188*var(--vh)),1040px);aspect-ratio:1.96;animation:zoomIn .3s cubic-bezier(.2,1.3,.4,1) both}
 #lvFrame>.panel{inset:0;border-radius:4cqw;border-width:.8cqw;box-shadow:0 0 0 .6cqw var(--forest),0 3cqw 6cqw rgba(0,0,0,.35)}
 #lvFrame .hd{height:9.5cqw;font-size:4.4cqw;border-bottom-width:.8cqw}
 #lvFrame .hd span{font-size:4.6cqw}
 @keyframes zoomIn{from{opacity:0;transform:scale(.8)}}
 #lvBody{position:absolute;left:3.5%;right:3.5%;top:11.5cqw;bottom:3.5%;display:flex;flex-direction:row;gap:3cqw;align-items:stretch}
 .lvCol{display:flex;flex-direction:column;min-width:0}
-.lvLeft{width:18.5cqw;flex:none;overflow:hidden}
+.lvLeft{width:21cqw;flex:none;overflow:hidden}
 .lvLeft>*{flex:none}
-.lvLeft .tips{flex:0 1 auto;min-height:0;overflow:hidden}
-#lvCover{width:100%;aspect-ratio:1;object-fit:cover;border-radius:2cqw;box-shadow:0 0 0 .5cqw rgba(247,250,246,.95),0 1cqw 3cqw rgba(0,0,0,.3)}
-#lvSongName{font-size:2.95cqw;line-height:1.15;margin-top:1.2cqw;--sw:.1em;max-height:2.3em;overflow:hidden}
-#lvSongMeta{font-size:2cqw;font-weight:400;color:#eaf6e6;margin-top:.5cqw}
-.lvMid{width:31cqw;flex:none;gap:1.5cqw;justify-content:center}
+.lvCoverW{width:100%;aspect-ratio:1;border-radius:2.4cqw;overflow:hidden;box-shadow:0 0 0 .5cqw rgba(247,250,246,.95),0 1cqw 3cqw rgba(0,0,0,.3)}
+#lvCover{width:100%;height:100%;display:block;object-fit:cover;transform:scale(1.05)}
+#lvSongName{font-size:3.05cqw;line-height:1.2;margin-top:1.7cqw;--sw:.1em;max-height:2.3em;overflow:hidden}
+#lvSongMeta{font-size:2.05cqw;font-weight:400;color:#eaf6e6;margin-top:.7cqw}
+.lvMid{width:30cqw;flex:none;display:grid;grid-template-rows:repeat(3,minmax(0,1fr)) auto;gap:1.4cqw}
 .lvLeft .calib{margin-top:auto}
 .lvBoard{flex:1;background:rgba(10,40,20,.16);border-radius:2cqw;padding:1.8cqw 2cqw}
 .bdHead{display:flex;align-items:center;justify-content:space-between;gap:2cqw}
 .bdTitle{font-size:3cqw;--sw:.12em;white-space:nowrap;flex:none}
 .bdTabs{display:flex;gap:.4cqw;background:rgba(10,40,20,.3);border-radius:99px;padding:.4cqw}
-.bdTabs button{appearance:none;border:0;background:transparent;color:#eaf6e6;font-family:var(--f-cn);font-size:1.95cqw;padding:.45cqw 1.7cqw .45cqw 1.85cqw;border-radius:99px;cursor:pointer}
+.bdTabs button{white-space:nowrap;appearance:none;border:0;background:transparent;color:#eaf6e6;font-family:var(--f-cn);font-size:1.95cqw;padding:.45cqw 1.7cqw .45cqw 1.85cqw;border-radius:99px;cursor:pointer}
 .bdTabs button.on{background:#fff;color:var(--forest)}
 #bdList{flex:1;overflow-y:auto;margin-top:1.4cqw;display:flex;flex-direction:column;gap:.55cqw;min-height:0}
 .bdRow{display:flex;align-items:center;gap:1.4cqw;background:rgba(10,40,20,.22);border-radius:1cqw;padding:.55cqw 1.2cqw;font-size:2.05cqw;color:#fff}
@@ -133,13 +133,14 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .bdScore{font-family:var(--f-en);font-weight:600;font-variant-numeric:tabular-nums}
 .bdMsg{text-align:center;color:#eaf6e6;font-size:2.05cqw;font-weight:400;padding:2.5cqw 0}
 #bdMe{display:flex;align-items:center;gap:1.4cqw;margin-top:1.2cqw;background:rgba(247,250,246,.94);color:var(--forest);border-radius:1cqw;padding:.7cqw 1.4cqw;font-size:2cqw;font-weight:400}
-#bdMeName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
-.bdBtn{appearance:none;cursor:pointer;border:.12em solid var(--forest);background:linear-gradient(#fff,#e6f3df);color:var(--forest);border-radius:.6em;font-family:var(--f-cn);font-size:1.95cqw;padding:.35em 1em .35em 1.1em;box-shadow:0 .14em 0 var(--forest)}
+#bdMeName{flex:1;min-width:4.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+#bdMeRank{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}
+.bdBtn{white-space:nowrap;appearance:none;cursor:pointer;border:.12em solid var(--forest);background:linear-gradient(#fff,#e6f3df);color:var(--forest);border-radius:.6em;font-family:var(--f-cn);font-size:1.95cqw;padding:.35em 1em .35em 1.1em;box-shadow:0 .14em 0 var(--forest)}
 .bdBtn:active{transform:translateY(.1em);box-shadow:0 .04em 0 var(--forest)}
 #bdEdit{display:flex;gap:1.2cqw;margin-top:1.2cqw;align-items:center}
 #bdEdit[hidden]{display:none}
 #bdNameInput{flex:1;min-width:0;font-family:var(--f-cn);font-size:2.1cqw;padding:.55cqw 1.2cqw;border-radius:1cqw;border:.3cqw solid var(--forest);background:#fff;color:var(--forest);outline:none}
-.lvRow{display:flex;flex-direction:column;gap:.4cqw;width:100%}
+.lvRow{display:flex;flex-direction:column;gap:.4cqw;width:100%;min-height:0}
 .lvBest{font-family:var(--f-en);font-weight:600;font-size:2.3cqw;color:#fff;width:auto;text-align:right;padding-right:1cqw;font-variant-numeric:tabular-nums;--sw:.12em}
 .calib{display:flex;align-items:center;gap:1.6cqw;font-size:2.4cqw;font-weight:400;color:#fff;width:100%}
 .calib input{flex:1;min-width:0;accent-color:var(--mint)}
@@ -148,7 +149,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #lvClose svg{width:50%;height:50%}
 #lvBody .tips{font-size:1.55cqw;line-height:1.35;color:#eaf6e6;text-align:left;margin-top:1.2cqw}
 #lvBody .tips b{white-space:nowrap;font-weight:400;color:#fff;background:#3fcf7a;border-radius:.4em;padding:0 .35em;margin-right:.2em}
-#lvLoading{font-size:2.6cqw;font-weight:400;color:#fff;min-height:3cqw;text-align:center}
+#lvLoading{font-size:2.4cqw;font-weight:400;color:#fff;min-height:0;line-height:1.25;text-align:center}
 
 /* ---------- 按钮：统一成难度按钮那种白底立体胶囊（深绿细边 + 底部厚边 + 顶部柔光），字不描边 ---------- */
 .gbtn{appearance:none;cursor:pointer;font-family:var(--f-cn);font-weight:400;letter-spacing:.16em;line-height:1;
@@ -171,7 +172,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .gbtn.lv i svg{width:1.05em;height:1.05em}
 .gbtn.easy{color:#3c9c5c}.gbtn.normal.lv{color:#21928a}.gbtn.hard{color:#1b4a2e}
 .gbtn svg{width:.8em;height:.8em;flex:none}
-.lvMid .gbtn{width:100%;font-size:4.3cqw}
+.lvMid .gbtn{width:100%;flex:1;min-height:0;font-size:4.1cqw}
 #pzBody .gbtn{width:26cqw;font-size:4.4cqw;padding-inline:0 0;padding-left:.16em}
 .rsBtns .gbtn{font-size:clamp(16px,calc(2.3*var(--vw)),22px);min-width:min(180px,calc(40*var(--vw)))}
 #selBack{font-size:15px;padding:.55em 1.2em .55em 1.1em;letter-spacing:.1em}
@@ -350,11 +351,10 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
         <button id="lvClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         <div id="lvBody">
           <div class="lvCol lvLeft">
-            <img id="lvCover" alt="">
+            <div class="lvCoverW"><img id="lvCover" alt=""></div>
             <div id="lvSongName" class="ol">—</div>
             <div id="lvSongMeta">—</div>
             <div class="calib"><label for="offset">延迟</label><input type="range" id="offset" min="-200" max="200" step="5" value="0"><output id="offsetVal">0ms</output></div>
-            <div class="tips"><b>绿色箭头</b>按下后顺箭头滑<br><b>绿色折线</b>按住跟线换车道</div>
           </div>
           <div class="lvCol lvMid">
             <div class="lvRow"><button class="gbtn lv easy" data-lv="0"><span>简单</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></i></button><span class="lvBest ol" id="best0">0</span></div>
@@ -923,7 +923,7 @@ async function loadBoard(){
     if(!b.top.length) list.append(bdMsgEl('暂无成绩，来打第一名吧'));
     b.top.forEach((row, i)=> list.append(bdRowEl(i+1, row.name, row.score, !!(me && row.pid === me.id))));
     $('bdMeName').textContent = me ? me.name : '';
-    $('bdMeRank').textContent = b.me ? `第 ${b.me.rank} 名 · ${b.me.score.toLocaleString()} 分` : '暂无成绩，打一局上榜';
+    $('bdMeRank').textContent = b.me ? `第 ${b.me.rank} 名 · ${b.me.score.toLocaleString()} 分` : '暂无成绩';
   }catch(e){
     if(seq !== bdSeq) return;
     list.replaceChildren(bdMsgEl('排行榜加载失败，重开试试'));
