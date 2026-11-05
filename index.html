@@ -252,7 +252,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #rsNew{font-size:1.8cqw;font-weight:400;color:#fff;margin-top:.4cqw;letter-spacing:.12em}
 #rsUp{display:flex;align-items:center;gap:10px;background:rgba(20,40,26,.85);color:#fff;font-size:14px;padding:7px 14px;border-radius:99px}
 #rsUp[hidden]{display:none}
-#rsDelta{font-size:1.9cqw;color:#fff;opacity:.92;margin-top:.5cqw;letter-spacing:.04em;min-height:1.2em;white-space:nowrap}
+#rsDelta{font-size:1.85cqw;color:#fff;background:rgba(10,40,20,.32);padding:.35cqw 1.3cqw;border-radius:99px;margin-top:.7cqw;letter-spacing:.04em;white-space:nowrap}
+#rsDelta:empty{display:none}
 .setFrame,.calFrame{width:min(calc(150*var(--vw)),calc(155*var(--vh)),860px);animation:zoomIn .25s cubic-bezier(.2,1.3,.4,1) both}
 .setFrame>.panel,.calFrame>.panel,.hiFrame>.panel{inset:0;border-radius:4cqw;border-width:.8cqw;box-shadow:0 0 0 .6cqw var(--forest),0 3cqw 6cqw rgba(0,0,0,.35)}
 .setFrame .hd,.calFrame .hd{height:7.5cqw;font-size:3.4cqw;border-bottom-width:.6cqw}
@@ -632,7 +633,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
         </div>
       </div>
       <div class="panel plain pS"><div class="hd"><span>本次得分</span></div><div class="rsNum"><b id="rsScore">0</b></div></div>
-      <div class="panel plain pB"><div class="hd"><span>最高分</span></div><div class="rsNum"><b id="rsBest">0</b><span id="rsNew" hidden>新纪录！</span></div><div id="rsDelta"></div></div>
+      <div class="panel plain pB"><div class="hd"><span>最高分</span></div><div class="rsNum"><b id="rsBest">0</b><span id="rsNew" hidden>新纪录！</span><div id="rsDelta"></div></div></div>
     </div>
     <div id="rsUp" hidden><span id="rsUpTxt">成绩暂未上传</span><button class="segChip" id="rsUpBtn">重试上传</button></div>
     <div class="rsBtns">
