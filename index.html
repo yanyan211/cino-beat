@@ -252,6 +252,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #rsNew{font-size:1.8cqw;font-weight:400;color:#fff;margin-top:.4cqw;letter-spacing:.12em}
 #rsUp{display:flex;align-items:center;gap:10px;background:rgba(20,40,26,.85);color:#fff;font-size:14px;padding:7px 14px;border-radius:99px}
 #rsUp[hidden]{display:none}
+#rsUpBtn:disabled{opacity:.45}
 #rsDelta{font-size:1.85cqw;color:#fff;background:rgba(10,40,20,.32);padding:.35cqw 1.3cqw;border-radius:99px;margin-top:.7cqw;letter-spacing:.04em;white-space:nowrap}
 #rsDelta:empty{display:none}
 .setFrame,.calFrame{width:min(calc(150*var(--vw)),calc(155*var(--vh)),860px);animation:zoomIn .25s cubic-bezier(.2,1.3,.4,1) both}
@@ -823,22 +824,35 @@ async function loadMeta(){
   }));
   buildFlow();
 }
+/* 歌曲下载：流式读带进度；连续 6 秒收不到任何数据判定为卡死，自动从头重试（最多 3 次）——
+   拥堵时连接经常半路冻住，没有这个看门狗就会永远停在某个百分比上 */
+async function fetchAudio(s){
+  let lastErr=null;
+  for(let att=0; att<3; att++){
+    try{
+      const r=await fetch(s.audio); if(!r.ok) throw new Error('音乐文件没找到');
+      const total=+r.headers.get('Content-Length')||0;
+      if(r.body&&r.body.getReader){
+        const rd=r.body.getReader(), chunks=[]; let got=0;
+        for(;;){
+          let timer=null;
+          const res=await Promise.race([ rd.read(), new Promise((_,rej)=>{ timer=setTimeout(()=>rej(new Error('下载卡住')),6000); }) ]).finally(()=>clearTimeout(timer));
+          const {done,value}=res; if(done) break; chunks.push(value); got+=value.length; s.dlPct=total?got/total:0;
+        }
+        const u8=new Uint8Array(got); let off=0; for(const c of chunks){ u8.set(c,off); off+=c.length; }
+        return u8.buffer;
+      }
+      return await r.arrayBuffer();
+    }catch(e){ lastErr=e; s.dlPct=0; if(att<2) await new Promise(rr=>setTimeout(rr,600)); }
+  }
+  throw lastErr||new Error('音乐加载失败');
+}
 function getBuffer(s){
   if(s.buf) return Promise.resolve(s.buf);
   if(!s.bufP) s.bufP=(async()=>{
     let ab;
     if(s.local){ ab=s.audioData; s.dlPct=1; }
-    else{
-      const r=await fetch(s.audio); if(!r.ok) throw new Error('音乐文件没找到');
-      const total=+r.headers.get('Content-Length')||0;
-      if(r.body&&r.body.getReader){ // 流式读：边下边记进度（s.dlPct 0~1），加载文案显示百分比
-        const rd=r.body.getReader(), chunks=[]; let got=0;
-        for(;;){ const {done,value}=await rd.read(); if(done) break; chunks.push(value); got+=value.length; s.dlPct=total?got/total:0; }
-        const u8=new Uint8Array(got); let off=0; for(const c of chunks){ u8.set(c,off); off+=c.length; }
-        ab=u8.buffer;
-      } else ab=await r.arrayBuffer();
-      s.dlPct=1;
-    }
+    else{ ab=await fetchAudio(s); s.dlPct=1; }
     return s.buf=await ac().decodeAudioData(ab.slice(0));
   })().catch(e=>{ s.bufP=null; s.dlPct=0; throw e; });
   return s.bufP;
@@ -1726,7 +1740,7 @@ function finishResume(){ if(!G||G.state!=='countdown') return; $('pause').hidden
   G.resumeUntil=t+0.7;
   G.state='play'; last=0; raf=requestAnimationFrame(loop); }
 function leaveGame(){ cancelCountdown(); $('tutorialCoach').hidden=true; $('tutorialSkip').hidden=true; $('tutorialDialog').hidden=true; clearGameInput(); $('skipEnd').hidden=true; stopSong(); ac().resume(); cancelAnimationFrame(raf); gc.hidden=true; $('hud').hidden=true; $('pause').hidden=true; try{wake?.release()}catch(e){} fxOn=true; requestAnimationFrame(fxLoop); }
-$('pauseBtn').onclick=pause; $('skipEnd').onclick=()=>{ click(); if(G&&G.state==='play') finish(); }; $('rsUpBtn').onclick=()=>{ if(!lastPlay) return; submitScore(lastPlay).then(r=>{ if(r===true) $('rsUp').hidden=true; }); };
+$('pauseBtn').onclick=pause; $('skipEnd').onclick=()=>{ click(); if(G&&G.state==='play') finish(); }; $('rsUpBtn').onclick=()=>{ if(!lastPlay) return; const b=$('rsUpBtn'); if(b.disabled) return; b.disabled=true; $('rsUpTxt').textContent='上传中…'; submitScore(lastPlay).then(r=>{ b.disabled=false; if(r===true) $('rsUp').hidden=true; else $('rsUpTxt').textContent = r==='perm' ? '成绩未上传（校验未通过）' : '成绩暂未上传，再试一次'; }); };
 $('pzGo').onclick=resume;
 $('pzRe').onclick=()=>{ click(); const s=G.song,l=G.lv,b=G.buf,m=G.meta,t=!!G.tutorial,p=G.practice?G.prac:null; leaveGame(); fxOn=false; startGame(s,l,b,m,t,p); };
 $('pzSel').onclick=()=>{ if(G?.tutorial){ exitTutorial(false); return; } click('back'); shutter('',()=>{ leaveGame(); G=null; show('select'); place(true); }); };
