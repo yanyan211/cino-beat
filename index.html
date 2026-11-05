@@ -1167,7 +1167,7 @@ async function pickLevel(l,prac=null){
 
 /* ---------- 排行榜（香港服务器 /api/rhythm，玩家身份存本地 rr2-rhythm-player） ---------- */
 const API_BASE = location.hostname==='api.cino1018.com' ? '' : 'https://api.cino1018.com';
-const SCORE_VER = 1;   // 成绩版本：谱面/计分规则变化时与服务端 rhythm.js 的 SCORE_VER 同步 +1，旧成绩作历史保留、不混排
+const SCORE_VER = 2;   // 成绩版本：谱面/计分规则变化时与服务端 rhythm.js 的 SCORE_VER 同步 +1，旧成绩作历史保留、不混排
 const slugOf = s => (s && !s.local && s.audio) ? (s.audio.split('/').pop()||'').replace(/\.mp3$/,'') : null;
 let me = store.get('rhythm-player', null);
 let bdLv = 1, bdSeq = 0, flushing = false;
