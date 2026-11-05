@@ -706,19 +706,13 @@ function toApp(cx,cy){
   return ROT?{x:cy-r.top,y:r.right-cx}:{x:cx-r.left,y:cy-r.top};
 }
 let landscapePending=false;
-/* iPad（含伪装成 Mac 的 iPadOS）：全屏模式下只要有键盘输入，iOS 就弹系统警告
-   「你似乎正在全屏幕模式下键入」直接打断对局，网站无法关闭它。故 iPad 跳过全屏，
-   横屏靠设备方向与 applyOrient 的 CSS 旋转兜底；安卓/桌面不受影响，照常全屏。 */
-const isIPadLike=()=>/iPad/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+/* 不主动请求全屏（2026-11-05 用户拍板，全平台）：iPad 全屏下键盘输入会触发 iOS
+   「全屏幕模式下键入」系统警告、直接打断对局，且网站无法关闭它；全屏的沉浸收益
+   不值得这个风险。横屏一律靠设备方向与 applyOrient 的 CSS 旋转保证。 */
 async function tryLandscape(){
   if(!mobileDevice()||landscapePending) return;
   landscapePending=true;
   try{
-    const el=document.documentElement, fs=el.requestFullscreen||el.webkitRequestFullscreen;
-    if(fs&&!isIPadLike()&&!document.fullscreenElement&&!document.webkitFullscreenElement){
-      try{ await fs.call(el); }catch(e){}
-    }
-    // iPhone 不支持时仍由 applyOrient 保证页面横排；失败后下次明确点击可重试。
     try{ await screen.orientation?.lock?.('landscape'); }catch(e){}
   }finally{ landscapePending=false; refreshViewport(); }
 }
@@ -1722,13 +1716,17 @@ gc.addEventListener('pointermove',e=>{
 });
 const pup=e=>{ const l=ptr.get(e.pointerId); if(l==null) return; ptr.delete(e.pointerId); ptrInfo.delete(e.pointerId); if(![...ptr.values()].includes(l)) release(l); };
 gc.addEventListener('pointerup',pup);
-// 系统接管触摸时立即暂停，不把取消事件当成主动松开长按。
-gc.addEventListener('pointercancel',()=>pause());
-gc.addEventListener('lostpointercapture',e=>{ if(ptr.has(e.pointerId)) pause(); });
+// 系统接管单个触摸（多指同按时 iOS/安卓会把触摸抢去识别缩放、三指截屏等系统手势）只松开那根手指，不暂停整局：
+// 真正的打断（来电、切后台、锁屏）都会同时触发 visibilitychange/blur/pagehide 并在那边暂停，保护不丢。
+// 旧版「一取消就暂停」让地狱谱三四指同按频繁误暂停（2026-11-05 玩家实测），故改。
+gc.addEventListener('pointercancel',pup);
+gc.addEventListener('lostpointercapture',e=>{ if(ptr.has(e.pointerId)) pup(e); });
 // Safari 的滚动/缩放/长按菜单只在游戏及选歌拖动区域内阻止，保留按钮与延迟滑块。
 for(const surface of [gc,flow]){
   const stopGesture=e=>{ if(e.cancelable) e.preventDefault(); };
   surface.addEventListener('touchmove',stopGesture,{passive:false});
+  surface.addEventListener('gesturestart',stopGesture);   // iOS 私有手势事件：明确拒绝，别把游戏触摸拿去认缩放手势
+  surface.addEventListener('gesturechange',stopGesture);
   surface.addEventListener('contextmenu',stopGesture);
   surface.addEventListener('dragstart',stopGesture);
 }
@@ -1894,7 +1892,7 @@ function draw(t,dt,now){
   if(G.judge){ const k=(nowMs-G.judge.t)/550; if(k<1){
     const J=JUDGE[G.judge.g];
     const sc=k<.15?1.35-(k/.15)*.35:1, a=k<.7?1:1-(k-.7)/.3, fs=Math.round(Math.min(o.half*.15,50)*sc);
-    const y=P(.6,o).y;   /* 判定文字上移到原连击的位置：中段让给下落的音符，不再挡视线（连击已移左侧） */
+    const y=P(.78,o).y;   /* 判定文字位置：原 P(.34) 挡中段 → P(.6) 仍挡读谱 → P(.78) 靠近远端（2026-11-05 用户两度要求上移）；连击在左侧 P(.6)，互不干扰 */
     g.globalAlpha=a; g.textAlign='center'; g.textBaseline='middle'; g.font=`italic 700 ${fs}px Fredoka,sans-serif`; g.lineJoin='round';
     g.save(); g.translate(o.cx,y); if(g.letterSpacing!==undefined) g.letterSpacing=`${Math.round(fs*.06)}px`;
     g.lineWidth=Math.max(4,fs*.2); g.strokeStyle='#21402f'; g.strokeText(J.t,0,0);

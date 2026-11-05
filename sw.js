@@ -5,7 +5,7 @@
    - 升级时把旧版本缓存里的媒体文件迁移进 MEDIA，再删旧缓存：玩家已下好的歌不丢。
    注意：替换同名 mp3/jpg 的内容时，必须把 MEDIA 的名字加一（如 cino-media-v2），
    否则老玩家会一直读到旧缓存。 */
-const VERSION = 'cino-beat-v9';
+const VERSION = 'cino-beat-v10';
 const MEDIA = 'cino-media-v1';
 const MEDIA_HOST = 'cino-songs-1524353495.cos.ap-guangzhou.myqcloud.com';   // 歌曲/封面已迁腾讯云 COS（广州）
 const CORE = ['./', 'index.html'];
