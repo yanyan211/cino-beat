@@ -95,6 +95,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .card img{width:100%;height:100%;display:block;object-fit:cover;pointer-events:none}
 .card.on{box-shadow:0 0 0 .4cqw #f7faf6,0 0 0 .55cqw rgba(33,64,47,.22),0 1.2cqw 3cqw rgba(14,34,22,.32)}
 #selInfo{text-align:center;padding:.4cqw 0 1.6cqw;min-height:8cqw}
+#selRec{font-size:2.3cqw;color:var(--forest);letter-spacing:.05em;margin-top:.3cqw;min-height:1.2em}
 #selName{font-family:var(--f-en);font-weight:700;font-size:3.4cqw;line-height:1.15;--sw:.14em;text-shadow:0 .07em 0 var(--forest)}
 #selMeta{font-size:1.8cqw;font-weight:400;color:#e6f7dc;margin-top:.5cqw;font-variant-numeric:tabular-nums;letter-spacing:.02em}
 #prev,#next{position:absolute;top:44%;z-index:3}
@@ -155,6 +156,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #lvBody .tips{font-size:1.55cqw;line-height:1.35;color:#eaf6e6;text-align:left;margin-top:1.2cqw}
 #lvBody .tips b{white-space:nowrap;font-weight:400;color:#fff;background:#3fcf7a;border-radius:.4em;padding:0 .35em;margin-right:.2em}
 #lvLoading{font-size:2.4cqw;font-weight:400;color:#fff;min-height:0;line-height:1.25;text-align:center}
+#level.hell #lvLoading{display:none}
 
 /* ---------- 按钮：统一成难度按钮那种白底立体胶囊（深绿细边 + 底部厚边 + 顶部柔光），字不描边 ---------- */
 .gbtn{appearance:none;cursor:pointer;font-family:var(--f-cn);font-weight:400;letter-spacing:.16em;line-height:1;
@@ -244,6 +246,24 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .rsNum b{font-family:var(--f-en);font-weight:700;font-size:4cqw;font-variant-numeric:tabular-nums;--sw:.12em;-webkit-text-stroke:var(--sw) var(--forest);paint-order:stroke fill;color:#fff}
 .pS .rsNum b{filter:drop-shadow(0 0 1cqw rgba(124,240,166,.9))}
 #rsNew{font-size:1.8cqw;font-weight:400;color:#fff;margin-top:.4cqw;letter-spacing:.12em}
+#rsDelta{font-size:2cqw;color:#fff;opacity:.92;margin-top:.5cqw;letter-spacing:.06em;min-height:1.2em}
+.setFrame,.calFrame{width:min(calc(150*var(--vw)),calc(155*var(--vh)),860px);animation:zoomIn .25s cubic-bezier(.2,1.3,.4,1) both}
+.setFrame>.panel,.calFrame>.panel{inset:0;border-radius:4cqw;border-width:.8cqw;box-shadow:0 0 0 .6cqw var(--forest),0 3cqw 6cqw rgba(0,0,0,.35)}
+.setFrame .hd,.calFrame .hd{height:7.5cqw;font-size:3.4cqw;border-bottom-width:.6cqw}
+.setFrame .hd span,.calFrame .hd span{font-size:3.6cqw}
+.setBody,.calBody{position:relative;z-index:1;padding:9.5cqw 4.5cqw 4cqw;display:flex;flex-direction:column;gap:1.3cqw;max-height:calc(97*var(--vh));overflow-y:auto;box-sizing:border-box}
+.setRow{display:flex;align-items:center;gap:1.6cqw;font-size:2.7cqw;color:#fff}
+.setRow label{flex:none;width:6.4em;letter-spacing:.08em}
+.setRow input{flex:1;min-width:0;accent-color:var(--mint)}
+.setRow output{font-family:var(--f-en);font-weight:600;width:4.4em;text-align:right;font-size:2.6cqw}
+.setNote{font-size:2.1cqw;color:rgba(255,255,255,.78);line-height:1.55;margin:-.5cqw 0 0}
+.setRowBtns{display:flex;gap:1.2cqw}
+.setRowBtns .gbtn{flex:1;font-size:3.1cqw;padding:.5em 0;white-space:nowrap}
+.fxSeg{display:flex;gap:.8cqw;flex:1}
+.fxSeg .segChip{flex:1}
+.calTxt{font-size:2.5cqw;color:#fff;line-height:1.65;white-space:pre-line}
+#calPad{height:30cqw;border-radius:3cqw;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 .35cqw rgba(255,255,255,.5);display:grid;place-items:center;touch-action:none;cursor:pointer;user-select:none;-webkit-user-select:none}
+#calPad span{font-size:3.4cqw;color:#fff;letter-spacing:.1em;pointer-events:none}
 .rsBtns{display:flex;gap:18px;justify-content:center}
 #result.show .rsGrade b{animation:stamp .5s .55s cubic-bezier(.2,1.6,.4,1) both}
 @keyframes stamp{from{opacity:0;transform:scale(2.4) rotate(-12deg)}}
@@ -367,6 +387,19 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #lvHellGo{color:#8c3038;white-space:nowrap;letter-spacing:.08em;padding:.5em .7em .5em .87em}
 .hellRow{display:none}
 #level.hell .hellRow{display:flex}
+#pracBox{display:none;margin-top:1.2cqw;flex-direction:column;gap:1cqw}
+#level.hell #pracBox{display:flex}
+.pracT{font-size:2.6cqw;color:#fff;display:flex;justify-content:space-between;align-items:baseline;letter-spacing:.1em}
+.pracT .pracHint{font-size:2cqw;opacity:.75;letter-spacing:.04em}
+#pracSegs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7cqw}
+#pracBox .segChip{font-size:2.05cqw;padding:.36em 0;letter-spacing:.03em;white-space:nowrap;overflow:hidden}
+#lvPracGo{font-size:2.9cqw}
+.segChip{appearance:none;cursor:pointer;font-family:var(--f-cn);font-size:2.5cqw;letter-spacing:.08em;color:var(--forest);background:rgba(255,255,255,.88);border:.08em solid var(--forest);border-radius:99px;padding:.45em 0;text-align:center}
+.segChip.on{background:var(--forest);color:#fff}
+.pracRow{display:flex;gap:1cqw;align-items:center}
+#lvPracGo{flex:1;color:#1b4a2e;white-space:nowrap;letter-spacing:.08em;padding:.5em .7em .5em .87em}
+#pracLoop{flex:none;padding:.45em 1em}
+#rsRe.hot{color:#8c3038;border-color:#8c3038;transform:scale(1.06);box-shadow:0 .22em 0 #8c3038,inset 0 -.2em 0 rgba(140,48,56,.18)}
 #level.hell .lvRow:not(.hellRow){display:none}
 #level.hell .bdTabs{display:none}
 #hpWrap{height:8px;margin:5px 14% 0;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);border-radius:99px;overflow:hidden}
@@ -395,7 +428,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
       <div class="panel"><div class="hd"><span>选择歌曲</span><span id="selModeTag" hidden>地狱模式</span></div></div>
       <div id="selBody">
         <div id="flow"></div>
-        <div id="selInfo"><div id="selName" class="ol">—</div><div id="selMeta">—</div></div>
+        <div id="selInfo"><div id="selName" class="ol">—</div><div id="selMeta">—</div><div id="selRec">—</div></div>
       </div>
       <button class="round" id="prev" aria-label="上一首"><svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button class="round" id="next" aria-label="下一首"><svg viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -403,7 +436,9 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
     <div class="selBar">
       <button class="gbtn dark" id="selBack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>返回</span></button>
       <span class="hint" id="selHint">左右滑动选歌，点中间的封面确认</span>
+      <span class="hint" id="selStats"></span>
       <button class="gbtn normal" id="tutorialReplay">重玩教学</button>
+      <button class="gbtn normal" id="setOpen">设置</button>
     </div>
 
     <div class="dim" id="level" hidden>
@@ -416,6 +451,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
             <div id="lvSongName" class="ol">—</div>
             <div id="lvSongMeta">—</div>
             <div class="calib"><label for="offset">延迟</label><input type="range" id="offset" min="-200" max="200" step="5" value="0"><output id="offsetVal">0ms</output></div>
+            <div class="calib"><label for="speed">速度</label><input type="range" id="speed" min="0.8" max="1.4" step="0.05" value="1"><output id="speedVal">1.00×</output></div>
+            <div class="calib"><button class="segChip" id="setOpen2" style="flex:1;padding:.35em 0">演奏设置</button></div>
           </div>
           <div class="lvCol lvMid">
             <div class="lvRow"><button class="gbtn lv easy" data-lv="0"><span>简单</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></i></button><span class="lvBest ol" id="best0">0</span></div>
@@ -423,6 +460,11 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
             <div class="lvRow"><button class="gbtn lv hard" data-lv="2"><span>困难</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></i></button><span class="lvBest ol" id="best2">0</span></div>
             <div id="lvLoading"></div>
             <div class="lvRow hellRow"><button class="gbtn lv hellGo" id="lvHellGo"><span>开始挑战</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l7 9-7 9-7-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></i></button><span class="lvBest ol" id="best3">0</span></div>
+            <div id="pracBox">
+              <div class="pracT"><span>练习</span><span class="pracHint">不计排行榜 · 生命归零不结束</span></div>
+              <div id="pracSegs"></div>
+              <div class="pracRow"><button class="gbtn lv" id="lvPracGo"><span>开始练习</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l7 9-7 9-7-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></i></button><button class="segChip" id="pracLoop">循环：关</button></div>
+            </div>
           </div>
           <div class="lvCol lvBoard">
             <div class="bdHead"><span class="bdTitle ol">排行榜</span><div class="bdTabs"><button data-bd="0">简单</button><button data-bd="1" class="on">普通</button><button data-bd="2">困难</button></div></div>
@@ -434,6 +476,40 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
         </div>
       </div>
   </section>
+
+    <div class="dim" id="setDim" hidden>
+      <div class="frame setFrame">
+        <div class="panel"><div class="hd"><span>演奏设置</span></div></div>
+        <button class="acctClose" id="setClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+        <div class="setBody">
+          <div class="setRow"><label for="sSpeed">下落速度</label><input type="range" id="sSpeed" min="0.8" max="1.4" step="0.05"><output id="sSpeedVal">1.00×</output></div>
+          <p class="setNote">只改变音符下落的快慢和提前看到的时间，不改变音乐速度、谱面时间和判定窗口。进游戏后立刻能看出区别。</p>
+          <div class="setRow"><label for="sOffset">延迟校准</label><input type="range" id="sOffset" min="-200" max="200" step="5"><output id="sOffsetVal">0ms</output></div>
+          <p class="setNote">判定总显示 LATE 就调大，总显示 EARLY 就调小，单位是毫秒。一般先用下面的跟拍校准，再用这个微调。</p>
+          <div class="setRowBtns"><button class="gbtn normal" id="calOpen">跟拍校准</button></div>
+          <div class="setRow"><label for="sVolM">音乐音量</label><input type="range" id="sVolM" min="0" max="1" step="0.05"><output id="sVolMVal">100%</output></div>
+          <div class="setRow"><label for="sVolS">音效音量</label><input type="range" id="sVolS" min="0" max="1" step="0.05"><output id="sVolSVal">100%</output></div>
+          <div class="setRow"><label>特效强度</label><div class="fxSeg"><button class="segChip" id="fxStd">标准</button><button class="segChip" id="fxLowB">简化</button></div></div>
+          <p class="setNote">简化会减少粒子和闪光，击打、判定这些必要反馈会保留。所有设置只保存在这台设备上，不影响成绩和账号。</p>
+          <div class="setRowBtns"><button class="gbtn dark" id="setReset">恢复默认</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dim" id="calDim" hidden>
+      <div class="frame calFrame">
+        <div class="panel"><div class="hd"><span>跟拍校准</span></div></div>
+        <button class="acctClose" id="calClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+        <div class="calBody">
+          <p class="calTxt" id="calTxt">请用你平时玩游戏时的手机和耳机（或扬声器）来测；换了音频设备，建议重新测一次。
+测试时会播放节拍声：先 4 拍找节奏（不计入），然后跟着节拍点下面的大按钮，共采集 12 拍。画面上没有闪动的节拍提示，凭听到的声音点就行。</p>
+          <div id="calPad"><span id="calProg">点「开始测试」</span></div>
+          <div class="setRowBtns" id="calBtns"><button class="gbtn normal" id="calStart">开始测试</button><button class="gbtn dark" id="calCancel">取消</button></div>
+          <div class="setRowBtns" id="calBtns2" hidden><button class="gbtn normal" id="calApply">应用推荐值</button><button class="gbtn dark" id="calRetry">重新测试</button><button class="gbtn dark" id="calSkip">取消</button></div>
+          <div class="setRowBtns" id="calBtns3" hidden><button class="gbtn normal" id="calVerify">开始验证跟拍</button><button class="gbtn dark" id="calDone">完成</button></div>
+        </div>
+      </div>
+    </div>
 
     <div class="dim" id="acctDim" hidden>
       <div class="frame acctFrame">
@@ -527,7 +603,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
         </div>
       </div>
       <div class="panel plain pS"><div class="hd"><span>本次得分</span></div><div class="rsNum"><b id="rsScore">0</b></div></div>
-      <div class="panel plain pB"><div class="hd"><span>最高分</span></div><div class="rsNum"><b id="rsBest">0</b><span id="rsNew" hidden>新纪录！</span></div></div>
+      <div class="panel plain pB"><div class="hd"><span>最高分</span></div><div class="rsNum"><b id="rsBest">0</b><span id="rsNew" hidden>新纪录！</span></div><div id="rsDelta"></div></div>
     </div>
     <div class="rsBtns">
       <button class="gbtn normal" id="rsRe">再来一次</button>
@@ -641,12 +717,17 @@ function tint(name,color){
 
 /* ---------- 音频 ---------- */
 let AC=null; const ac=()=>AC||(AC=new (window.AudioContext||window.webkitAudioContext)());
+/* 音乐/音效两条增益总线：歌曲音源走音乐总线，界面音效与校准节拍走音效总线，音量分别可调并保存 */
+let volMusic=store.get('volMusic',1), volSfx=store.get('volSfx',1);
+let musicBusN=null, sfxBusN=null;
+function musicBus(){ const a=ac(); if(!musicBusN){ musicBusN=a.createGain(); musicBusN.gain.value=volMusic; musicBusN.connect(a.destination); } return musicBusN; }
+function sfxBus(){ const a=ac(); if(!sfxBusN){ sfxBusN=a.createGain(); sfxBusN.gain.value=volSfx; sfxBusN.connect(a.destination); } return sfxBusN; }
 /* 按键音：用合成的“啵”声，软一点、圆一点，和整体可爱的风格搭 */
 function blip(f0,f1,dur,vol=.22,type='sine',delay=0){
   try{ const a=ac(), t=a.currentTime+.005+delay, o=a.createOscillator(), g=a.createGain();
     o.type=type; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur*.8);
     g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+.008); g.gain.exponentialRampToValueAtTime(.0008,t+dur);
-    o.connect(g).connect(a.destination); o.start(t); o.stop(t+dur+.02); }catch(e){}
+    o.connect(g).connect(sfxBus()); o.start(t); o.stop(t+dur+.02); }catch(e){}
 }
 const SFX={
   tap(){ blip(1100,1500,.07,.12); },                                  // 切换歌曲
@@ -862,7 +943,7 @@ const isOn=id=>!$(id).classList.contains('off');
    标题
    ===================================================================== */
 let MODE='normal';
-function syncModeUI(){ const hell=MODE==='hell'; $('selModeTag').hidden=!hell; $('selHint').textContent=hell?'地狱模式 · 建议平放设备，使用四指挑战':'左右滑动选歌，点中间的封面确认'; }
+function syncModeUI(){ const hell=MODE==='hell'; $('selModeTag').hidden=!hell; $('selHint').textContent=hell?'地狱模式 · 建议平放设备，使用四指挑战':'左右滑动选歌，点中间的封面确认'; try{ info(); }catch(e){} }
 function goSelect(){ if(swapping||tutorialLoading) return; MODE='normal'; syncModeUI(); tryLandscape(); ac().resume(); click(); if(!tutorialSeen){ beginTutorial(); return; } shutter('',()=>{ show('select'); place(true); }); }
 function goHell(){ if(swapping||tutorialLoading) return; MODE='hell'; syncModeUI(); tryLandscape(); ac().resume(); click(); shutter('',()=>{ show('select'); place(true); }); }
 $('hellBtn').addEventListener('click',e=>{ e.stopPropagation(); goHell(); });
@@ -898,6 +979,25 @@ function info(){
   const best=Math.max(...[0,1,2].map(l=>store.get(`best-${key(s)}-${l}`,0)));
   $('selName').textContent=m.name;
   $('selMeta').textContent=`${fmt(m.len)} · ${m.notes.length} 个音符 · 长按 ${holds} · 最佳 ${best.toLocaleString()}`;
+  /* 当前模式下这首歌的个人纪录：最高分与最佳准确率分别保存（可能来自不同场次）；状态只认有记录的数据，不推测 */
+  const hell=MODE==='hell', lv=hell?3:1, k=key(s);
+  const b=store.get(`best-${k}-${lv}`,0), a=store.get(`acc-${k}-${lv}`,0);
+  let st;
+  if(hell){ if(store.get(`clear-${k}-3`,0)||b>0) st='已通关'; else { const hr=store.get('hellrec-'+k,null); st=hr&&hr.prog>0?`未通关 · 最远 ${Math.round(hr.prog*100)}%`:'未挑战'; } }
+  else st=b>0?(store.get(`fc-${k}-${lv}`,0)?'全连':'已完成'):'未挑战';
+  $('selRec').textContent=`${hell?'地狱':'普通'} · ${b>0?`最高 ${b.toLocaleString()}`:'暂无成绩'}${a>0?` · 最佳准确率 ${(a*100).toFixed(1)}%`:''} · ${st}`;
+  const rs=recStats(); $('selStats').textContent=`已完成 ${rs.done}/${rs.total} 首 · 全连 ${rs.fc} 处 · 地狱通关 ${rs.clears}/${rs.total} 首`;
+}
+/* 长期进度统计：只数本地真有记录的（完成=有最高分；全连=有全连标记；地狱通关=有通关标记或地狱最高分） */
+function recStats(){
+  let done=new Set(), fc=0, clears=0; const builtin=songs.filter(s=>!s.local);
+  for(const s of builtin){ const k=key(s);
+    for(let l=0;l<3;l++){ if(store.get(`best-${k}-${l}`,0)>0) done.add(k); if(store.get(`fc-${k}-${l}`,0)) fc++; }
+    if(store.get(`best-${k}-3`,0)>0) done.add(k);
+    if(store.get(`fc-${k}-3`,0)) fc++;
+    if(store.get(`clear-${k}-3`,0)||store.get(`best-${k}-3`,0)>0) clears++;
+  }
+  return {done:done.size, fc, clears, total:builtin.length};
 }
 const key=s=>s.local?'local-'+s.meta.name:s.chart;
 function go(i){ i=Math.max(0,Math.min(cards.length-1,i)); if(i!==Math.round(target)) click('tap'); target=i; sel=i; store.set('sel',Math.min(i,songs.length-1)); animate(); schedulePrefetch(); }
@@ -945,13 +1045,13 @@ function confirmSong(i){
   if(hell){
     bdLv = 3; syncBdTabs(); loadBoard();
     $('best3').textContent = store.get(`best-${key(cur)}-3`,0).toLocaleString();
-    const goBtn=$('lvHellGo'); goBtn.disabled=true;
+    const goBtn=$('lvHellGo'); goBtn.disabled=true; $('lvPracGo').disabled=true;
     $('lvSongMeta').textContent='地狱谱面读取中…';
     const tk=++hellMetaSeq, song=cur;
-    const done=m=>{ if(tk!==hellMetaSeq||cur!==song) return; song.lvMeta=song.lvMeta||{}; song.lvMeta[3]=m; $('lvSongMeta').textContent=`${fmt(m.len)} · 地狱 ${m.notes.length} 个音符`; goBtn.disabled=false; };
+    const done=m=>{ if(tk!==hellMetaSeq||cur!==song) return; song.lvMeta=song.lvMeta||{}; song.lvMeta[3]=m; $('lvSongMeta').textContent=`${fmt(m.len)} · 地狱 ${m.notes.length} 个音符`; goBtn.disabled=false; $('lvPracGo').disabled=false; buildPracSegs(m.len); };
     if(song.lvMeta && song.lvMeta[3]) done(song.lvMeta[3]);
     else fetch('songs/'+slugOf(song)+'_hell.txt').then(r=>{ if(!r.ok) throw 0; return r.text(); }).then(t=>done(parseChart(t)))
-      .catch(()=>{ if(tk!==hellMetaSeq||cur!==song) return; $('lvSongMeta').textContent='地狱谱面制作中'; goBtn.disabled=true; });
+      .catch(()=>{ if(tk!==hellMetaSeq||cur!==song) return; $('lvSongMeta').textContent='地狱谱面制作中'; goBtn.disabled=true; $('lvPracGo').disabled=true; });
   } else {
     if(bdLv===3) bdLv=1;
     $('lvSongMeta').textContent = `${fmt(cur.meta.len)} · ${cur.meta.notes.length} 个音符`;
@@ -962,14 +1062,46 @@ function confirmSong(i){
 function closeLevel(){ click('back'); ++pickToken; lockLevels(false); $('lvLoading').textContent=''; $('level').hidden=true; }
 $('lvClose').onclick=closeLevel;
 $('lvHellGo').onclick=()=>pickLevel(3);
+/* 练习：按歌曲实际音乐结构选起点（SONG_SEGS 由音频分析生成，起点避开长按/折线长按的持续区间），可循环本段；起点前的音符与跨界长按整颗跳过（不计 MISS、不自动命中） */
+const SONG_SEGS={
+  'babys_horizon':[[0,"开头 · 0:00"],[47.5,"主歌 · 0:47"],[75.5,"主歌 · 1:15"],[97.5,"主歌 · 1:37"],[112.5,"主歌 · 1:52"],[142.5,"主歌 · 2:22"]],
+  'pimple09':[[0,"开头 · 0:00"],[67.5,"副歌 · 1:07"],[97.5,"主歌 · 1:37"],[107.5,"主歌 · 1:47"],[132.5,"副歌 · 2:12"]],
+  'weiming':[[0,"开头 · 0:00"],[22.5,"主歌 · 0:22"],[45.5,"副歌 · 0:45"],[57.5,"主歌 · 0:57"],[80.5,"主歌 · 1:20"],[110.5,"主歌 · 1:50"]],
+  'wobuzhidao':[[0,"开头 · 0:00"]],
+  'yixiang':[[0,"开头 · 0:00"],[42.5,"主歌 · 0:42"],[67.5,"主歌 · 1:07"],[107.5,"主歌 · 1:47"],[130.5,"主歌 · 2:10"],[152.5,"结尾 · 2:32"]],
+  'babe':[[0,"开头 · 0:00"],[50.5,"主歌 · 0:50"],[90.5,"主歌 · 1:30"]],
+  'babystep':[[0,"开头 · 0:00"],[22.5,"主歌 · 0:22"],[37.5,"副歌 · 0:37"],[110.5,"主歌 · 1:50"],[140.5,"副歌 · 2:20"],[157.5,"主歌 · 2:37"]],
+  'enemy':[[0,"开头 · 0:00"],[32.5,"副歌 · 0:32"],[50.5,"主歌 · 0:50"],[75.5,"主歌 · 1:15"],[95.5,"主歌 · 1:35"]],
+  'meltingrain':[[0,"开头 · 0:00"],[37.5,"间奏 · 0:37"],[72.5,"副歌 · 1:12"]],
+  'tears':[[0,"开头 · 0:00"]],
+};
+let PRAC_SEL={start:0,end:0,loop:false};
+function buildPracSegs(len){
+  const box=$('pracSegs'); box.replaceChildren();
+  const sg=cur?SONG_SEGS[slugOf(cur)]:null;
+  const starts=sg?sg.map(x=>x[0]):[0];   // 没有结构分析数据的歌只给「从头」，不编造分段点
+  const labels=sg?sg.map(x=>x[1]):null;
+  PRAC_SEL={start:0,end:starts.length>1?starts[1]:len,loop:false};
+  const lp=$('pracLoop'); lp.classList.remove('on'); lp.textContent='循环：关';
+  starts.forEach((s,i)=>{
+    const b=document.createElement('button'); b.className='segChip'+(i===0?' on':''); b.textContent=i===0?'从头':(labels?labels[i]:fmt(s));
+    b.onclick=()=>{ click('tap'); PRAC_SEL.start=s; PRAC_SEL.end=(i+1<starts.length)?starts[i+1]:len; [...box.children].forEach(c=>c.classList.remove('on')); b.classList.add('on'); };
+    box.appendChild(b);
+  });
+}
+$('pracLoop').onclick=()=>{ click('tap'); PRAC_SEL.loop=!PRAC_SEL.loop; $('pracLoop').classList.toggle('on',PRAC_SEL.loop); $('pracLoop').textContent='循环本段：'+(PRAC_SEL.loop?'开':'关'); };
+$('lvPracGo').onclick=()=>pickLevel(3,{...PRAC_SEL});
 $('level').addEventListener('click',e=>{ if(e.target.id==='level') closeLevel(); });
 document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>pickLevel(+b.dataset.lv));
 let offset=store.get('offset',0); $('offset').value=offset; $('offsetVal').textContent=offset+'ms';
-$('offset').oninput=e=>{ offset=+e.target.value; $('offsetVal').textContent=offset+'ms'; store.set('offset',offset); };
+$('offset').oninput=e=>setOffset(+e.target.value);
+/* 下落速度：只改音符显示速度与预读（G.lead），不改音乐速度、谱面时间与判定窗口；保存到本地 */
+let speedF=store.get('speed',1); $('speed').value=speedF; $('speedVal').textContent=(+speedF).toFixed(2)+'×';
+$('speed').oninput=e=>{ speedF=+e.target.value; $('speedVal').textContent=speedF.toFixed(2)+'×'; $('sSpeed').value=speedF; $('sSpeedVal').textContent=speedF.toFixed(2)+'×'; store.set('speed',speedF); };
 // 选难度后加载期间锁住：再点任何难度都不理会，关面板会作废这次加载，避免同时开出多首歌
 let picking=false, pickToken=0;
-function lockLevels(on){ picking=on; document.querySelectorAll('[data-lv]').forEach(b=>b.disabled=on); $('lvHellGo').disabled=on; }
-async function pickLevel(l){
+function lockLevels(on){ picking=on; document.querySelectorAll('[data-lv]').forEach(b=>b.disabled=on); $('lvHellGo').disabled=on; $('lvPracGo').disabled=on; }
+async function pickLevel(l,prac=null){
   if(picking||swapping) return;
   bdLv = l; syncBdTabs();
   const song=cur, token=++pickToken; lockLevels(true);
@@ -984,7 +1116,7 @@ async function pickLevel(l){
   }catch(e){ bail(l===3?'地狱谱面制作中':'谱面加载失败'); return; }
   if(token!==pickToken) return;
   $('lvLoading').textContent='';
-  startGame(song,l,buf,meta);
+  startGame(song,l,buf,meta,false,prac);
   setTimeout(()=>lockLevels(false),1200);
 }
 
@@ -1236,7 +1368,7 @@ function tutorialFreeze(n,retry=false){
 function tutorialContinue(){
   const t=G.tutorial.frozen; if(t==null) return;
   G.tutorial.frozen=null;
-  const a=ac(), src=a.createBufferSource(); src.buffer=G.buf; src.connect(a.destination);
+  const a=ac(), src=a.createBufferSource(); src.buffer=G.buf; src.connect(musicBus());
   G.startAt=a.currentTime-t-offset/1000; src.start(0,Math.max(0,t+offset/1000)); G.src=src; a.resume();
 }
 function tutorialPassed(n){
@@ -1288,26 +1420,36 @@ function buildStage(){
 }
 let G=null, raf=0, wake=null;
 
-function startGame(song,lv,buf,meta,teaching=false){
+function startGame(song,lv,buf,meta,teaching=false,prac=null){
   meta=meta||song.meta;
   shutter(song.meta.name,()=>{
     stopSong(); cancelAnimationFrame(raf);
     $('level').hidden=true; $('skipEnd').hidden=true; $('tutorialCoach').hidden=true; $('tutorialSkip').hidden=!teaching; $('tutorialExit').hidden=false; show(null); fxOn=false;
     gc.hidden=false; $('hud').hidden=false; resizeGame();
     const L=LEVELS[lv];
-    G={song,lv,lead:L.lead,buf,meta,notes:meta.notes.map(n=>({...n,judged:false,grade:-1,holding:false,broken:false,done:false,next:0})),
-       score:0,combo:0,max:0,counts:{4:0,3:0,2:0,1:0,0:0},hell:lv===3,hp:lv===3?100:0,pressed:[0,0,0,0],flickWait:[],lastFlickPtr:null,flash:[0,0,0,0],fx:[],sparks:[],judge:null,comboPop:0,state:'play',
+    G={song,lv,lead:L.lead/(speedF||1),buf,meta,notes:meta.notes.map(n=>({...n,judged:false,grade:-1,holding:false,broken:false,done:false,next:0})),
+       score:0,combo:0,max:0,counts:{4:0,3:0,2:0,1:0,0:0},hell:lv===3,hp:lv===3?100:0,practice:!!prac,prac:prac||null,fcFail:false,pressed:[0,0,0,0],flickWait:[],lastFlickPtr:null,flash:[0,0,0,0],fx:[],sparks:[],judge:null,comboPop:0,state:'play',
        born:performance.now(),src:null,startAt:0};
+    /* 练习从分段起点开始：起点前的音符整颗剔除；头部在起点前、尾巴在起点后的跨界长按也整颗剔除——不计 MISS，也不自动判命中 */
+    if(prac&&prac.start>0) G.notes=G.notes.filter(n=>n.t>=prac.start-0.001);
     G.tutorial=teaching?{step:0,frozen:null,gates:[G.notes.find(n=>!n.hold&&!n.flick),G.notes.find(n=>n.hold),G.notes.find(n=>n.flick)]}:null;
     if(teaching) tutorialHint('跟着音乐试一试','先看音符落到白线，第一颗会停下来等你。');
-    $('hSong').firstChild.textContent=song.meta.name; $('hLv').textContent=teaching?'新手教学':L.name; $('hLv').style.background=L.color;
+    $('hSong').firstChild.textContent=song.meta.name; $('hLv').textContent=teaching?'新手教学':(prac?'练习·'+L.name:L.name); $('hLv').style.background=L.color;
     $('inName').textContent=song.meta.name; $('inLv').textContent=L.name;
     $('hpWrap').hidden=!G.hell; if(G.hell){ const hf=$('hpFill'); hf.style.width='100%'; hf.className=''; }
     const it=$('intro'); it.classList.remove('go'); void it.offsetWidth; it.classList.add('go');
     hud();
     const a=ac(); a.resume();
-    const first=G.notes.length?G.notes[0].t:0, pre=Math.max(2.2,G.lead+.6-first);
-    const src=a.createBufferSource(); src.buffer=buf; src.connect(a.destination); G.startAt=a.currentTime+pre; src.start(G.startAt); G.src=src;
+    if(prac&&prac.start>0){
+      /* 练习入场预备：音乐从起点前 3 秒处开始放，起点前的谱面已剔除，玩家先听音乐找拍，音符到起点才出现 */
+      const from=Math.max(0,prac.start-3), delay=0.35;
+      const src=a.createBufferSource(); src.buffer=buf; src.connect(musicBus());
+      G.startAt=a.currentTime+delay-from-offset/1000;
+      src.start(a.currentTime+delay, Math.max(0,from+offset/1000)); G.src=src;
+    } else {
+      const first=G.notes.length?G.notes[0].t:0, pre=Math.max(2.2,G.lead+.6-first);
+      const src=a.createBufferSource(); src.buffer=buf; src.connect(musicBus()); G.startAt=a.currentTime+pre; src.start(G.startAt); G.src=src;
+    }
     try{ navigator.wakeLock?.request('screen').then(w=>wake=w).catch(()=>{}); }catch(e){}
     cancelAnimationFrame(raf); last=0; raf=requestAnimationFrame(loop);
   });
@@ -1322,10 +1464,16 @@ function dbgNote(dt,g){ if(!G) return; const D=G.dbg||(G.dbg={dts:[],last:null,c
 function dbgClickAt(when){ try{ const a=ac(), o=a.createOscillator(), gn=a.createGain(); o.type='square'; o.frequency.value=1900;
   gn.gain.setValueAtTime(0.0001,when); gn.gain.exponentialRampToValueAtTime(0.12,when+0.004); gn.gain.exponentialRampToValueAtTime(0.0001,when+0.05);
   o.connect(gn); gn.connect(a.destination); o.start(when); o.stop(when+0.07); }catch(e){} }
-function dbgSeek(sec){ if(!G) return; stopSong(); const a=ac(); const src=a.createBufferSource(); src.buffer=G.buf; src.connect(a.destination);
+function dbgSeek(sec){ if(!G) return; stopSong(); const a=ac(); const src=a.createBufferSource(); src.buffer=G.buf; src.connect(musicBus());
   G.startAt=a.currentTime-sec-offset/1000; src.start(0,Math.max(0,sec+offset/1000)); G.src=src; a.resume();
   for(const n of G.notes){ const before=n.t<sec; n.judged=before; n.done=before; n.holding=false; n.broken=false; if(before) n.grade=-1; }
   G.counts={4:0,3:0,2:0,1:0,0:0}; G.score=0; G.combo=0; G.max=0; G.flickWait=[]; if(G.dbg) G.dbg.clickIdx=G.notes.findIndex(n=>n.t>=sec); last=0; }
+/* 练习循环：回到片段起点（音乐提前 1.2 秒给预备），片段内音符全部复位重打，成绩与生命重置 */
+function pracSeek(sec){ if(!G) return; stopSong(); const a=ac(); const src=a.createBufferSource(); src.buffer=G.buf; src.connect(musicBus());
+  const from=Math.max(0,sec-1.2);
+  G.startAt=a.currentTime-from-offset/1000; src.start(0,Math.max(0,from+offset/1000)); G.src=src; a.resume();
+  for(const n of G.notes){ n.judged=false; n.done=false; n.holding=false; n.broken=false; n.grade=-1; }
+  G.counts={4:0,3:0,2:0,1:0,0:0}; G.score=0; G.combo=0; G.max=0; G.hp=100; G.flickWait=[]; G.pressed=[0,0,0,0]; hud(); last=0; }
 function dbgFrame(t){
   if(!DEBUG||!G) return;
   if(DBG_LOOP&&!dbgSeekPending&&G.dbg&&!G.dbg.loopArmed){ G.dbg.loopArmed=true; if(DBG_LOOP.a>0) dbgSeekPending=true; }
@@ -1362,7 +1510,7 @@ const zOf=(time,t)=>(time-t)/G.lead;
 function gradeOf(dt){ const a=Math.abs(dt); for(let i=0;i<WIN.length;i++) if(a<=WIN[i]) return 4-i; return -1; }
 function award(g,dt,lane){
   G.counts[g]++;
-  if(g===0) G.combo=0; else { G.combo++; G.max=Math.max(G.max,G.combo); let p=PTS[g]; if(G.combo>1) p+=p/10; G.score+=p; G.comboPop=1; }
+  if(g===0){ G.combo=0; G.fcFail=true; } else { G.combo++; G.max=Math.max(G.max,G.combo); let p=PTS[g]; if(G.combo>1) p+=p/10; G.score+=p; G.comboPop=1; }
   if(G.hell) hpAdd(HELL.gain[g]);
   G.judge={g,t:performance.now(),el:(g>0&&g<4&&dt!=null)?(dt<0?'EARLY':'LATE'):''};
   if(DEBUG) dbgNote(dt,g);
@@ -1372,16 +1520,19 @@ const HELL={gain:{4:0.8,3:0.4,2:0,1:-5,0:-9}};   // 地狱生命：PERFECT/GREAT
 function hpAdd(d){ if(!G||!G.hell) return; G.hp=Math.max(0,Math.min(100,G.hp+d)); }
 function breakHold(n){   // 长按中途断开：判定改为 MISS 是替换不是叠加，否则总判定数会多于谱面音符数、成绩被服务器拒收
   const og=n.grade; if(og>=1) G.counts[og]--;
-  G.counts[0]++; n.grade=0; G.combo=0; G.score-=(n.headPts||0); if(G.hell) hpAdd(HELL.gain[0]-HELL.gain[og]); G.judge={g:0,t:performance.now(),el:''}; hud();
+  G.counts[0]++; n.grade=0; G.combo=0; G.fcFail=true; G.score-=(n.headPts||0); if(G.hell) hpAdd(HELL.gain[0]-HELL.gain[og]); G.judge={g:0,t:performance.now(),el:''}; hud();
 }
+/* 特效强度：low 时不生成粒子（保留击打闪光与判定文字等必要反馈） */
+let fxLow=store.get('fx','std')==='low';
 function hitFx(lane,g){
   const o=geo(), x=laneX(lane,1,o)+o.half*.25, y=o.hitY, col=g>=3?SKIN.lane[lane]:g===2?'#9fe0ff':'#c8d8b0';
   G.fx.push({x,y,t:performance.now(),col,g});
+  if(fxLow) return;
   for(let i=0;i<(g>=3?14:8);i++){ const a=-Math.PI*Math.random(), v=180+Math.random()*320; G.sparks.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.55,col}); }
 }
 const FLICK_WIN=0.3;   // 滑键：按下后多久内要滑到箭头方向
 const pathLane=(n,t)=>{ let l=n.path[0].l; for(const q of n.path){ if(q.t<=t+1e-4) l=q.l; else break; } return l; };
-function completeFlick(n,arrived=true){ if(n.done) return; n.done=true; award(n.grade,n.dt,n.lane); hitFx(n.lane,n.grade); if(arrived) hitFx(Math.max(0,Math.min(3,n.lane+n.flick)),n.grade); G.flickWait=G.flickWait.filter(x=>x!==n); tutorialPassed(n); }
+function completeFlick(n,arrived=true){ if(n.done) return; n.done=true; if(!arrived) G.fcFail=true; award(n.grade,n.dt,n.lane); hitFx(n.lane,n.grade); if(arrived) hitFx(Math.max(0,Math.min(3,n.lane+n.flick)),n.grade); G.flickWait=G.flickWait.filter(x=>x!==n); tutorialPassed(n); }
 function press(l,fromSlide){
   if(!G||G.state!=='play'||G.pressed[l]) return;
   if(tutorialPress(l,fromSlide)) return;
@@ -1463,7 +1614,7 @@ function pause(){ if(!G||G.state!=='play') return; G.state='pause'; if(tutorialG
 function resume(){ if(!G||G.state!=='pause') return; tryLandscape(); click(); $('pause').hidden=true; ac().resume(); G.state='play'; last=0; raf=requestAnimationFrame(loop); }
 function leaveGame(){ $('tutorialCoach').hidden=true; $('tutorialSkip').hidden=true; $('tutorialDialog').hidden=true; clearGameInput(); $('skipEnd').hidden=true; stopSong(); ac().resume(); cancelAnimationFrame(raf); gc.hidden=true; $('hud').hidden=true; $('pause').hidden=true; try{wake?.release()}catch(e){} fxOn=true; requestAnimationFrame(fxLoop); }
 $('pauseBtn').onclick=pause; $('skipEnd').onclick=()=>{ click(); if(G&&G.state==='play') finish(); }; $('pzGo').onclick=resume;
-$('pzRe').onclick=()=>{ click(); const s=G.song,l=G.lv,b=G.buf,m=G.meta,t=!!G.tutorial; leaveGame(); fxOn=false; startGame(s,l,b,m,t); };
+$('pzRe').onclick=()=>{ click(); const s=G.song,l=G.lv,b=G.buf,m=G.meta,t=!!G.tutorial,p=G.practice?G.prac:null; leaveGame(); fxOn=false; startGame(s,l,b,m,t,p); };
 $('pzSel').onclick=()=>{ if(G?.tutorial){ exitTutorial(false); return; } click('back'); shutter('',()=>{ leaveGame(); G=null; show('select'); place(true); }); };
 document.addEventListener('visibilitychange',()=>{ if(document.hidden) pause(); else refreshViewport(); });
 addEventListener('pagehide',pause);
@@ -1486,19 +1637,20 @@ function loop(now){
     }
     if(n.holding){
       while(n.next<=Math.min(t,n.end)){ G.combo++; G.max=Math.max(G.max,G.combo); G.score+=PTS[n.grade]/5*(G.combo>1?1.1:1); n.next+=HOLD_TICK; G.comboPop=.6; hud();
-        if(Math.random()<.7){ const o=geo(), hl=n.path?pathLane(n,t):n.lane; const x=laneX(hl,1,o)+o.half*.25; G.sparks.push({x,y:o.hitY,vx:(Math.random()-.5)*160,vy:-200-Math.random()*200,life:.4,col:SKIN.lane[n.lane]}); } }
+        if(!fxLow&&Math.random()<.7){ const o=geo(), hl=n.path?pathLane(n,t):n.lane; const x=laneX(hl,1,o)+o.half*.25; G.sparks.push({x,y:o.hitY,vx:(Math.random()-.5)*160,vy:-200-Math.random()*200,life:.4,col:SKIN.lane[n.lane]}); } }
       if(t>=n.end){ n.holding=false; n.done=true; hitFx(n.path?pathLane(n,n.end):n.lane,n.grade); tutorialPassed(n); }
     }
   }
   for(const f of [...G.flickWait]) if(t-f.at>FLICK_WIN){ f.grade=1; completeFlick(f,false); }   // 没滑：算 BAD，且没到的那条轨道不放击中特效
   $('prog').style.width=Math.max(0,Math.min(100,t/G.buf.duration*100))+'%';
   if(DEBUG) dbgFrame(t);
+  if(G.practice&&G.prac&&G.prac.loop&&t>=G.prac.end){ pracSeek(G.prac.start); t=songTime(); }
   draw(t,dt,now);
   const lastEnd=G.meta.len;
   // 歌放完才结算；音符打完后出现「跳过结尾」
   const allDone=t>lastEnd+1.2 && G.notes.every(n=>n.done);
   if(!G.tutorial && allDone && $('skipEnd').hidden && t<G.buf.duration-2) $('skipEnd').hidden=false;
-  if(G.hell&&G.hp<=0){ failFinish(); return; }
+  if(G.hell&&!G.practice&&G.hp<=0){ failFinish(); return; }
   if(t>G.buf.duration+.4){ finish(); return; }
   raf=requestAnimationFrame(loop);
 }
@@ -1557,6 +1709,14 @@ function draw(t,dt,now){
     if(!n.holding) drawNote(n.lane,zh,o,col);
     else { g.globalCompositeOperation='lighter'; const r=o.half*.22; const rg=g.createRadialGradient(c.x-(c.x-d.x)/2,o.hitY,0,c.x-(c.x-d.x)/2,o.hitY,r); rg.addColorStop(0,hexA(col,.9)); rg.addColorStop(1,hexA(col,0)); g.fillStyle=rg; g.fillRect(d.x-r,o.hitY-r,(c.x-d.x)+r*2,r*2); g.globalCompositeOperation='source-over'; }
   }
+  // 同时击打的音符：一条半透明细线把同一时刻的音符连起来，提示「一起按」（轻量，不遮挡音符本体）
+  { const seen=new Map();
+    for(const n of G.notes){ if(n.t-t>G.lead*zMax*1.02) break; if(n.hold||n.done) continue; if(n.flick&&n.judged) continue;
+      const kk=Math.round(n.t*100); if(!seen.has(kk)) seen.set(kk,[]); seen.get(kk).push(n); }
+    for(const grp of seen.values()){ if(grp.length<2) continue; const lanes=[...new Set(grp.map(n=>n.lane))]; if(lanes.length<2) continue;
+      const z=zOf(grp[0].t,t); if(z<-.35||z>zMax) continue; const p=P(z,o);
+      g.save(); g.strokeStyle='rgba(255,255,255,.55)'; g.lineWidth=Math.max(1.5,2.2*p.s); g.beginPath();
+      g.moveTo(laneX(Math.min(...lanes)+.5,p.s,o),p.y); g.lineTo(laneX(Math.max(...lanes)+.5,p.s,o),p.y); g.stroke(); g.restore(); } }
   // 点按音符
   for(const n of G.notes){
     if(n.t-t>G.lead*zMax*1.02) break;
@@ -1682,13 +1842,15 @@ function failFinish(){
   G.state='result'; stopSong(); try{wake?.release()}catch(e){}
   const judged=G.counts[0]+G.counts[1]+G.counts[2]+G.counts[3]+G.counts[4];
   const acc=judged? (G.counts[4]+G.counts[3]*.8+G.counts[2]*.5+G.counts[1]*.2)/judged : 0;
-  const prog=G.buf? Math.min(1,Math.max(0,songTime()/G.buf.duration)) : 0;
+  const ft=songTime();
+  const prog=G.buf? Math.min(1,Math.max(0,ft/G.buf.duration)) : 0;
   const rk='hellrec-'+key(G.song), prev=store.get(rk,null);
-  if(!prev||prog>(prev.prog||0)) store.set(rk,{prog:+prog.toFixed(3),score:Math.round(G.score),t:Date.now()});
+  const prevProg=prev?(prev.prog||0):0, isRec=prog>prevProg;
+  if(isRec) store.set(rk,{prog:+prog.toFixed(3),score:Math.round(G.score),t:Date.now()});
   shutter('',()=>{
     gc.hidden=true; $('hud').hidden=true; fxOn=true; requestAnimationFrame(fxLoop);
     $('rsSong').textContent=G.meta.name+' · 地狱';
-    const st=$('rsStatus'); st.hidden=false; st.textContent=`挑战失败 · 到达 ${Math.round(prog*100)}%`;
+    const st=$('rsStatus'); st.hidden=false; st.textContent=`挑战失败 · 到达 ${fmt(Math.max(0,ft))} · ${Math.round(prog*100)}%`+(isRec?'':(prev?` · 最远 ${Math.round(prevProg*100)}%`:''));
     $('rsGrade').textContent='F';
     $('rsAcc').textContent='准确率 '+(acc*100).toFixed(1)+'%';
     $('rsMax').textContent='最大连击 '+G.max;
@@ -1696,7 +1858,9 @@ function failFinish(){
     for(let g=0;g<=4;g++) $('c'+g).textContent=G.counts[g];
     $('rsScore').textContent=Math.round(G.score).toLocaleString();
     $('rsBest').textContent=store.get('best-'+key(G.song)+'-3',0).toLocaleString();
-    $('rsNew').hidden=true;
+    $('rsNew').textContent='最远进度新纪录！'; $('rsNew').hidden=!isRec;
+    $('rsDelta').textContent='';
+    $('rsRe').classList.add('hot');
     show('result'); const r=$('result'); r.classList.remove('show'); void r.offsetWidth; r.classList.add('show');
   });
 }
@@ -1707,25 +1871,128 @@ function finish(){
   const c=G.counts, total=Math.max(1,c[4]+c[3]+c[2]+c[1]+c[0]);
   const acc=(c[4]+c[3]*.8+c[2]*.5+c[1]*.2)/total;
   const grade=acc>=.95?'S':acc>=.85?'A':acc>=.7?'B':acc>=.5?'C':'D';
-  const k=`best-${key(G.song)}-${G.lv}`, prev=store.get(k,0), sc=Math.round(G.score), isNew=sc>prev;
+  const k=`best-${key(G.song)}-${G.lv}`, prev=store.get(k,0), sc=Math.round(G.score), isNew=!G.practice&&sc>prev;
   if(isNew) store.set(k,sc);
+  /* 个人纪录按歌×难度分别保存（最高分/最佳准确率/全连/地狱通关可能来自不同场次，分别记）。
+     全连的定义看断连事件链：任意 MISS、长按/折线断开、滑键未滑到都会置 fcFail，不能只看 MISS 数 */
+  const totJ=c[4]+c[3]+c[2]+c[1]+c[0];
+  const isFC=!G.practice&&!G.fcFail&&totJ>0, isAP=isFC&&c[4]===totJ;
+  let accRec=false;
+  if(!G.practice){
+    const ak=`acc-${key(G.song)}-${G.lv}`; if(acc>store.get(ak,0)){ store.set(ak,+acc.toFixed(4)); accRec=true; }
+    if(isFC) store.set(`fc-${key(G.song)}-${G.lv}`,1);
+    if(G.lv===3) store.set(`clear-${key(G.song)}-3`,1);
+  }
   const rSlug = slugOf(G.song);
-  if(rSlug && sc > 0) submitScore({song:rSlug, lv:G.lv, score:sc, counts:[c[0],c[1],c[2],c[3],c[4]], max:G.max, acc:+acc.toFixed(4)});
+  if(!G.practice && rSlug && sc > 0) submitScore({song:rSlug, lv:G.lv, score:sc, counts:[c[0],c[1],c[2],c[3],c[4]], max:G.max, acc:+acc.toFixed(4)});
   shutter('',()=>{
     gc.hidden=true; $('hud').hidden=true; fxOn=true; requestAnimationFrame(fxLoop);
+    $('rsRe').classList.remove('hot');
     $('rsSong').textContent=`${G.meta.name} · ${LEVELS[G.lv].name}`;
-    const stEl=$('rsStatus'); if(G.hell){ stEl.hidden=false; stEl.textContent='通关'; } else stEl.hidden=true; $('rsGrade').textContent=grade; $('rsAcc').textContent=`准确率 ${(acc*100).toFixed(1)}%`; $('rsMax').textContent=`最大连击 ${G.max}`;
-    $('rsFC').hidden=c[0]>0; [4,3,2,1,0].forEach(i=>$('c'+i).textContent=c[i]);
-    $('rsBest').textContent=Math.max(prev,sc).toLocaleString(); $('rsNew').hidden=!isNew;
+    const stEl=$('rsStatus'); if(G.hell){ stEl.hidden=false; stEl.textContent=G.practice?'练习完成':'通关'; } else stEl.hidden=true; $('rsGrade').textContent=grade; $('rsAcc').textContent=`准确率 ${(acc*100).toFixed(1)}%`; $('rsMax').textContent=`最大连击 ${G.max}`;
+    $('rsFC').hidden=!isFC; $('rsFC').textContent=isAP?'全部 PERFECT':'全连击'; [4,3,2,1,0].forEach(i=>$('c'+i).textContent=c[i]);
+    $('rsBest').textContent=(G.practice?prev:Math.max(prev,sc)).toLocaleString(); $('rsNew').textContent='新纪录！'; $('rsNew').hidden=!isNew;
+    let deltaTxt='';
+    if(G.practice) deltaTxt='练习不计纪录';
+    else if(isNew) deltaTxt=`分数新纪录 +${(sc-prev).toLocaleString()}`+(accRec?' · 准确率也刷新了':'');
+    else { if(prev>0&&sc<prev) deltaTxt=`距最高分还差 ${(prev-sc).toLocaleString()}`; if(accRec) deltaTxt+=(deltaTxt?' · ':'')+`准确率新纪录 ${(acc*100).toFixed(1)}%`; }
+    $('rsDelta').textContent=deltaTxt;
     show('result'); const r=$('result'); r.classList.remove('show'); void r.offsetWidth; r.classList.add('show');
     // 分数滚动
     const t0=performance.now(); const tick=n=>{ const k=Math.min(1,(n-t0)/1100); $('rsScore').textContent=Math.round(sc*(1-Math.pow(1-k,3))).toLocaleString(); if(k<1) requestAnimationFrame(tick); }; requestAnimationFrame(tick);
-    // 没登录/注册：结算后弹出注册页，引导把成绩存进账号
-    if(!loggedIn()) setTimeout(()=>{ if(!loggedIn() && isOn('result') && $('acctDim').hidden) openAcct('reg'); }, 1000);
+    // 没登录/注册：结算后弹出注册页，引导把成绩存进账号（练习不记成绩，不弹）
+    if(!G.practice && !loggedIn()) setTimeout(()=>{ if(!loggedIn() && isOn('result') && $('acctDim').hidden) openAcct('reg'); }, 1000);
   });
 }
-$('rsRe').onclick=()=>{ click(); fxOn=false; startGame(G.song,G.lv,G.buf,G.meta); };
+$('rsRe').onclick=()=>{ click(); fxOn=false; startGame(G.song,G.lv,G.buf,G.meta,false,G.practice?G.prac:null); };
 $('rsSel').onclick=()=>{ click('back'); shutter('',()=>{ show('select'); info(); place(true); }); };
+
+/* ---------- 演奏设置（与确认面板的快速滑杆共用同一份状态，保存到本机） ---------- */
+function setOffset(v){ offset=Math.max(-200,Math.min(200,Math.round(v))); $('offset').value=offset; $('offsetVal').textContent=offset+'ms'; $('sOffset').value=offset; $('sOffsetVal').textContent=offset+'ms'; store.set('offset',offset); }
+function syncSetUI(){
+  $('sSpeed').value=speedF; $('sSpeedVal').textContent=(+speedF).toFixed(2)+'×';
+  $('sOffset').value=offset; $('sOffsetVal').textContent=offset+'ms';
+  $('sVolM').value=volMusic; $('sVolMVal').textContent=Math.round(volMusic*100)+'%';
+  $('sVolS').value=volSfx; $('sVolSVal').textContent=Math.round(volSfx*100)+'%';
+  $('fxStd').classList.toggle('on',!fxLow); $('fxLowB').classList.toggle('on',fxLow);
+}
+function openSettings(){ click(); syncSetUI(); $('setDim').hidden=false; }
+$('setOpen').onclick=openSettings;
+$('setOpen2').onclick=openSettings;
+$('setClose').onclick=()=>{ click('back'); $('setDim').hidden=true; };
+$('setDim').addEventListener('click',e=>{ if(e.target.id==='setDim') $('setDim').hidden=true; });
+$('sSpeed').oninput=e=>{ speedF=+e.target.value; $('sSpeedVal').textContent=speedF.toFixed(2)+'×'; $('speed').value=speedF; $('speedVal').textContent=speedF.toFixed(2)+'×'; store.set('speed',speedF); };
+$('sOffset').oninput=e=>setOffset(+e.target.value);
+$('sVolM').oninput=e=>{ volMusic=+e.target.value; $('sVolMVal').textContent=Math.round(volMusic*100)+'%'; if(musicBusN) musicBusN.gain.value=volMusic; store.set('volMusic',volMusic); };
+$('sVolS').oninput=e=>{ volSfx=+e.target.value; $('sVolSVal').textContent=Math.round(volSfx*100)+'%'; if(sfxBusN) sfxBusN.gain.value=volSfx; store.set('volSfx',volSfx); };
+function setFx(low){ fxLow=low; store.set('fx',low?'low':'std'); $('fxStd').classList.toggle('on',!low); $('fxLowB').classList.toggle('on',low); }
+$('fxStd').onclick=()=>{ click('tap'); setFx(false); };
+$('fxLowB').onclick=()=>{ click('tap'); setFx(true); };
+$('setReset').onclick=()=>{ click(); setOffset(0); speedF=1; $('speed').value=1; $('speedVal').textContent='1.00×'; store.set('speed',1);
+  volMusic=1; volSfx=1; if(musicBusN) musicBusN.gain.value=1; if(sfxBusN) sfxBusN.gain.value=1; store.set('volMusic',1); store.set('volSfx',1); setFx(false); syncSetUI(); };
+
+/* ---------- 跟拍校准 ----------
+   节拍由 WebAudio 按音频时钟预先调度（调度时刻就是目标时刻，不用定时器触发时刻凑数）；
+   点击在 pointerdown 当下用同一个音频时钟记录。测得的是「听到节拍→点下」相对调度时刻的偏差，
+   正值=偏晚。游戏的补偿只有一处（songTime 减 offset）：总延迟 L 时判定误差 = L - offset，
+   所以推荐 offset = 本次测得的中位偏差，直接替换旧值、不叠加。测试全程与成绩无关。 */
+const CALB={iv:0.6,warm:4,n:12};
+let calSt=null, calRec=0;
+function calClickSound(when){ try{ const a=ac(), o=a.createOscillator(), g=a.createGain(); o.type='square'; o.frequency.value=1900;
+  g.gain.setValueAtTime(0.0001,when); g.gain.exponentialRampToValueAtTime(0.22,when+0.003); g.gain.exponentialRampToValueAtTime(0.0001,when+0.055);
+  o.connect(g).connect(sfxBus()); o.start(when); o.stop(when+0.07); }catch(e){} }
+function calStop(){ if(calSt){ clearTimeout(calSt.timer); clearInterval(calSt.prog); calSt=null; } }
+function calMedian(arr){ const s=[...arr].sort((a,b)=>a-b); const m=s.length>>1; return s.length%2? s[m] : (s[m-1]+s[m])/2; }
+function calRun(verify){
+  calStop();
+  const a=ac(); a.resume();
+  const nBeats=verify?8:CALB.n, warm=verify?2:CALB.warm;
+  const t0=a.currentTime+0.25, beats=[]; for(let i=0;i<warm+nBeats;i++) beats.push(t0+i*CALB.iv);
+  calSt={beats,warm,nBeats,verify,taps:new Map(),next:0,timer:0,prog:0,done:false};
+  $('calTxt').textContent=verify?'验证跟拍：跟着节拍点大按钮，看看应用补偿之后的误差。':'测试中：听节拍跟着点，先 4 拍预备不计入，然后采集 12 拍。';
+  $('calBtns').hidden=true; $('calBtns2').hidden=true; $('calBtns3').hidden=true;
+  $('calProg').textContent=`已采集 0/${nBeats} 拍`;
+  const sched=()=>{ const st=calSt; if(!st) return; const ahead=ac().currentTime+0.15;
+    while(st.next<st.beats.length&&st.beats[st.next]<ahead){ calClickSound(st.beats[st.next]); st.next++; }
+    if(ac().currentTime>st.beats[st.beats.length-1]+0.45){ calFinish(); return; }
+    st.timer=setTimeout(sched,40); };
+  sched();
+  calSt.prog=setInterval(()=>{ const st=calSt; if(st) $('calProg').textContent=`已采集 ${st.taps.size}/${st.nBeats} 拍`; },120);
+}
+$('calPad').addEventListener('pointerdown',e=>{ e.preventDefault(); const st=calSt; if(!st||st.done) return; const tc=ac().currentTime;
+  let bi=-1,bd=1e9; st.beats.forEach((b,i)=>{ const d=Math.abs(tc-b); if(d<bd){ bd=d; bi=i; } });
+  if(bi<st.warm||bd>CALB.iv*0.4||st.taps.has(bi)) return;   // 预备拍不采、超出合理范围算误触、一拍只采第一次
+  st.taps.set(bi, tc-st.beats[bi]);
+  $('calProg').textContent=`已采集 ${st.taps.size}/${st.nBeats} 拍`;
+});
+function calFinish(){
+  const st=calSt; if(!st) return; clearTimeout(st.timer); clearInterval(st.prog); st.done=true; calSt=null;
+  const errs=[...st.taps.values()].filter(e=>Math.abs(e)<=0.18);   // 剔除明显异常值
+  if(st.verify){
+    const judged=errs.map(e=>e-offset/1000);   // 用游戏实际判定口径换算：判定误差 = 实测偏差 - 当前补偿
+    const med=judged.length?calMedian(judged):0, inp=judged.filter(e=>Math.abs(e)<=0.045).length;
+    $('calTxt').textContent=judged.length?`验证结果：补偿后点击中位误差 ${Math.round(med*1000)} 毫秒，${judged.length} 拍里有 ${inp} 拍落在 PERFECT 范围内。手感对了就可以点「完成」，觉得还偏就关掉这里、用延迟滑杆微调，或重新测试。`:'验证没有采到足够的点击，可以再试一次。';
+    $('calBtns3').hidden=false; return;
+  }
+  if(errs.length<8){ $('calTxt').textContent=`只采到 ${errs.length} 拍有效点击（至少需要 8 拍），这次没法给出可靠的推荐值。跟着节拍放松再测一次。`; $('calApply').disabled=true; $('calBtns2').hidden=false; return; }
+  const med=calMedian(errs), mad=calMedian(errs.map(e=>Math.abs(e-med)));
+  if(mad>0.045){ $('calTxt').textContent='这次点击忽快忽慢、不太稳定，没法给出可靠的推荐值。别抢拍，跟着节拍再测一次。'; $('calApply').disabled=true; $('calBtns2').hidden=false; return; }
+  calRec=Math.max(-200,Math.min(200,Math.round(med*1000)));
+  $('calApply').disabled=false;
+  $('calTxt').textContent=`你整体${calRec>5?'偏晚':calRec<-5?'偏早':'很准'}：点击中位比节拍${calRec>5?'晚':calRec<-5?'早':'只差'}约 ${Math.abs(calRec)} 毫秒，推荐把延迟校准设为 ${calRec} 毫秒。\n推荐值根据本次跟拍估算，可按实际手感微调。`;
+  $('calBtns2').hidden=false;
+}
+function calResetView(){ calStop(); $('calBtns').hidden=false; $('calBtns2').hidden=true; $('calBtns3').hidden=true; $('calProg').textContent='点「开始测试」';
+  $('calTxt').textContent='请用你平时玩游戏时的手机和耳机（或扬声器）来测；换了音频设备，建议重新测一次。\n测试时会播放节拍声：先 4 拍找节奏（不计入），然后跟着节拍点下面的大按钮，共采集 12 拍。画面上没有闪动的节拍提示，凭听到的声音点就行。'; }
+$('calOpen').onclick=()=>{ click(); calResetView(); $('calDim').hidden=false; };
+$('calClose').onclick=()=>{ calStop(); click('back'); $('calDim').hidden=true; };
+$('calCancel').onclick=()=>{ calStop(); click('back'); $('calDim').hidden=true; };
+$('calSkip').onclick=()=>{ click('back'); $('calDim').hidden=true; };
+$('calDone').onclick=()=>{ click(); $('calDim').hidden=true; };
+$('calStart').onclick=()=>{ click(); calRun(false); };
+$('calRetry').onclick=()=>{ click(); calRun(false); };
+$('calVerify').onclick=()=>{ click(); calRun(true); };
+$('calApply').onclick=()=>{ click(); setOffset(calRec); $('calTxt').textContent=`已应用推荐值 ${calRec} 毫秒。下面可以做一小段验证跟拍，确认补偿后的手感。`; $('calBtns2').hidden=true; $('calBtns3').hidden=false; };
 
 /* 面板底纹：右下角一圈圈细唱片纹（呼应「唱片滚过」转场），加一道很淡的斜光 */
 (function(){
