@@ -832,21 +832,23 @@ async function loadMeta(){
 async function fetchAudio(s, url, tries=3){
   let lastErr=null;
   for(let att=0; att<tries; att++){
+    const ctl=new AbortController(); let lastData=Date.now();
+    const guard=setInterval(()=>{ if(Date.now()-lastData>6000) ctl.abort(); },500);   /* 看门狗覆盖连接阶段+下载中：连续 6 秒没有任何数据就掐掉重试，不无限冻住（慢但有进度的下载不受影响） */
     try{
-      const r=await fetch(url); if(!r.ok) throw new Error('音乐文件没找到');
+      const r=await fetch(url,{signal:ctl.signal}); if(!r.ok) throw new Error('音乐文件没找到');
+      lastData=Date.now();
       const total=+r.headers.get('Content-Length')||0;
       if(r.body&&r.body.getReader){
         const rd=r.body.getReader(), chunks=[]; let got=0;
         for(;;){
-          let timer=null;
-          const res=await Promise.race([ rd.read(), new Promise((_,rej)=>{ timer=setTimeout(()=>rej(new Error('下载卡住')),6000); }) ]).finally(()=>clearTimeout(timer));
-          const {done,value}=res; if(done) break; chunks.push(value); got+=value.length; s.dlPct=total?got/total:0;
+          const {done,value}=await rd.read(); if(done) break; chunks.push(value); got+=value.length; lastData=Date.now(); s.dlPct=total?got/total:0;
         }
         const u8=new Uint8Array(got); let off=0; for(const c of chunks){ u8.set(c,off); off+=c.length; }
         return u8.buffer;
       }
       return await r.arrayBuffer();
-    }catch(e){ lastErr=e; s.dlPct=0; if(att<2) await new Promise(rr=>setTimeout(rr,600)); }
+    }catch(e){ if(e&&e.name==='AbortError') e=new Error('下载卡住'); lastErr=e; s.dlPct=0; if(att<tries-1) await new Promise(rr=>setTimeout(rr,600)); }
+    finally{ clearInterval(guard); }
   }
   throw lastErr||new Error('音乐加载失败');
 }
@@ -1888,7 +1890,7 @@ function draw(t,dt,now){
   if(G.judge){ const k=(nowMs-G.judge.t)/550; if(k<1){
     const J=JUDGE[G.judge.g];
     const sc=k<.15?1.35-(k/.15)*.35:1, a=k<.7?1:1-(k-.7)/.3, fs=Math.round(Math.min(o.half*.15,50)*sc);
-    const y=P(.34,o).y;
+    const y=P(.6,o).y;   /* 判定文字上移到原连击的位置：中段让给下落的音符，不再挡视线（连击已移左侧） */
     g.globalAlpha=a; g.textAlign='center'; g.textBaseline='middle'; g.font=`italic 700 ${fs}px Fredoka,sans-serif`; g.lineJoin='round';
     g.save(); g.translate(o.cx,y); if(g.letterSpacing!==undefined) g.letterSpacing=`${Math.round(fs*.06)}px`;
     g.lineWidth=Math.max(4,fs*.2); g.strokeStyle='#21402f'; g.strokeText(J.t,0,0);
@@ -1897,14 +1899,14 @@ function draw(t,dt,now){
     if(G.judge.el){ g.font='600 14px Fredoka,sans-serif'; g.fillStyle=G.judge.el==='EARLY'?'#9fe0ff':'#ffb8a8'; g.fillText(G.judge.el,o.cx,y+fs*.85); }
     g.globalAlpha=1; } }
   drawTutorialTarget(o);
-  // 连击
+  // 连击（移到轨道左侧空地：中间只留判定文字；字号略收，位置与判定文字同高，4 位数也压不到轨道）
   if(G.combo>=2){
     G.comboPop=Math.max(0,G.comboPop-dt*5);
-    const y=P(.6,o).y, fs=Math.round(Math.min(o.half*.28,92)*(1+G.comboPop*.18));
+    const y=P(.6,o).y, fs=Math.round(Math.min(o.half*.24,80)*(1+G.comboPop*.18)), cx2=GW*.115;
     g.font=`700 ${fs}px Fredoka,sans-serif`; g.textAlign='center'; g.textBaseline='alphabetic';
     const cg=g.createLinearGradient(0,y-fs,0,y); cg.addColorStop(0,'#ffffff'); cg.addColorStop(.6,'#ffffff'); cg.addColorStop(1,'#7cf0a6');
-    g.fillStyle='rgba(10,40,20,.7)'; g.fillText(G.combo,o.cx+2,y+3); g.fillStyle=cg; g.fillText(G.combo,o.cx,y);
-    g.font='16px "ZCOOL KuaiLe",sans-serif'; g.fillStyle='rgba(230,255,220,.9)'; g.fillText('连  击',o.cx,y+22);
+    g.fillStyle='rgba(10,40,20,.7)'; g.fillText(G.combo,cx2+2,y+3); g.fillStyle=cg; g.fillText(G.combo,cx2,y);
+    g.font='16px "ZCOOL KuaiLe",sans-serif'; g.fillStyle='rgba(230,255,220,.9)'; g.fillText('连  击',cx2,y+22);
   }
   // 开局与练习片段的入场倒计时：音频、谱面就绪后才开始走表，数字由歌曲时间直接推出，不另设计时器
   { const target=(G.prac&&G.prac.start>0)?G.prac.start:0, rem=target-t;
