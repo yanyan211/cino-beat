@@ -45,7 +45,7 @@ python -m http.server 8000     # 不能双击打开，fetch 读歌和谱需要 h
 | `LEVELS` | 三档难度：名字、颜色、`lead`（音符下落秒数：简单 2.1 / 普通 1.5 / 困难 1.0） |
 | `JUDGE` / `WIN` / `PTS` | 判定文字、判定窗口（秒）、分数 |
 | `parseChart` | 读谱面 txt |
-| `applyOrient` / `toApp` / `ROT` | **横屏适配**：触屏设备竖着拿时把 `#app` 旋转 90°，CSS 里的 vw/vh/vmin 全部换成 JS 设置的 `--vw/--vh/--vmin`；所有触摸坐标必须经过 `toApp()` 换算 |
+| `applyOrient` / `toApp` / `ROT` | **横屏适配**：触屏设备竖着拿时把 `#app` 旋转 90°，CSS 里的 vw/vh/vmin 全部换成 JS 设置的 `--vw/--vh/--vmin`；所有触摸坐标必须经过 `toApp()` 换算。**所有界面元素（HUD、结算、暂停、各种弹窗）必须放在 `#app` 里面**——2026-11-05 踩过坑：#hud/#result/#pause 等原本在 #app 外面，竖屏时只有菜单和赛道旋转、它们不转，出现「画面横、文字竖」；删掉 #select 后一个多余的 `</div>` 让 #app 包住全部元素后修复 |
 | `press` / `release` / `arrowFlick` / `completeFlick` | 输入判定（点按、长按、滑键） |
 | `pathLane` | 折线长按当前所在车道 |
 | `loop` / `draw` | 主循环、画面 |
