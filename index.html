@@ -706,12 +706,16 @@ function toApp(cx,cy){
   return ROT?{x:cy-r.top,y:r.right-cx}:{x:cx-r.left,y:cy-r.top};
 }
 let landscapePending=false;
+/* iPad（含伪装成 Mac 的 iPadOS）：全屏模式下只要有键盘输入，iOS 就弹系统警告
+   「你似乎正在全屏幕模式下键入」直接打断对局，网站无法关闭它。故 iPad 跳过全屏，
+   横屏靠设备方向与 applyOrient 的 CSS 旋转兜底；安卓/桌面不受影响，照常全屏。 */
+const isIPadLike=()=>/iPad/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 async function tryLandscape(){
   if(!mobileDevice()||landscapePending) return;
   landscapePending=true;
   try{
     const el=document.documentElement, fs=el.requestFullscreen||el.webkitRequestFullscreen;
-    if(fs&&!document.fullscreenElement&&!document.webkitFullscreenElement){
+    if(fs&&!isIPadLike()&&!document.fullscreenElement&&!document.webkitFullscreenElement){
       try{ await fs.call(el); }catch(e){}
     }
     // iPhone 不支持时仍由 applyOrient 保证页面横排；失败后下次明确点击可重试。
