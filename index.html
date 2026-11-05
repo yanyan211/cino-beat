@@ -989,7 +989,8 @@ function shutter(text,mid){
     veil.className=''; veil.innerHTML=''; veil.style.pointerEvents='none'; swapping=false;
   });
 }
-function show(id){ ['title','select','result'].forEach(k=>$(k).classList.toggle('off',k!==id)); if(id==='select') schedulePrefetch(); }
+function show(id){ ['title','select','result'].forEach(k=>$(k).classList.toggle('off',k!==id)); if(id==='select') schedulePrefetch();
+  if(pendingAcctSettings && id!=='result'){ const s=pendingAcctSettings; pendingAcctSettings=null; applySettings(s); } }
 const isOn=id=>!$(id).classList.contains('off');
 
 /* =====================================================================
@@ -1184,7 +1185,7 @@ let offset=store.get('offset',0); $('offset').value=offset; $('offsetVal').textC
 $('offset').oninput=e=>setOffset(+e.target.value);
 /* 下落速度：只改音符显示速度与预读（G.lead），不改音乐速度、谱面时间与判定窗口；保存到本地 */
 let speedF=store.get('speed',1); $('speed').value=speedF; $('speedVal').textContent=(+speedF).toFixed(2)+'×';
-$('speed').oninput=e=>{ speedF=+e.target.value; $('speedVal').textContent=speedF.toFixed(2)+'×'; $('sSpeed').value=speedF; $('sSpeedVal').textContent=speedF.toFixed(2)+'×'; store.set('speed',speedF); };
+$('speed').oninput=e=>setSpeed(+e.target.value);
 // 选难度后加载期间锁住：再点任何难度都不理会，关面板会作废这次加载，避免同时开出多首歌
 let picking=false, pickToken=0;
 function lockLevels(on){ picking=on; document.querySelectorAll('[data-lv]').forEach(b=>b.disabled=on); $('lvHellGo').disabled=on; $('lvPracGo').disabled=on; }
@@ -1214,6 +1215,7 @@ const API_BASE = location.hostname==='api.cino1018.com' ? '' : 'https://api.cino
 const SCORE_VER = 5;   // 成绩版本：谱面/计分规则变化时与服务端 rhythm.js 的 SCORE_VER 同步 +1，旧成绩作历史保留、不混排
 const slugOf = s => (s && !s.local && s.audio) ? (s.audio.split('/').pop()||'').replace(/\.mp3$/,'') : null;
 let me = store.get('rhythm-player', null);
+let pendingAcctSettings = null;   // 账号设置同步暂存（对局中拉到的设置回菜单再应用；声明提前到这里，避免 show() 在脚本执行完前调用时踩 TDZ）
 let bdLv = 1, bdSeq = 0, flushing = false;
 async function api(path, opt){
   const r = await fetch(API_BASE + path, opt);
@@ -1374,7 +1376,7 @@ $('acctGo').onclick = async ()=>{
       store.set('rhythm-player', me);
     }
     $('acctDim').hidden = true; $('acctPass').value = '';
-    syncAcctBtn(); syncBdFoot(); openMe();
+    syncAcctBtn(); syncBdFoot(); syncAccountSettings(); openMe();
   }catch(e){ $('acctErr').textContent = acctErrText(e); }
   finally{ $('acctGo').disabled = false; }
 };
@@ -2060,7 +2062,40 @@ $('rsRe').onclick=()=>{ click(); fxOn=false; startGame(G.song,G.lv,G.buf,G.meta,
 $('rsSel').onclick=()=>{ click('back'); shutter('',()=>{ show('select'); info(); place(true); }); };
 
 /* ---------- 演奏设置（与确认面板的快速滑杆共用同一份状态，保存到本机） ---------- */
-function setOffset(v){ offset=Math.max(-200,Math.min(200,Math.round(v))); $('offset').value=offset; $('offsetVal').textContent=offset+'ms'; $('sOffset').value=offset; $('sOffsetVal').textContent=offset+'ms'; store.set('offset',offset); }
+function setOffset(v){ offset=Math.max(-200,Math.min(200,Math.round(v))); $('offset').value=offset; $('offsetVal').textContent=offset+'ms'; $('sOffset').value=offset; $('sOffsetVal').textContent=offset+'ms'; store.set('offset',offset); queuePushSettings(); }
+function setSpeed(v){ speedF=Math.max(.8,Math.min(1.4,+v||1)); $('speed').value=speedF; $('speedVal').textContent=speedF.toFixed(2)+'×'; $('sSpeed').value=speedF; $('sSpeedVal').textContent=speedF.toFixed(2)+'×'; store.set('speed',speedF); queuePushSettings(); }
+function setVolMusic(v){ volMusic=Math.max(0,Math.min(1,+v||0)); $('sVolM').value=volMusic; $('sVolMVal').textContent=Math.round(volMusic*100)+'%'; if(musicBusN) musicBusN.gain.value=volMusic; store.set('volMusic',volMusic); queuePushSettings(); }
+function setVolSfx(v){ volSfx=Math.max(0,Math.min(1,+v||0)); $('sVolS').value=volSfx; $('sVolSVal').textContent=Math.round(volSfx*100)+'%'; if(sfxBusN) sfxBusN.gain.value=volSfx; store.set('volSfx',volSfx); queuePushSettings(); }
+
+/* ---------- 设置跟账号走：登录后拉取账号设置应用到本机；本机改动防抖推送回账号 ----------
+   账号里还没存过设置时，把本机现有设置传上去（老玩家无缝迁移，不用重调）。
+   同步失败静默：本地设置照常用，下次登录再同步。对局中不即时应用（偏移会影响歌曲时钟），回菜单再应用。 */
+function collectSettings(){ return {offset, speed:+speedF, volMusic, volSfx, fx:fxLow?'low':'std'}; }
+let pushSetTimer=null, acctApplying=false;
+function queuePushSettings(){ if(acctApplying || !loggedIn()) return; clearTimeout(pushSetTimer); pushSetTimer=setTimeout(pushSettingsNow, 900); }
+async function pushSettingsNow(){ if(!loggedIn()) return; try{ await apiJ('/api/rhythm/settings', postJson({id:me.id, secret:me.secret, settings:collectSettings()})); }catch(e){} }
+function applySettings(s){
+  if(!s) return;
+  if(window.G && (G.state==='play'||G.state==='countdown')){ pendingAcctSettings=s; return; }
+  acctApplying=true;
+  try{
+    if(Number.isFinite(+s.offset)) setOffset(+s.offset);
+    if(Number.isFinite(+s.speed)) setSpeed(+s.speed);
+    if(Number.isFinite(+s.volMusic)) setVolMusic(+s.volMusic);
+    if(Number.isFinite(+s.volSfx)) setVolSfx(+s.volSfx);
+    if(s.fx==='low'||s.fx==='std') setFx(s.fx==='low');
+  }finally{ acctApplying=false; }
+  syncSetUI();
+}
+async function syncAccountSettings(){
+  if(!loggedIn()) return;
+  try{
+    const q=new URLSearchParams({id:me.id, secret:me.secret});
+    const r=await apiJ('/api/rhythm/settings?'+q);
+    if(r.settings) applySettings(r.settings); else pushSettingsNow();
+  }catch(e){}
+}
+if(loggedIn()) syncAccountSettings();
 function syncSetUI(){
   $('sSpeed').value=speedF; $('sSpeedVal').textContent=(+speedF).toFixed(2)+'×';
   $('sOffset').value=offset; $('sOffsetVal').textContent=offset+'ms';
@@ -2073,15 +2108,14 @@ $('setOpen').onclick=openSettings;
 $('setOpen2').onclick=openSettings;
 $('setClose').onclick=()=>{ click('back'); $('setDim').hidden=true; };
 $('setDim').addEventListener('click',e=>{ if(e.target.id==='setDim') $('setDim').hidden=true; });
-$('sSpeed').oninput=e=>{ speedF=+e.target.value; $('sSpeedVal').textContent=speedF.toFixed(2)+'×'; $('speed').value=speedF; $('speedVal').textContent=speedF.toFixed(2)+'×'; store.set('speed',speedF); };
+$('sSpeed').oninput=e=>setSpeed(+e.target.value);
 $('sOffset').oninput=e=>setOffset(+e.target.value);
-$('sVolM').oninput=e=>{ volMusic=+e.target.value; $('sVolMVal').textContent=Math.round(volMusic*100)+'%'; if(musicBusN) musicBusN.gain.value=volMusic; store.set('volMusic',volMusic); };
-$('sVolS').oninput=e=>{ volSfx=+e.target.value; $('sVolSVal').textContent=Math.round(volSfx*100)+'%'; if(sfxBusN) sfxBusN.gain.value=volSfx; store.set('volSfx',volSfx); };
-function setFx(low){ fxLow=low; store.set('fx',low?'low':'std'); $('fxStd').classList.toggle('on',!low); $('fxLowB').classList.toggle('on',low); }
+$('sVolM').oninput=e=>setVolMusic(+e.target.value);
+$('sVolS').oninput=e=>setVolSfx(+e.target.value);
+function setFx(low){ fxLow=low; store.set('fx',low?'low':'std'); $('fxStd').classList.toggle('on',!low); $('fxLowB').classList.toggle('on',low); queuePushSettings(); }
 $('fxStd').onclick=()=>{ click('tap'); setFx(false); };
 $('fxLowB').onclick=()=>{ click('tap'); setFx(true); };
-$('setReset').onclick=()=>{ click(); setOffset(0); speedF=1; $('speed').value=1; $('speedVal').textContent='1.00×'; store.set('speed',1);
-  volMusic=1; volSfx=1; if(musicBusN) musicBusN.gain.value=1; if(sfxBusN) sfxBusN.gain.value=1; store.set('volMusic',1); store.set('volSfx',1); setFx(false); syncSetUI(); };
+$('setReset').onclick=()=>{ click(); setOffset(0); setSpeed(1); setVolMusic(1); setVolSfx(1); setFx(false); syncSetUI(); };
 
 /* ---------- 跟拍校准 ----------
    节拍由 WebAudio 按音频时钟预先调度（调度时刻就是目标时刻，不用定时器触发时刻凑数）；
