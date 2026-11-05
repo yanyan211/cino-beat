@@ -157,3 +157,12 @@ python -m http.server 8000     # 不能双击打开，fetch 读歌和谱需要 h
 - 音频走两条增益总线：歌曲音源必须 connect(musicBus())、界面音效/校准音走 sfxBus()；新增音源别直连 destination。
 - 个人纪录分开存（键名 best-/acc-/fc-/clear- + 歌曲 key + 难度）：最高分、最佳准确率、全连、地狱通关可能来自不同场次，界面别合并表述。全连看 G.fcFail（MISS、长按/折线断开、滑键未滑到都置位；滑键失败只记 BAD 不记 MISS，只看 counts[0] 会误判）。结算差值必须与本局开始前的纪录比（finish 里先读 prev 再写）。
 - 演奏设置（速度/延迟/音乐音量/音效音量/特效 std|low）都存 localStorage（rr2- 前缀），设置弹窗与确认面板滑杆共用同一状态、互相 sync；恢复默认不碰成绩/账号/纪录键。
+
+## 2026-11-05 稳定性与成绩版本（中断恢复 / 命中区域 / 交分去重）
+- 暂停恢复必须走倒计时：resume() 只进入 'countdown' 态（冻结歌曲时间 3·2·1 后 finishResume 才恢复），不要改回立即恢复。暂停/倒计时期间 gc 的 pointerdown 与键盘只做「预备登记」G.pressed=1（给玩家重新放好手指），不判定；finishResume 会把仍在持续的长按 n.okAt 重置并给 0.7s resumeUntil 宽限，长按不因暂停清触控判断开。开局倒计时由 draw() 按歌曲时间直接绘制（负时间/练习起点前），不另设计时器。visibilitychange/pagehide/blur/pointercancel/AudioContext 'interrupted' 都进 pause()，回前台不自动恢复。
+- laneAt 必须与绘制 P(z) 严格互逆：s 就用 k 本身，**不许再钳制**（旧版 s=max(k,.9) 让中远段输入道宽约两倍于画面，是外道点偏到内道、疑似「二道误触」的根源，已实测复现并修复；pointermove 迟滞处的 s 同理）。判定区域就是整条车道梯形，不是音符图形。
+- 交分带 playId（每局一个 UUID，存 lastPlay）+ ver=SCORE_VER：服务端 plays 表按 playId 去重，重试/待补交重复提交不会记两条；结算页交分失败显示「成绩暂未上传」+ 重试按钮（#rsUp），400 显示校验未通过且不给重试。
+- 成绩版本：客户端 SCORE_VER 与服务端 rhythm.js 的 SCORE_VER 必须同步；谱面音符/排列或计分规则变了就 +1。榜单只显示当前 ver，旧 ver 成绩行保留在库里（/me 可见、标历史），不删不混排；本地纪录写 rver- 键，选歌页版本不一致时标「历史版本」。纯视觉修改不要动版本号。
+- sw.js 只缓存 res.ok 的响应（404/500 绝不落盘），否则一次加载失败会被缓存堵死、重试永远失败；已升 VERSION v2 清旧坏条目。改 sw 逻辑记得同步升 VERSION。
+- 练习分段按钮不标时间：按出现顺序编号（主歌一/副歌一/主歌二/副歌二…，间奏同理，开头/结尾不编号），在 buildPracSegs 里由 SONG_SEGS 的类型现算，不要把编号写死进数据。
+- 地狱首次说明弹窗 #hellIntro：rr2-hell-intro 未读时拦截 hellBtn，「知道了」才记已读并进选歌，「返回」不记；选歌页 #hellHelp 仅地狱模式显示，可重看（按钮文案变「知道了」）。新弹窗的 .frame 必须给 >.panel 加 inset:0 那条共享规则，否则底板不渲染（hiFrame 踩过）。
