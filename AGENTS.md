@@ -149,3 +149,11 @@ python -m http.server 8000     # 不能双击打开，fetch 读歌和谱需要 h
 - 生命条仅地狱：满 100，PERFECT +0.8 / GREAT +0.4 / COOL 0 / BAD −5 / MISS −9（HELL.gain 集中配置）；award() 是唯一结算点，断长按在 breakHold 里按差值补扣，保证一个音符只结算一次生命；主循环帧末 hp<=0 → failFinish()（先结算当帧整组漏键再判失败）。失败不交服务器，只存本地 `hellrec-<key>` 挑战记录（最佳进度）；通关才按 lv=3 交分，榜单与三档独立。
 - 后端 rhythm.js 的 DIFFS 已含 'hell'（lv=3 的 chartInfo 读 <slug>_hell.txt 按行数校验，与三档同规则）；个人中心 LV_NAMES 已加「地狱」。
 - 地狱谱面由 ~/workspace/cino-beat-audit/gen_hell.py 生成：以困难谱面为骨架（时间已验证），新增音符全部取自该曲实际音频的起音事件池，并按四指占用/同轨间隔/密度上限约束，validate_hell.py 独立校验（行数==解析数、同轨间隔、长按/折线占用、同时手指≤4、0.5s 密度、滑键不越界；与困难谱面原样一致的骨架冲突只警告）。
+
+## 2026-11-05 体验升级（地狱 v2 / 设置 / 校准 / 纪录）
+- 地狱谱面 v2 由 `~/workspace/cino-beat-audit/gen_hell2.py` 生成：困难骨架不删、按 10 秒窗密度分恢复/铺垫/爆发三档塑形（恢复段不加密）、新增音符取真实起音池（距已有音符 ≥48ms）、爆发段强起音配双押/三押、孤立点按转长按、乐句尾转滑键；手指/密度口径与 validate_hell.py 完全一致（折线按整段全车道近似占用）。改谱后必跑 validate_hell.py 全首 ALL OK。旧 v1 的均匀加密谱已被 v2 取代，不要回滚到 v1。
+- 练习分段在 index.html 的 SONG_SEGS（gen_segments.py 按音频能量台阶+起音稀疏处生成、避开长按中间）；没有数据的歌只给「从头」，不要再用四等分编造分段。tears/教学歌只有「从头」是分析结论，不是漏做。
+- 延迟校准 = 跟拍测试（#calDim）：节拍用 WebAudio 音频时钟预调度、点击在 pointerdown 用同一时钟记录、中位数（MAD 过滤）出推荐值。offset 语义：判定误差 = 总延迟 − offset，推荐值直接替换不叠加；补偿只在 songTime 一处生效，不要在别处再加。手动滑杆方向：总显示 LATE 调大、EARLY 调小。
+- 音频走两条增益总线：歌曲音源必须 connect(musicBus())、界面音效/校准音走 sfxBus()；新增音源别直连 destination。
+- 个人纪录分开存（键名 best-/acc-/fc-/clear- + 歌曲 key + 难度）：最高分、最佳准确率、全连、地狱通关可能来自不同场次，界面别合并表述。全连看 G.fcFail（MISS、长按/折线断开、滑键未滑到都置位；滑键失败只记 BAD 不记 MISS，只看 counts[0] 会误判）。结算差值必须与本局开始前的纪录比（finish 里先读 prev 再写）。
+- 演奏设置（速度/延迟/音乐音量/音效音量/特效 std|low）都存 localStorage（rr2- 前缀），设置弹窗与确认面板滑杆共用同一状态、互相 sync；恢复默认不碰成绩/账号/纪录键。
