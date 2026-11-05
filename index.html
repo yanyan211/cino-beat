@@ -1294,7 +1294,7 @@ function setAcctMode(m){
   $('tabReg').classList.toggle('on', m === 'reg');
   $('acctHd').textContent = m === 'login' ? '登录' : '注册';
   $('acctGo').textContent = m === 'login' ? '登录' : '注册并绑定';
-  $('acctNote').textContent = m === 'reg' ? '注册会把账号绑到你现在的排行榜身份上，名字和成绩都保留。没有邮箱找回，密码记牢。' : '登录后这台设备换成账号的身份，名字和成绩都同步过来。';
+  $('acctNote').textContent = m === 'reg' ? '注册会把账号绑到你现在的排行榜身份上，名字和成绩都保留。没有邮箱找回，密码请牢记哦( ̀⌄ ́)。' : '登录后这台设备换成账号的身份，名字和成绩都同步过来。';
   $('acctErr').textContent = '';
   $('acctPass').setAttribute('autocomplete', m === 'login' ? 'current-password' : 'new-password');
 }
