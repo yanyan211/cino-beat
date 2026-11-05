@@ -197,6 +197,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .rsGrade b{display:block;font-family:var(--f-en);font-weight:700;font-size:16cqw;line-height:.9;color:#fff;--sw:.07em;-webkit-text-stroke:var(--sw) var(--forest);paint-order:stroke fill;
   filter:drop-shadow(0 .05em 0 var(--forest)) drop-shadow(0 0 2cqw rgba(124,240,166,.8))}
 .rsGrade span{display:block;font-size:1.9cqw;font-weight:400;color:#fff;margin-top:.6cqw;font-variant-numeric:tabular-nums}
+#rsSong{font-size:2.45cqw;line-height:1.2;margin:0 0 1.2cqw;max-width:100%;--sw:.09em;-webkit-text-stroke:var(--sw) var(--forest);paint-order:stroke fill}
 #rsFC{display:inline-block;margin-top:1cqw;font-size:1.7cqw;font-weight:400;color:var(--accent);background:#fff;padding:.4cqw 1.4cqw .4cqw 1.6cqw;border-radius:99px;letter-spacing:.15em}
 .rsList{display:flex;flex-direction:column;gap:.8cqw}
 .rsList div{display:flex;align-items:center;justify-content:space-between;padding:.5cqw 1.4cqw;border-radius:1cqw;background:rgba(10,40,20,.25)}
@@ -363,7 +364,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
     <div class="frame" id="rsFrame">
       <div class="panel pT"><div class="hd"><span>成绩总评</span></div>
         <div class="rsTotal">
-          <div class="rsGrade"><b id="rsGrade">S</b><span id="rsAcc">准确率 0%</span><span id="rsMax">最大连击 0</span><span id="rsFC" hidden>全连击</span></div>
+          <div class="rsGrade"><span id="rsSong"></span><b id="rsGrade">S</b><span id="rsAcc">准确率 0%</span><span id="rsMax">最大连击 0</span><span id="rsFC" hidden>全连击</span></div>
           <div class="rsList">
             <div><i class="jt j4">PERFECT</i><b id="c4">0</b></div>
             <div><i class="jt j3">GREAT</i><b id="c3">0</b></div>
@@ -1268,7 +1269,7 @@ function finish(){
   if(isNew) store.set(k,sc);
   shutter('',()=>{
     gc.hidden=true; $('hud').hidden=true; fxOn=true; requestAnimationFrame(fxLoop);
-    $('rsGrade').textContent=grade; $('rsAcc').textContent=`准确率 ${(acc*100).toFixed(1)}%`; $('rsMax').textContent=`最大连击 ${G.max}`;
+    $('rsSong').textContent=`${G.meta.name} · ${LEVELS[G.lv].name}`; $('rsGrade').textContent=grade; $('rsAcc').textContent=`准确率 ${(acc*100).toFixed(1)}%`; $('rsMax').textContent=`最大连击 ${G.max}`;
     $('rsFC').hidden=c[0]>0; [4,3,2,1,0].forEach(i=>$('c'+i).textContent=c[i]);
     $('rsBest').textContent=Math.max(prev,sc).toLocaleString(); $('rsNew').hidden=!isNew;
     show('result'); const r=$('result'); r.classList.remove('show'); void r.offsetWidth; r.classList.add('show');
