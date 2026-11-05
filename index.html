@@ -153,6 +153,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .calib input{flex:1;min-width:0;accent-color:var(--mint)}
 .calib output{font-family:var(--f-en);font-weight:600;width:auto;text-align:right;font-size:2.4cqw}
 #lvClose,.acctClose{position:absolute;right:2.6cqw;top:1.6cqw;z-index:2;width:7cqw;height:7cqw;border-radius:50%;border:0;background:rgba(247,250,246,.92);box-shadow:inset 0 0 0 1px rgba(33,64,47,.18);color:var(--forest);cursor:pointer;display:grid;place-items:center;padding:0}
+.acctClose{width:5.6cqw;height:5.6cqw;top:.95cqw;right:2.2cqw}
 #lvClose svg{width:50%;height:50%}
 #lvBody .tips{font-size:1.55cqw;line-height:1.35;color:#eaf6e6;text-align:left;margin-top:1.2cqw}
 #lvBody .tips b{white-space:nowrap;font-weight:400;color:#fff;background:#3fcf7a;border-radius:.4em;padding:0 .35em;margin-right:.2em}
@@ -256,12 +257,13 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .setFrame>.panel,.calFrame>.panel,.hiFrame>.panel{inset:0;border-radius:4cqw;border-width:.8cqw;box-shadow:0 0 0 .6cqw var(--forest),0 3cqw 6cqw rgba(0,0,0,.35)}
 .setFrame .hd,.calFrame .hd{height:7.5cqw;font-size:3.4cqw;border-bottom-width:.6cqw}
 .setFrame .hd span,.calFrame .hd span{font-size:3.6cqw}
-.setBody,.calBody{position:relative;z-index:1;padding:8cqw 4.5cqw 2.6cqw;display:flex;flex-direction:column;gap:.95cqw;max-height:calc(97*var(--vh));overflow:hidden;box-sizing:border-box}
+.setBody,.calBody{position:relative;z-index:1;padding:8cqw 4.5cqw 2.6cqw;display:flex;flex-direction:column;gap:.95cqw;max-height:calc(97*var(--vh));overflow-x:hidden;overflow-y:auto;box-sizing:border-box}
+.setBody{padding:7.9cqw 4.5cqw 2cqw;gap:.78cqw}
 .setRow{display:flex;align-items:center;gap:1.6cqw;font-size:2.7cqw;color:#fff}
 .setRow label{flex:none;width:6.4em;letter-spacing:.08em}
 .setRow input{flex:1;min-width:0;accent-color:var(--mint)}
 .setRow output{font-family:var(--f-en);font-weight:600;width:4.4em;text-align:right;font-size:2.6cqw}
-.setNote{font-size:2.1cqw;color:rgba(255,255,255,.78);line-height:1.55;margin:-.5cqw 0 0}
+.setNote{font-size:2.1cqw;color:rgba(255,255,255,.78);line-height:1.45;margin:-.4cqw 0 0}
 .setRowBtns{display:flex;gap:1.2cqw}
 .setRowBtns .gbtn{flex:1;font-size:3.1cqw;padding:.5em 0;white-space:nowrap}
 .fxSeg{display:flex;gap:.8cqw;flex:1}
@@ -498,14 +500,14 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
         <button class="acctClose" id="setClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         <div class="setBody">
           <div class="setRow"><label for="sSpeed">下落速度</label><input type="range" id="sSpeed" min="0.8" max="1.4" step="0.05"><output id="sSpeedVal">1.00×</output></div>
-          <p class="setNote">只改变音符下落快慢与预读时间，不改变音乐速度、谱面时间和判定。</p>
+          <p class="setNote">只改音符下落快慢与预读时间，不改音乐速度和判定。</p>
           <div class="setRow"><label for="sOffset">延迟校准</label><input type="range" id="sOffset" min="-200" max="200" step="5"><output id="sOffsetVal">0ms</output></div>
-          <p class="setNote">总显示 LATE 就调大、EARLY 就调小，单位毫秒。先跟拍校准，再用它微调。</p>
+          <p class="setNote">总显示 LATE 就调大、EARLY 就调小。先跟拍校准，再用它微调。</p>
           <div class="setRowBtns"><button class="gbtn normal" id="calOpen">跟拍校准</button><button class="gbtn dark" id="setReset">恢复默认</button></div>
           <div class="setRow"><label for="sVolM">音乐音量</label><input type="range" id="sVolM" min="0" max="1" step="0.05"><output id="sVolMVal">100%</output></div>
           <div class="setRow"><label for="sVolS">音效音量</label><input type="range" id="sVolS" min="0" max="1" step="0.05"><output id="sVolSVal">100%</output></div>
           <div class="setRow"><label>特效强度</label><div class="fxSeg"><button class="segChip" id="fxStd">标准</button><button class="segChip" id="fxLowB">简化</button></div></div>
-          <p class="setNote">简化减少粒子与闪光，必要反馈保留。设置只存本机，不影响成绩和账号。</p>
+          <p class="setNote">简化减少粒子与闪光，必要反馈保留。设置只存本机。</p>
         </div>
       </div>
     </div>
@@ -532,7 +534,6 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
           <p class="hiLead">这里的谱面更密集，包含多指组合，建议将设备平放，使用四指挑战。</p>
           <div class="hiBlock"><h4>正式挑战</h4><p>满血开局，失误会扣除生命，准确击打可少量恢复。生命归零即挑战失败，坚持到歌曲结束才算通关。通关成绩可参与地狱排行榜。</p></div>
           <div class="hiBlock"><h4>练习模式</h4><p>不受生命归零限制，可以反复练习、熟悉谱面。练习成绩不计入正式成绩、通关纪录和排行榜。</p></div>
-          <p class="hiTip">先练熟，再挑战，按自己的节奏来。</p>
           <div class="setRowBtns"><button class="gbtn hellBtn" id="hiGo">知道了，进入选歌</button><button class="gbtn dark" id="hiBack">返回</button></div>
         </div>
       </div>
@@ -1176,11 +1177,15 @@ async function api(path, opt){
   return r.json();
 }
 const postJson = body => ({method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body)});
-async function ensurePlayer(){
-  if(me && me.id && me.secret) return me;
-  const p = await api('/api/rhythm/player', postJson({name:'玩家' + Math.floor(1000 + Math.random()*9000)}));
-  me = p; store.set('rhythm-player', me);
-  return me;
+let meP = null;
+function ensurePlayer(force){
+  if(!force && me && me.id && me.secret) return Promise.resolve(me);
+  if(meP) return meP;
+  const nm = (me && me.name) || ('玩家' + Math.floor(1000 + Math.random()*9000));
+  meP = api('/api/rhythm/player', postJson({name: nm}))
+    .then(p=>{ me = p; store.set('rhythm-player', me); meP = null; return me; })
+    .catch(e=>{ meP = null; throw e; });
+  return meP;
 }
 function syncBdTabs(){ document.querySelectorAll('[data-bd]').forEach(b=>b.classList.toggle('on', +b.dataset.bd === bdLv)); }
 document.querySelectorAll('[data-bd]').forEach(b=>b.onclick=()=>{ click('tap'); if(+b.dataset.bd !== bdLv){ bdLv = +b.dataset.bd; syncBdTabs(); loadBoard(); } });
@@ -1191,26 +1196,41 @@ async function flushPending(){
     const keys = Object.keys(pend);
     if(!keys.length) return;
     await ensurePlayer();
+    let recovered = false;
     for(const k of keys){
       try{ await api('/api/rhythm/score', postJson({id:me.id, secret:me.secret, ...pend[k]})); delete pend[k]; }
-      catch(e){ if(e.message==='http 400') delete pend[k]; /* 校验不过的成绩补多少次都不会过，丢弃；网络不好才留着下次补 */ }
+      catch(e){
+        if(e.message==='http 400') delete pend[k]; /* 校验不过的成绩补多少次都不会过，丢弃；网络不好才留着下次补 */
+        else if(e.message==='http 403' && !recovered){ /* 本地身份在服务端已失效（如服务端数据重建）：重建身份后重试一次，否则永远补不上 */
+          recovered = true;
+          try{ await ensurePlayer(true); await api('/api/rhythm/score', postJson({id:me.id, secret:me.secret, ...pend[k]})); delete pend[k]; }
+          catch(e2){ if(e2.message==='http 400') delete pend[k]; }
+        }
+      }
     }
     store.set('rhythm-pending', pend);
   }catch(e){} finally{ flushing = false; }
 }
 let lastPlay=null;   // 最近一局待确认上传的成绩（结算页重试用，含 playId，重试不会重复记账）
 async function submitScore(payload){
+  const k = payload.song + '_' + payload.lv;
+  /* 先落盘再发送：结算瞬间关页/杀进程也不会丢，之后打开难度弹窗会自动补交（同一 playId，服务端去重） */
+  const pend0 = store.get('rhythm-pending', {});
+  if(!pend0[k] || pend0[k].score < payload.score || pend0[k].playId === payload.playId){ pend0[k] = payload; store.set('rhythm-pending', pend0); }
+  const clearPend = ()=>{ const p2 = store.get('rhythm-pending', {}); if(p2[k] && p2[k].playId === payload.playId){ delete p2[k]; store.set('rhythm-pending', p2); } };
   try{
     await ensurePlayer();
-    await api('/api/rhythm/score', postJson({id:me.id, secret:me.secret, ...payload}));
+    try{ await api('/api/rhythm/score', postJson({id:me.id, secret:me.secret, ...payload})); }
+    catch(e){
+      if(e.message !== 'http 403') throw e;
+      await ensurePlayer(true);   // 身份失效：重建后用同一 playId 重试，不会重复记账
+      await api('/api/rhythm/score', postJson({id:me.id, secret:me.secret, ...payload}));
+    }
+    clearPend();
     return true;
   }catch(e){
-    if(e.message==='http 400') return 'perm';   // 数据校验不过：存进待补交也永远交不上
-    const pend = store.get('rhythm-pending', {});
-    const k = payload.song + '_' + payload.lv;
-    if(!pend[k] || pend[k].score < payload.score) pend[k] = payload;
-    store.set('rhythm-pending', pend);
-    return false;
+    if(e.message === 'http 400'){ clearPend(); return 'perm'; }   // 数据校验不过：补多少次都不会过，清除并明确提示
+    return false;   // 待补交已在发送前落盘
   }
 }
 function bdMsgEl(text){ const m = document.createElement('div'); m.className = 'bdMsg'; m.textContent = text; return m; }
@@ -1292,7 +1312,9 @@ $('acctGo').onclick = async ()=>{
   try{
     if(acctMode === 'reg'){
       await ensurePlayer();
-      const r = await apiJ('/api/rhythm/register', postJson({id: me.id, secret: me.secret, username, password}));
+      let r;
+      try{ r = await apiJ('/api/rhythm/register', postJson({id: me.id, secret: me.secret, username, password})); }
+      catch(e){ if(e.status !== 403) throw e; await ensurePlayer(true); r = await apiJ('/api/rhythm/register', postJson({id: me.id, secret: me.secret, username, password})); }
       me.username = r.username; store.set('rhythm-player', me);
     }else{
       const r = await apiJ('/api/rhythm/login', postJson({username, password}));
@@ -1658,7 +1680,7 @@ function clearGameInput(){
   if(G){ G.pressed.fill(0); G.flash.fill(0); G.lastFlickPtr=null; }
 }
 
-function pause(){ if(!G||G.state!=='play') return; G.state='pause'; if(tutorialGate()?.holding||G.tutorial?.frozen!=null) tutorialFreeze(tutorialGate(),true); clearGameInput(); ac().suspend(); $('pause').hidden=false; }
+function pause(){ if(G&&G.state==='countdown'){ cancelCountdown(); return; } if(!G||G.state!=='play') return; G.state='pause'; if(tutorialGate()?.holding||G.tutorial?.frozen!=null) tutorialFreeze(tutorialGate(),true); clearGameInput(); ac().suspend(); $('pause').hidden=false; }
 let cdTimer=null;
 function resume(){ if(!G||G.state!=='pause') return; tryLandscape(); click();
   G.state='countdown';
@@ -1667,7 +1689,7 @@ function resume(){ if(!G||G.state!=='pause') return; tryLandscape(); click();
   cdTimer=setInterval(()=>{ n--; if(n<=0){ clearInterval(cdTimer); cdTimer=null; finishResume(); } else cd.textContent=n; },550);
 }
 function cancelCountdown(){ if(cdTimer){ clearInterval(cdTimer); cdTimer=null; } if(!G) return; G.state='pause'; $('pzCd').hidden=true; ['pzGo','pzRe','pzSel'].forEach(id=>$(id).hidden=false); }
-function finishResume(){ $('pause').hidden=true; $('pzCd').hidden=true; ['pzGo','pzRe','pzSel'].forEach(id=>$(id).hidden=false);
+function finishResume(){ if(!G||G.state!=='countdown') return; $('pause').hidden=true; $('pzCd').hidden=true; ['pzGo','pzRe','pzSel'].forEach(id=>$(id).hidden=false);
   ac().resume(); const t=songTime();
   for(const nt of G.notes) if(nt.holding) nt.okAt=t;   // 暂停前按住的长按：恢复瞬间重置宽限，不因暂停清触控判断开
   G.resumeUntil=t+0.7;
