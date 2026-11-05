@@ -1,4 +1,4 @@
-# AGENTS.md — cino-beat（原名 Cino 节奏大师，2026-11-05 用户拍板更名）交接说明
+# AGENTS.md — Cino 节奏大师（网址 cino-beat）交接说明
 
 > 给接手的 AI 助手（Codex 等）。先完整读完再动手。用户叫魏佳琪，**请用中文回复**。
 
@@ -114,7 +114,7 @@ python -m http.server 8000     # 不能双击打开，fetch 读歌和谱需要 h
 ## 8. 待办 / 下一步
 
 1. 用户试玩后按反馈微调谱面或手感（问清是哪首歌、哪一档、第几秒）。
-2. **上线到用户自己的服务器**（静态站已上线 2026-11-05：`https://api.cino1018.com/cino/`，Caddy 静态托管、与老游戏接口隔离，GitHub Pages 保留作备份；**排行榜与分数后端已上线 2026-11-05**，剩字体自托管未做）：
+2. **上线到用户自己的服务器**（静态站已上线 2026-11-05：`https://api.cino1018.com/cino-beat/`（原地址 `/cino/` 已于 2026-11-05 改名，Caddy 对旧路径做 308 跳转到新地址、含子路径；游戏内全是相对路径所以搬地址零改动），Caddy 静态托管、与老游戏接口隔离，GitHub Pages 保留作备份；**排行榜与分数后端已上线 2026-11-05**，剩字体自托管未做）：
    - **排行榜（已上线）**：独立模块 `/opt/gugu-server/rhythm.js`（server.js 入口仅加分流、备份 `server.js.bak-20261105-pre-rhythm`），数据独立 SQLite `/opt/gugu-server/data/rhythm/rhythm.db`（players + scores 两表）。接口：`POST /api/rhythm/player`（建身份，返回 id+secret）、`POST /api/rhythm/score`、`POST /api/rhythm/name`、`GET /api/rhythm/board?song=<slug>&lv=0|1|2`（前 10 + 我的名次）、`GET /api/rhythm/health`。交分校验：counts 五档之和须等于谱面音符数、acc 按 counts 重算对账、分数须落在 counts 推出的上下界内（长按 tick 按谱面实算）。前端：身份存 localStorage `rr2-rhythm-player`、交分失败存 `rr2-rhythm-pending` 下次打开难度弹窗自动补交；本地导入歌曲不参与排行榜。**名字全局唯一（2026-11-05）**：`/player` 建号时名字已被占用会自动加 4 位随机后缀避让；`/name` 改名查重，占用返回 409 `name taken`（自己改回原名放行）。
    - **账号系统（已上线 2026-11-05）**：同一 rhythm.db 加 `accounts` 表（ukey=账号名小写主键、PBKDF2-HMAC-SHA256 密码哈希、player 唯一绑定玩家身份）。接口：`POST /api/rhythm/register`（需现身份 id+secret，把账号绑到当前匿名身份——名字与成绩全部保留；账号名 2–16 字、仅汉字/字母/数字/下划线、大小写不敏感唯一；密码 6–32 位；无邮箱找回）、`POST /api/rhythm/login`（校验后返回所绑身份的 id+secret+name+username，前端直接换成本地身份，成绩跟随账号跨设备；同 IP 登录限 15 次/分钟）、`POST /api/rhythm/password`（验旧改新）、`GET /api/rhythm/me?id&secret`（name、username、全部战绩含每项名次）。前端：**开始界面（标题页）**右上角胶囊按钮 `#acctBtn`（未登录显示「登录 / 注册」、登录后显示「个人中心」；按钮在 `#title` 内，点击必须 stopPropagation 防误触开始游戏）；登录/注册弹窗 `#acctDim` 与个人中心 `#meDim` 挂在 `#app` 层级（不在任何 section 里），共用 `.acctFrame` 横向宽框（宽公式同 `#lvFrame`，内部两栏布局、字号约 3.2cqw——用户否决过竖长窄卡，弹窗一律横宽）；面板规则、hd 字号都要单独给 `.acctFrame` 写一份，cqw 相对框宽；登录时把原匿名身份存 `rr2-rhythm-anon`，退出登录时恢复；个人中心可改名（复用 `/name`）、改密、看战绩列表。**结算引导（2026-11-05）**：打完一首歌若未登录，结算页出现 1 秒后自动弹出注册页（`finish()` 里 `openAcct('reg')`），已登录不弹。
    - **难度弹窗（已改版 2026-11-05）**：宽框三栏——左栏封面+歌名+时长/音符数+延迟滑块，中栏三档难度按钮（含本地最高分），右栏排行榜（难度选项卡切换、自己一行高亮、底部状态行：已登录显示我的名次+名字+「账号 xxx」、未登录显示「登录 / 注册」按钮——点击关难度弹窗并打开登录页；改名已从排行榜移除，统一去个人中心）。`#lvFrame` 设了 `container-type:inline-size`，框内 cqw 按框宽计、矮屏自动等比缩，改尺寸时注意这一点；框宽现为 `min(163*var(--vw),170*var(--vh),950px)`、宽高比 1.96。中栏是网格等高三行（按钮在行内伸缩、不会互相穿）；封面就是单张 `#lvCover` 正方形图（圆角+细白边、无包装层/阴影/放大——套包装层在 iOS 上会从上角和底边露白，用户明确否决过）；flex 子元素慎用 `overflow:hidden`（会被压成 0 高/0 宽，歌名与榜单名字都中过招，须 `flex:none`/给 min-width）。

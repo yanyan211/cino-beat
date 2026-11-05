@@ -17,7 +17,7 @@ body{margin:0;font-size:14px}
 img{max-width:100%}
 [hidden]{display:none!important}
 </style>
-<title>cino-beat</title>
+<title>Cino 节奏大师</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=ZCOOL+KuaiLe&display=swap">
@@ -60,9 +60,6 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .logo .en{font-family:var(--f-en);font-weight:700;font-size:clamp(34px,calc(7.5*var(--vmin)),68px);letter-spacing:.04em;color:var(--accent);--sw:.18em;
   -webkit-text-stroke:var(--sw) var(--cream);paint-order:stroke fill;filter:drop-shadow(0 4px 0 var(--forest));margin-bottom:.12em}
 .logo .cn{font-family:var(--f-cn);font-weight:400;font-size:clamp(64px,calc(16*var(--vmin)),150px);letter-spacing:.04em;--sw:.075em;
-  color:#fff;-webkit-text-stroke:var(--sw) var(--leaf);paint-order:stroke fill;
-  text-shadow:0 .05em 0 var(--accent),0 .08em 0 var(--forest),0 .14em .12em rgba(33,64,47,.25)}
-.logo .beat{font-family:var(--f-en);font-weight:700;font-size:clamp(54px,calc(13*var(--vmin)),124px);letter-spacing:.01em;--sw:.07em;
   color:#fff;-webkit-text-stroke:var(--sw) var(--leaf);paint-order:stroke fill;
   text-shadow:0 .05em 0 var(--accent),0 .08em 0 var(--forest),0 .14em .12em rgba(33,64,47,.25)}
 #touch{display:inline-flex;align-items:center;justify-content:center;gap:.5em;font-family:var(--f-cn);font-weight:400;font-size:clamp(20px,calc(3.8*var(--vmin)),28px);letter-spacing:.12em;
@@ -374,7 +371,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 
   <!-- 标题 -->
   <section class="screen enter" id="title" tabindex="0" aria-label="点击开始">
-    <h1 class="logo"><span class="beat">cino-beat</span></h1>
+    <h1 class="logo"><span class="en">Cino</span><span class="cn">节奏大师</span></h1>
     <div id="touch"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6.2v11.6c0 .8.9 1.3 1.6.9l9.1-5.8a1 1 0 0 0 0-1.8l-9.1-5.8c-.7-.4-1.6.1-1.6.9z" fill="currentColor"/></svg><span id="touchLabel">点击开始</span></div>
     <button class="gbtn normal" id="acctBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M5 19.5c1.2-3.2 3.9-4.8 7-4.8s5.8 1.6 7 4.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span id="acctBtnTxt">登录 / 注册</span></button>
   </section>
