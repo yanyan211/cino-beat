@@ -1007,14 +1007,29 @@ function place(instant){
   });
   info();
 }
+let selHellSeq=0;
+function loadSelHellMeta(song){
+  if(song._hellMetaLoading) return; song._hellMetaLoading=true;
+  const tk=++selHellSeq;
+  fetch('songs/'+slugOf(song)+'_hell.txt').then(r=>{ if(!r.ok) throw 0; return r.text(); })
+    .then(t=>{ song._hellMetaLoading=false; song.lvMeta=song.lvMeta||{}; song.lvMeta[3]=parseChart(t); if(MODE==='hell' && songs[Math.round(target)]===song) info(); })
+    .catch(()=>{ song._hellMetaLoading=false; if(MODE==='hell' && songs[Math.round(target)]===song && tk===selHellSeq) $('selMeta').textContent='地狱谱面制作中'; });
+}
 function info(){
   const i=Math.round(target); const s=songs[i];
   if(!s) return;
-  const m=s.meta; if(!m) return;
-  const holds=m.notes.filter(n=>n.hold).length;
-  const best=Math.max(...[0,1,2].map(l=>store.get(`best-${key(s)}-${l}`,0)));
-  $('selName').textContent=m.name;
-  $('selMeta').textContent=`${fmt(m.len)} · ${m.notes.length} 个音符 · 长按 ${holds} · 最佳 ${best.toLocaleString()}`;
+  const base=s.meta; if(!base) return;
+  const hellMode=MODE==='hell';
+  const m = hellMode ? (s.lvMeta && s.lvMeta[3]) : base;
+  $('selName').textContent=base.name;
+  if(hellMode && !m){
+    $('selMeta').textContent='地狱谱面读取中…';
+    loadSelHellMeta(s);
+  } else {
+    const holds=m.notes.filter(n=>n.hold).length;
+    const best=hellMode ? store.get(`best-${key(s)}-3`,0) : Math.max(...[0,1,2].map(l=>store.get(`best-${key(s)}-${l}`,0)));
+    $('selMeta').textContent=`${fmt(m.len)} · ${m.notes.length} 个音符 · 长按 ${holds} · 最佳 ${best.toLocaleString()}`;
+  }
   /* 当前模式下这首歌的个人纪录：最高分与最佳准确率分别保存（可能来自不同场次）；状态只认有记录的数据，不推测 */
   const hell=MODE==='hell', lv=hell?3:1, k=key(s);
   const b=store.get(`best-${k}-${lv}`,0), a=store.get(`acc-${k}-${lv}`,0);
@@ -1167,7 +1182,7 @@ async function pickLevel(l,prac=null){
 
 /* ---------- 排行榜（香港服务器 /api/rhythm，玩家身份存本地 rr2-rhythm-player） ---------- */
 const API_BASE = location.hostname==='api.cino1018.com' ? '' : 'https://api.cino1018.com';
-const SCORE_VER = 3;   // 成绩版本：谱面/计分规则变化时与服务端 rhythm.js 的 SCORE_VER 同步 +1，旧成绩作历史保留、不混排
+const SCORE_VER = 4;   // 成绩版本：谱面/计分规则变化时与服务端 rhythm.js 的 SCORE_VER 同步 +1，旧成绩作历史保留、不混排
 const slugOf = s => (s && !s.local && s.audio) ? (s.audio.split('/').pop()||'').replace(/\.mp3$/,'') : null;
 let me = store.get('rhythm-player', null);
 let bdLv = 1, bdSeq = 0, flushing = false;
