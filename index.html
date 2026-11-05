@@ -288,37 +288,45 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 /* ---------- 账号（登录/注册/个人中心） ---------- */
 #acctBtn{position:absolute;top:calc(2.4*var(--vh));right:calc(2.6*var(--vw));z-index:3;font-size:15px;min-height:40px;padding:.45em 1.1em;display:inline-flex;align-items:center;gap:.45em}
 #acctBtn svg{width:1.05em;height:1.05em;flex:none}
-.acctFrame{width:min(calc(118*var(--vw)),calc(86*var(--vh)),560px);animation:zoomIn .25s cubic-bezier(.2,1.3,.4,1) both}
+.acctFrame{width:min(calc(163*var(--vw)),calc(170*var(--vh)),950px);animation:zoomIn .25s cubic-bezier(.2,1.3,.4,1) both}
 .acctFrame>.panel{inset:0;border-radius:4cqw;border-width:.8cqw;box-shadow:0 0 0 .6cqw var(--forest),0 3cqw 6cqw rgba(0,0,0,.35)}
-.acctFrame .hd{height:9.5cqw;font-size:4.4cqw;border-bottom-width:.8cqw}
-.acctFrame .hd span{font-size:4.6cqw}
-.acctBody{position:relative;z-index:1;padding:10.5cqw 7cqw 6cqw;display:flex;flex-direction:column;gap:2.2cqw;max-height:calc(97*var(--vh));overflow-y:auto;box-sizing:border-box}
+.acctFrame .hd{height:7.5cqw;font-size:3.4cqw;border-bottom-width:.6cqw}
+.acctFrame .hd span{font-size:3.6cqw}
+.acctBody{position:relative;z-index:1;padding:9cqw 4.5cqw 4cqw;display:flex;flex-direction:column;gap:1.4cqw;max-height:calc(97*var(--vh));overflow-y:auto;box-sizing:border-box}
 .acctTabs{display:flex;gap:2cqw}
-.acctTabs button{flex:1;font-family:var(--f-cn);font-size:4.6cqw;padding:.45em 0;border-radius:999px;border:.35cqw solid rgba(33,64,47,.3);background:rgba(247,250,246,.5);color:var(--forest);cursor:pointer}
+.acctTabs button{flex:1;font-family:var(--f-cn);font-size:3.6cqw;padding:.35em 0;border-radius:999px;border:.35cqw solid rgba(33,64,47,.3);background:rgba(247,250,246,.5);color:var(--forest);cursor:pointer}
 .acctTabs button.on{background:linear-gradient(#fff,#e6f3df);border-color:var(--forest);box-shadow:0 .5cqw 0 var(--forest)}
-.acctField{display:flex;flex-direction:column;gap:1cqw}
-.acctField label{font-family:var(--f-cn);font-size:3.6cqw;color:#eef7ee}
-.acctField input{font-family:var(--f-cn);font-size:4.4cqw;padding:.55em .8em;border-radius:2.4cqw;border:.35cqw solid rgba(33,64,47,.35);background:rgba(255,255,255,.95);color:var(--forest);outline:none;width:100%;box-sizing:border-box}
+.acctCols{display:flex;gap:4cqw;align-items:flex-start}
+.acctCol{display:flex;flex-direction:column;gap:1.4cqw;min-width:0}
+.acctSide{flex:0 0 30%}
+.acctMain{flex:1}
+#meDim .acctSide{flex-basis:40%}
+#meDim .acctBtns{flex-direction:column}
+.acctField{display:flex;flex-direction:row;align-items:center;gap:2.4cqw}
+.acctField label{font-family:var(--f-cn);font-size:3.2cqw;color:#eef7ee;flex:0 0 2.7em;white-space:nowrap}
+.acctField input{flex:1;min-width:0;font-family:var(--f-cn);font-size:3.4cqw;padding:.45em .7em;border-radius:2.4cqw;border:.35cqw solid rgba(33,64,47,.35);background:rgba(255,255,255,.95);color:var(--forest);outline:none;width:100%;box-sizing:border-box}
 .acctField input:focus{border-color:var(--forest)}
-#acctErr,#meMsg{min-height:1.25em;font-family:var(--f-cn);font-size:3.6cqw;color:#ffc9bc}
-#acctGo{font-size:4.8cqw;min-height:2.4em}
-.acctNote{font-family:var(--f-cn);font-size:3.2cqw;color:rgba(240,248,241,.88);line-height:1.55}
-.meRow{display:flex;align-items:center;gap:2.4cqw;font-family:var(--f-cn);font-size:4.2cqw;color:#f2f8f2}
+#acctErr,#meMsg{min-height:1.15em;font-family:var(--f-cn);font-size:3.2cqw;color:#ffc9bc}
+#acctGo{font-size:3.8cqw;min-height:2.2em}
+.acctNote{font-family:var(--f-cn);font-size:3.2cqw;color:rgba(240,248,241,.9);line-height:1.6;padding-top:.6cqw}
+.meRow{display:flex;align-items:center;gap:1.8cqw;font-family:var(--f-cn);font-size:3.3cqw;color:#f2f8f2}
+.meRow>span{flex:none}
+.meRow b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .meRow b{font-family:var(--f-en);font-weight:600}
-.meRow .bdBtn{font-size:3.4cqw;margin-left:auto}
+.meRow .bdBtn{font-size:2.8cqw;margin-left:auto;flex:none;padding:.3em .8em .3em .9em}
 #meEdit{display:flex;gap:1.6cqw;align-items:center}
 #meEdit[hidden]{display:none}
-#meEdit input{flex:1;min-width:0;font-family:var(--f-cn);font-size:4.2cqw;padding:.5em .8em;border-radius:2.2cqw;border:.35cqw solid rgba(33,64,47,.35);background:rgba(255,255,255,.95);color:var(--forest);outline:none;box-sizing:border-box}
-#meEdit .bdBtn{font-size:3.4cqw}
-#meStats{display:flex;flex-direction:column;gap:1.2cqw;max-height:32cqw;overflow-y:auto}
-.meStat{display:flex;gap:2.4cqw;align-items:baseline;background:rgba(247,250,246,.16);border-radius:1.8cqw;padding:1.7cqw 2.8cqw;font-family:var(--f-cn);font-size:3.8cqw;color:#eef7ee}
+#meEdit input{flex:1;min-width:0;font-family:var(--f-cn);font-size:3.4cqw;padding:.45em .7em;border-radius:2.2cqw;border:.35cqw solid rgba(33,64,47,.35);background:rgba(255,255,255,.95);color:var(--forest);outline:none;box-sizing:border-box}
+#meEdit .bdBtn{font-size:3cqw}
+#meStats{display:flex;flex-direction:column;gap:1.2cqw;max-height:44cqw;overflow-y:auto}
+.meStat{display:flex;gap:1.6cqw;align-items:baseline;background:rgba(247,250,246,.16);border-radius:1.8cqw;padding:1.5cqw 2.4cqw;font-family:var(--f-cn);font-size:3.2cqw;color:#eef7ee}
 .meStat .msSong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .meStat b{font-family:var(--f-en);font-weight:600}
 .meStat .msRank{white-space:nowrap;font-weight:700}
-#mePwBox{display:flex;flex-direction:column;gap:2.6cqw}
+#mePwBox{display:flex;flex-direction:column;gap:1.4cqw}
 #mePwBox[hidden]{display:none}
 .acctBtns{display:flex;gap:2cqw}
-.acctBtns .gbtn{flex:1;font-size:4.2cqw;min-height:2.3em;white-space:nowrap;padding:.4em .6em}
+.acctBtns .gbtn{flex:1;font-size:3.6cqw;min-height:2.2em;white-space:nowrap;padding:.35em .6em}
 #tutorialReplay{font-size:15px;min-height:40px}
 #tutorialSkip{pointer-events:auto;font:14px var(--f-cn);color:#fff;background:var(--forest);border:1px solid #dcefdf;border-radius:999px;padding:9px 13px;cursor:pointer}
 #tutorialCoach{position:absolute;z-index:3;top:calc(17*var(--vh));left:50%;transform:translateX(-50%);width:min(440px,calc(70*var(--vw)));padding:12px 20px 13px;text-align:center;
@@ -359,6 +367,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   <section class="screen enter" id="title" tabindex="0" aria-label="点击开始">
     <h1 class="logo"><span class="en">Cino</span><span class="cn">节奏大师</span></h1>
     <div id="touch"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6.2v11.6c0 .8.9 1.3 1.6.9l9.1-5.8a1 1 0 0 0 0-1.8l-9.1-5.8c-.7-.4-1.6.1-1.6.9z" fill="currentColor"/></svg><span id="touchLabel">点击开始</span></div>
+    <button class="gbtn normal" id="acctBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M5 19.5c1.2-3.2 3.9-4.8 7-4.8s5.8 1.6 7 4.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span id="acctBtnTxt">登录 / 注册</span></button>
   </section>
 
   <!-- 选曲 -->
@@ -377,7 +386,6 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
       <span class="hint">左右滑动选歌，点中间的封面确认</span>
       <button class="gbtn normal" id="tutorialReplay">重玩教学</button>
     </div>
-    <button class="gbtn normal" id="acctBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M5 19.5c1.2-3.2 3.9-4.8 7-4.8s5.8 1.6 7 4.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span id="acctBtnTxt">登录 / 注册</span></button>
 
     <div class="dim" id="level" hidden>
       <div class="frame" id="lvFrame">
@@ -406,17 +414,25 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
         </div>
       </div>
     </div>
+  </section>
+
     <div class="dim" id="acctDim" hidden>
       <div class="frame acctFrame">
         <div class="panel"><div class="hd"><span id="acctHd">登录</span></div></div>
         <button class="acctClose" id="acctClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         <div class="acctBody">
           <div class="acctTabs"><button id="tabLogin" class="on">登录</button><button id="tabReg">注册</button></div>
-          <div class="acctField"><label for="acctUser">账号</label><input id="acctUser" maxlength="16" autocomplete="username" placeholder="2–16 个字，汉字/字母/数字/下划线"></div>
-          <div class="acctField"><label for="acctPass">密码</label><input id="acctPass" type="password" maxlength="32" autocomplete="current-password" placeholder="至少 6 位"></div>
-          <div id="acctErr"></div>
-          <button class="gbtn normal" id="acctGo">登录</button>
-          <div class="acctNote" id="acctNote" style="display:none">注册会把账号绑到你现在的排行榜身份上：名字和成绩都保留，换手机登录这个账号就能接着用。没有邮箱找回，密码记牢一点。</div>
+          <div class="acctCols">
+            <div class="acctCol acctSide">
+              <div class="acctNote" id="acctNote">登录后这台设备换成账号的身份，名字和成绩都同步过来。</div>
+            </div>
+            <div class="acctCol acctMain">
+              <div class="acctField"><label for="acctUser">账号</label><input id="acctUser" maxlength="16" autocomplete="username" placeholder="2–16 个字，可用汉字字母数字"></div>
+              <div class="acctField"><label for="acctPass">密码</label><input id="acctPass" type="password" maxlength="32" autocomplete="current-password" placeholder="至少 6 位"></div>
+              <div id="acctErr"></div>
+              <button class="gbtn normal" id="acctGo">登录</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -426,21 +442,26 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
         <div class="panel"><div class="hd"><span>个人中心</span></div></div>
         <button class="acctClose" id="meClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         <div class="acctBody">
-          <div class="meRow"><span>账号</span><b id="meUser">—</b></div>
-          <div class="meRow"><span>排行榜名字</span><b id="meName">—</b><button id="meRename" class="bdBtn">改名</button></div>
-          <div id="meEdit" hidden><input id="meNameInput" maxlength="12" placeholder="输入新名字"><button id="meNameSave" class="bdBtn">保存</button><button id="meNameCancel" class="bdBtn">取消</button></div>
-          <div class="meRow"><span>我的战绩</span></div>
-          <div id="meStats"><div class="bdMsg">加载中…</div></div>
-          <div id="mePwBox" hidden>
-            <div class="acctField"><label for="meOld">旧密码</label><input id="meOld" type="password" maxlength="32" autocomplete="current-password"></div>
-            <div class="acctField"><label for="meNew">新密码</label><input id="meNew" type="password" maxlength="32" autocomplete="new-password" placeholder="至少 6 位"></div>
+          <div class="acctCols">
+            <div class="acctCol acctSide">
+              <div class="meRow"><span>账号</span><b id="meUser">—</b></div>
+              <div class="meRow"><span>名字</span><b id="meName">—</b><button id="meRename" class="bdBtn">改名</button></div>
+              <div id="meEdit" hidden><input id="meNameInput" maxlength="12" placeholder="输入新名字"><button id="meNameSave" class="bdBtn">保存</button><button id="meNameCancel" class="bdBtn">取消</button></div>
+              <div id="mePwBox" hidden>
+                <div class="acctField"><label for="meOld">旧密码</label><input id="meOld" type="password" maxlength="32" autocomplete="current-password"></div>
+                <div class="acctField"><label for="meNew">新密码</label><input id="meNew" type="password" maxlength="32" autocomplete="new-password" placeholder="至少 6 位"></div>
+              </div>
+              <div id="meMsg"></div>
+              <div class="acctBtns"><button class="gbtn normal" id="mePwBtn">修改密码</button><button class="gbtn dark" id="meLogout">退出登录</button></div>
+            </div>
+            <div class="acctCol acctMain">
+              <div class="meRow"><span>我的战绩</span></div>
+              <div id="meStats"><div class="bdMsg">加载中…</div></div>
+            </div>
           </div>
-          <div id="meMsg"></div>
-          <div class="acctBtns"><button class="gbtn normal" id="mePwBtn">修改密码</button><button class="gbtn dark" id="meLogout">退出登录</button></div>
         </div>
       </div>
     </div>
-  </section>
 
   <!-- 游戏 HUD -->
   <div id="hud" hidden>
@@ -1034,12 +1055,13 @@ function setAcctMode(m){
   $('tabReg').classList.toggle('on', m === 'reg');
   $('acctHd').textContent = m === 'login' ? '登录' : '注册';
   $('acctGo').textContent = m === 'login' ? '登录' : '注册并绑定';
-  $('acctNote').style.display = m === 'reg' ? '' : 'none';
+  $('acctNote').textContent = m === 'reg' ? '注册会把账号绑到你现在的排行榜身份上，名字和成绩都保留。没有邮箱找回，密码记牢。' : '登录后这台设备换成账号的身份，名字和成绩都同步过来。';
   $('acctErr').textContent = '';
   $('acctPass').setAttribute('autocomplete', m === 'login' ? 'current-password' : 'new-password');
 }
 function openAcct(){ setAcctMode('login'); $('acctDim').hidden = false; }
-$('acctBtn').onclick = ()=>{ click(); if(loggedIn()) openMe(); else openAcct(); };
+$('acctBtn').onclick = e=>{ e.stopPropagation(); click(); if(loggedIn()) openMe(); else openAcct(); };
+$('acctBtn').addEventListener('keydown', e=>e.stopPropagation());
 $('tabLogin').onclick = ()=>{ click('tap'); setAcctMode('login'); };
 $('tabReg').onclick = ()=>{ click('tap'); setAcctMode('reg'); };
 $('acctClose').onclick = ()=>{ click('back'); $('acctDim').hidden = true; };
