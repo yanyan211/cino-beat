@@ -144,7 +144,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .calib{display:flex;align-items:center;gap:1.6cqw;font-size:2.4cqw;font-weight:400;color:#fff;width:100%}
 .calib input{flex:1;min-width:0;accent-color:var(--mint)}
 .calib output{font-family:var(--f-en);font-weight:600;width:auto;text-align:right;font-size:2.4cqw}
-#lvClose{position:absolute;right:2.6cqw;top:1.6cqw;z-index:2;width:7cqw;height:7cqw;border-radius:50%;border:0;background:rgba(247,250,246,.92);box-shadow:inset 0 0 0 1px rgba(33,64,47,.18);color:var(--forest);cursor:pointer;display:grid;place-items:center;padding:0}
+#lvClose,.acctClose{position:absolute;right:2.6cqw;top:1.6cqw;z-index:2;width:7cqw;height:7cqw;border-radius:50%;border:0;background:rgba(247,250,246,.92);box-shadow:inset 0 0 0 1px rgba(33,64,47,.18);color:var(--forest);cursor:pointer;display:grid;place-items:center;padding:0}
 #lvClose svg{width:50%;height:50%}
 #lvBody .tips{font-size:1.55cqw;line-height:1.35;color:#eaf6e6;text-align:left;margin-top:1.2cqw}
 #lvBody .tips b{white-space:nowrap;font-weight:400;color:#fff;background:#3fcf7a;border-radius:.4em;padding:0 .35em;margin-right:.2em}
@@ -285,6 +285,40 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #transPick button[aria-pressed="true"]{background:var(--forest);color:#fff}
 
 /* 新手教学：沿用现有薄荷面板与字体；提示不挡住判定线。 */
+/* ---------- 账号（登录/注册/个人中心） ---------- */
+#acctBtn{position:absolute;top:calc(2.4*var(--vh));right:calc(2.6*var(--vw));z-index:3;font-size:15px;min-height:40px;padding:.45em 1.1em;display:inline-flex;align-items:center;gap:.45em}
+#acctBtn svg{width:1.05em;height:1.05em;flex:none}
+.acctFrame{width:min(calc(118*var(--vw)),calc(86*var(--vh)),560px);animation:zoomIn .25s cubic-bezier(.2,1.3,.4,1) both}
+.acctFrame>.panel{inset:0;border-radius:4cqw;border-width:.8cqw;box-shadow:0 0 0 .6cqw var(--forest),0 3cqw 6cqw rgba(0,0,0,.35)}
+.acctFrame .hd{height:9.5cqw;font-size:4.4cqw;border-bottom-width:.8cqw}
+.acctFrame .hd span{font-size:4.6cqw}
+.acctBody{position:relative;z-index:1;padding:10.5cqw 7cqw 6cqw;display:flex;flex-direction:column;gap:2.2cqw;max-height:calc(97*var(--vh));overflow-y:auto;box-sizing:border-box}
+.acctTabs{display:flex;gap:2cqw}
+.acctTabs button{flex:1;font-family:var(--f-cn);font-size:4.6cqw;padding:.45em 0;border-radius:999px;border:.35cqw solid rgba(33,64,47,.3);background:rgba(247,250,246,.5);color:var(--forest);cursor:pointer}
+.acctTabs button.on{background:linear-gradient(#fff,#e6f3df);border-color:var(--forest);box-shadow:0 .5cqw 0 var(--forest)}
+.acctField{display:flex;flex-direction:column;gap:1cqw}
+.acctField label{font-family:var(--f-cn);font-size:3.6cqw;color:#eef7ee}
+.acctField input{font-family:var(--f-cn);font-size:4.4cqw;padding:.55em .8em;border-radius:2.4cqw;border:.35cqw solid rgba(33,64,47,.35);background:rgba(255,255,255,.95);color:var(--forest);outline:none;width:100%;box-sizing:border-box}
+.acctField input:focus{border-color:var(--forest)}
+#acctErr,#meMsg{min-height:1.25em;font-family:var(--f-cn);font-size:3.6cqw;color:#ffc9bc}
+#acctGo{font-size:4.8cqw;min-height:2.4em}
+.acctNote{font-family:var(--f-cn);font-size:3.2cqw;color:rgba(240,248,241,.88);line-height:1.55}
+.meRow{display:flex;align-items:center;gap:2.4cqw;font-family:var(--f-cn);font-size:4.2cqw;color:#f2f8f2}
+.meRow b{font-family:var(--f-en);font-weight:600}
+.meRow .bdBtn{font-size:3.4cqw;margin-left:auto}
+#meEdit{display:flex;gap:1.6cqw;align-items:center}
+#meEdit[hidden]{display:none}
+#meEdit input{flex:1;min-width:0;font-family:var(--f-cn);font-size:4.2cqw;padding:.5em .8em;border-radius:2.2cqw;border:.35cqw solid rgba(33,64,47,.35);background:rgba(255,255,255,.95);color:var(--forest);outline:none;box-sizing:border-box}
+#meEdit .bdBtn{font-size:3.4cqw}
+#meStats{display:flex;flex-direction:column;gap:1.2cqw;max-height:32cqw;overflow-y:auto}
+.meStat{display:flex;gap:2.4cqw;align-items:baseline;background:rgba(247,250,246,.16);border-radius:1.8cqw;padding:1.7cqw 2.8cqw;font-family:var(--f-cn);font-size:3.8cqw;color:#eef7ee}
+.meStat .msSong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meStat b{font-family:var(--f-en);font-weight:600}
+.meStat .msRank{white-space:nowrap;font-weight:700}
+#mePwBox{display:flex;flex-direction:column;gap:2.6cqw}
+#mePwBox[hidden]{display:none}
+.acctBtns{display:flex;gap:2cqw}
+.acctBtns .gbtn{flex:1;font-size:4.2cqw;min-height:2.3em;white-space:nowrap;padding:.4em .6em}
 #tutorialReplay{font-size:15px;min-height:40px}
 #tutorialSkip{pointer-events:auto;font:14px var(--f-cn);color:#fff;background:var(--forest);border:1px solid #dcefdf;border-radius:999px;padding:9px 13px;cursor:pointer}
 #tutorialCoach{position:absolute;z-index:3;top:calc(17*var(--vh));left:50%;transform:translateX(-50%);width:min(440px,calc(70*var(--vw)));padding:12px 20px 13px;text-align:center;
@@ -343,6 +377,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
       <span class="hint">左右滑动选歌，点中间的封面确认</span>
       <button class="gbtn normal" id="tutorialReplay">重玩教学</button>
     </div>
+    <button class="gbtn normal" id="acctBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M5 19.5c1.2-3.2 3.9-4.8 7-4.8s5.8 1.6 7 4.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span id="acctBtnTxt">登录 / 注册</span></button>
 
     <div class="dim" id="level" hidden>
       <div class="frame" id="lvFrame">
@@ -368,6 +403,40 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
             <div id="bdEdit" hidden><input id="bdNameInput" maxlength="12" placeholder="输入新名字"><button id="bdNameSave" class="bdBtn">保存</button><button id="bdNameCancel" class="bdBtn">取消</button></div>
           </div>
         </div>
+        </div>
+      </div>
+    </div>
+    <div class="dim" id="acctDim" hidden>
+      <div class="frame acctFrame">
+        <div class="panel"><div class="hd"><span id="acctHd">登录</span></div></div>
+        <button class="acctClose" id="acctClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+        <div class="acctBody">
+          <div class="acctTabs"><button id="tabLogin" class="on">登录</button><button id="tabReg">注册</button></div>
+          <div class="acctField"><label for="acctUser">账号</label><input id="acctUser" maxlength="16" autocomplete="username" placeholder="2–16 个字，汉字/字母/数字/下划线"></div>
+          <div class="acctField"><label for="acctPass">密码</label><input id="acctPass" type="password" maxlength="32" autocomplete="current-password" placeholder="至少 6 位"></div>
+          <div id="acctErr"></div>
+          <button class="gbtn normal" id="acctGo">登录</button>
+          <div class="acctNote" id="acctNote" style="display:none">注册会把账号绑到你现在的排行榜身份上：名字和成绩都保留，换手机登录这个账号就能接着用。没有邮箱找回，密码记牢一点。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dim" id="meDim" hidden>
+      <div class="frame acctFrame">
+        <div class="panel"><div class="hd"><span>个人中心</span></div></div>
+        <button class="acctClose" id="meClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+        <div class="acctBody">
+          <div class="meRow"><span>账号</span><b id="meUser">—</b></div>
+          <div class="meRow"><span>排行榜名字</span><b id="meName">—</b><button id="meRename" class="bdBtn">改名</button></div>
+          <div id="meEdit" hidden><input id="meNameInput" maxlength="12" placeholder="输入新名字"><button id="meNameSave" class="bdBtn">保存</button><button id="meNameCancel" class="bdBtn">取消</button></div>
+          <div class="meRow"><span>我的战绩</span></div>
+          <div id="meStats"><div class="bdMsg">加载中…</div></div>
+          <div id="mePwBox" hidden>
+            <div class="acctField"><label for="meOld">旧密码</label><input id="meOld" type="password" maxlength="32" autocomplete="current-password"></div>
+            <div class="acctField"><label for="meNew">新密码</label><input id="meNew" type="password" maxlength="32" autocomplete="new-password" placeholder="至少 6 位"></div>
+          </div>
+          <div id="meMsg"></div>
+          <div class="acctBtns"><button class="gbtn normal" id="mePwBtn">修改密码</button><button class="gbtn dark" id="meLogout">退出登录</button></div>
         </div>
       </div>
     </div>
@@ -944,6 +1013,113 @@ $('bdNameSave').onclick = async ()=>{
     loadBoard();
   }catch(e){}
 };
+
+/* ---------- 账号：登录/注册/个人中心（账号绑定排行榜身份，成绩跟随账号） ---------- */
+const SONG_NAMES = {babys_horizon:"Baby's Horizon", pimple09:"09's Pimple", weiming:'未命名', wobuzhidao:'我不知道', yixiang:'臆想', babe:'BABE', babystep:'baby step', enemy:'enemy', meltingrain:'melting sunny rain', tears:'Tears'};
+const LV_NAMES = ['简单','普通','困难'];
+async function apiJ(path, opt){
+  const r = await fetch(API_BASE + path, opt);
+  let j = {}; try{ j = await r.json(); }catch(e){}
+  if(!r.ok){ const err = new Error(j.error || ('http ' + r.status)); err.code = j.error; err.status = r.status; throw err; }
+  return j;
+}
+const ACCT_ERRS = {taken:'这个账号名已经被注册了，换一个吧', already:'你已经绑定过账号了', mismatch:'账号或密码不对', 'bad username':'账号名要 2–16 个字，只能用汉字、字母、数字、下划线', 'bad password':'密码至少 6 位', 'slow down':'试太多次了，等一分钟再来', 'no account':'还没绑账号'};
+function acctErrText(e){ return ACCT_ERRS[e && e.code] || '网络出错，再试一次'; }
+function loggedIn(){ return !!(me && me.username); }
+function syncAcctBtn(){ $('acctBtnTxt').textContent = loggedIn() ? '个人中心' : '登录 / 注册'; }
+let acctMode = 'login';
+function setAcctMode(m){
+  acctMode = m;
+  $('tabLogin').classList.toggle('on', m === 'login');
+  $('tabReg').classList.toggle('on', m === 'reg');
+  $('acctHd').textContent = m === 'login' ? '登录' : '注册';
+  $('acctGo').textContent = m === 'login' ? '登录' : '注册并绑定';
+  $('acctNote').style.display = m === 'reg' ? '' : 'none';
+  $('acctErr').textContent = '';
+  $('acctPass').setAttribute('autocomplete', m === 'login' ? 'current-password' : 'new-password');
+}
+function openAcct(){ setAcctMode('login'); $('acctDim').hidden = false; }
+$('acctBtn').onclick = ()=>{ click(); if(loggedIn()) openMe(); else openAcct(); };
+$('tabLogin').onclick = ()=>{ click('tap'); setAcctMode('login'); };
+$('tabReg').onclick = ()=>{ click('tap'); setAcctMode('reg'); };
+$('acctClose').onclick = ()=>{ click('back'); $('acctDim').hidden = true; };
+$('acctGo').onclick = async ()=>{
+  const username = $('acctUser').value.trim(), password = $('acctPass').value;
+  if(!username || !password){ $('acctErr').textContent = '账号和密码都要填'; return; }
+  click();
+  $('acctGo').disabled = true;
+  try{
+    if(acctMode === 'reg'){
+      await ensurePlayer();
+      const r = await apiJ('/api/rhythm/register', postJson({id: me.id, secret: me.secret, username, password}));
+      me.username = r.username; store.set('rhythm-player', me);
+    }else{
+      const r = await apiJ('/api/rhythm/login', postJson({username, password}));
+      if(me && !me.username && me.id !== r.id) store.set('rhythm-anon', me);
+      me = {id: r.id, secret: r.secret, name: r.name, username: r.username};
+      store.set('rhythm-player', me);
+    }
+    $('acctDim').hidden = true; $('acctPass').value = '';
+    syncAcctBtn(); openMe();
+  }catch(e){ $('acctErr').textContent = acctErrText(e); }
+  finally{ $('acctGo').disabled = false; }
+};
+async function openMe(){
+  $('meDim').hidden = false;
+  $('meUser').textContent = (me && me.username) || '—';
+  $('meName').textContent = (me && me.name) || '—';
+  $('meEdit').hidden = true; $('mePwBox').hidden = true; $('mePwBtn').textContent = '修改密码'; $('meMsg').textContent = '';
+  const box = $('meStats'); box.replaceChildren(bdMsgEl('加载中…'));
+  try{
+    const q = new URLSearchParams({id: me.id, secret: me.secret});
+    const r = await apiJ('/api/rhythm/me?' + q);
+    me.name = r.name; store.set('rhythm-player', me);
+    $('meName').textContent = r.name;
+    box.replaceChildren();
+    if(!r.stats.length) box.append(bdMsgEl('暂无成绩，去打一首上榜吧'));
+    for(const s of r.stats){
+      const d = document.createElement('div'); d.className = 'meStat';
+      const a = document.createElement('span'); a.className = 'msSong'; a.textContent = (SONG_NAMES[s.song] || s.song) + ' · ' + LV_NAMES[s.lv];
+      const b = document.createElement('b'); b.textContent = s.score.toLocaleString();
+      const c = document.createElement('span'); c.className = 'msRank'; c.textContent = '第 ' + s.rank + ' 名';
+      d.append(a, b, c); box.append(d);
+    }
+  }catch(e){
+    if(e.status === 403){
+      me = store.get('rhythm-anon', null); store.set('rhythm-player', me);
+      $('meDim').hidden = true; syncAcctBtn(); openAcct(); return;
+    }
+    box.replaceChildren(bdMsgEl('战绩加载失败，重开试试'));
+  }
+}
+$('meClose').onclick = ()=>{ click('back'); $('meDim').hidden = true; };
+$('meRename').onclick = ()=>{ click(); $('meEdit').hidden = false; $('meNameInput').value = me.name || ''; try{ $('meNameInput').focus(); }catch(e){} };
+$('meNameCancel').onclick = ()=>{ click('back'); $('meEdit').hidden = true; };
+$('meNameSave').onclick = async ()=>{
+  const name = $('meNameInput').value.trim(); if(!name) return;
+  click();
+  try{
+    const r = await apiJ('/api/rhythm/name', postJson({id: me.id, secret: me.secret, name}));
+    me.name = r.name; store.set('rhythm-player', me);
+    $('meName').textContent = me.name; $('meEdit').hidden = true;
+  }catch(e){ $('meMsg').textContent = '改名失败，再试一次'; }
+};
+$('mePwBtn').onclick = async ()=>{
+  if($('mePwBox').hidden){ click(); $('mePwBox').hidden = false; $('mePwBtn').textContent = '保存新密码'; $('meMsg').textContent = ''; return; }
+  click();
+  try{
+    await apiJ('/api/rhythm/password', postJson({id: me.id, secret: me.secret, old: $('meOld').value, new: $('meNew').value}));
+    $('meOld').value = ''; $('meNew').value = ''; $('mePwBox').hidden = true; $('mePwBtn').textContent = '修改密码';
+    $('meMsg').textContent = '密码已改好';
+  }catch(e){ $('meMsg').textContent = acctErrText(e); }
+};
+$('meLogout').onclick = ()=>{
+  click('back');
+  me = store.get('rhythm-anon', null);
+  store.set('rhythm-player', me);
+  $('meDim').hidden = true; syncAcctBtn();
+};
+syncAcctBtn();
 
 /* 教学谱面与正式成绩分离；加载令牌确保跳过后异步结果不会重开游戏。 */
 let tutorialSeen=store.get('tutorial-v1',false), tutorialLoading=false, tutorialToken=0;
