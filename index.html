@@ -271,7 +271,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .fxSeg{display:flex;gap:.8cqw;flex:1}
 .fxSeg .segChip{flex:1}
 .calTxt{font-size:2.35cqw;color:#fff;line-height:1.55;white-space:pre-line}
-#calPad{height:23cqw;border-radius:3cqw;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 .35cqw rgba(255,255,255,.5);display:grid;place-items:center;touch-action:none;cursor:pointer;user-select:none;-webkit-user-select:none}
+#calPad{height:23cqw;border-radius:3cqw;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 .35cqw rgba(255,255,255,.5);display:grid;place-items:center;touch-action:none;cursor:pointer;user-select:none;-webkit-user-select:none;transition:background .12s}
+#calPad.hit{background:rgba(255,255,255,.42)}
 #calPad span{font-size:3.4cqw;color:#fff;letter-spacing:.1em;pointer-events:none}
 .rsBtns{display:flex;gap:18px;justify-content:center}
 #result.show .rsGrade b{animation:stamp .5s .55s cubic-bezier(.2,1.6,.4,1) both}
@@ -2134,7 +2135,7 @@ function calRun(verify){
   const a=ac(); a.resume();
   const nBeats=verify?8:CALB.n, warm=verify?2:CALB.warm;
   const t0=a.currentTime+0.25, beats=[]; for(let i=0;i<warm+nBeats;i++) beats.push(t0+i*CALB.iv);
-  calSt={beats,warm,nBeats,verify,taps:new Map(),next:0,timer:0,prog:0,done:false};
+  calSt={beats,warm,nBeats,verify,taps:new Map(),next:0,timer:0,prog:0,done:false,raw:0,far:0,hint:'',hintUntil:0};
   $('calTxt').textContent=verify?'验证跟拍：跟着节拍点大按钮，看看应用补偿之后的误差。':'测试中：听节拍跟着点，先 4 拍预备不计入，然后采集 12 拍。';
   $('calBtns').hidden=true; $('calBtns2').hidden=true; $('calBtns3').hidden=true;
   $('calProg').textContent=`已采集 0/${nBeats} 拍`;
@@ -2143,29 +2144,41 @@ function calRun(verify){
     if(ac().currentTime>st.beats[st.beats.length-1]+0.45){ calFinish(); return; }
     st.timer=setTimeout(sched,40); };
   sched();
-  calSt.prog=setInterval(()=>{ const st=calSt; if(st) $('calProg').textContent=`已采集 ${st.taps.size}/${st.nBeats} 拍`; },120);
+  calSt.prog=setInterval(()=>{ const st=calSt; if(!st) return; $('calProg').textContent=(st.hint&&performance.now()<st.hintUntil)?st.hint:`已采集 ${st.taps.size}/${st.nBeats} 拍`; },120);
 }
-$('calPad').addEventListener('pointerdown',e=>{ e.preventDefault(); const st=calSt; if(!st||st.done) return; const tc=ac().currentTime;
+function calFlash(){ const p=$('calPad'); p.classList.add('hit'); setTimeout(()=>p.classList.remove('hit'),110); }
+function calHint(st,txt){ st.hint=txt; st.hintUntil=performance.now()+750; $('calProg').textContent=txt; }
+$('calPad').addEventListener('pointerdown',e=>{ e.preventDefault(); const st=calSt; if(!st||st.done) return; calFlash(); st.raw++; const tc=ac().currentTime;
   let bi=-1,bd=1e9; st.beats.forEach((b,i)=>{ const d=Math.abs(tc-b); if(d<bd){ bd=d; bi=i; } });
-  if(bi<st.warm||bd>CALB.iv*0.4||st.taps.has(bi)) return;   // 预备拍不采、超出合理范围算误触、一拍只采第一次
+  /* 采集窗 = 半拍（300ms）：归属最近的节拍。窗口不能再窄——校准要测的正是大延迟，
+     蓝牙耳机总延迟常 200ms+，旧的 240ms 窗会把这类用户的每一次点击都当误触丢掉。 */
+  if(bi<st.warm){ calHint(st,'预备拍，先找节奏…'); return; }
+  if(bd>CALB.iv*0.5){ st.far++; calHint(st,tc>st.beats[bi]?'这下离节拍太远（偏晚），没计入':'这下离节拍太远（偏早），没计入'); return; }
+  if(st.taps.has(bi)){ calHint(st,'这一拍已经记过啦'); return; }
   st.taps.set(bi, tc-st.beats[bi]);
-  $('calProg').textContent=`已采集 ${st.taps.size}/${st.nBeats} 拍`;
+  st.hint=''; $('calProg').textContent=`已采集 ${st.taps.size}/${st.nBeats} 拍`;
 });
 function calFinish(){
   const st=calSt; if(!st) return; clearTimeout(st.timer); clearInterval(st.prog); st.done=true; calSt=null;
-  const errs=[...st.taps.values()].filter(e=>Math.abs(e)<=0.18);   // 剔除明显异常值
+  const errs=[...st.taps.values()].filter(e=>Math.abs(e)<=0.30);   // 与采集窗同口径：300ms 内的延迟都是要测的量，只剔除更离谱的
   if(st.verify){
     const judged=errs.map(e=>e-offset/1000);   // 用游戏实际判定口径换算：判定误差 = 实测偏差 - 当前补偿
     const med=judged.length?calMedian(judged):0, inp=judged.filter(e=>Math.abs(e)<=0.045).length;
     $('calTxt').textContent=judged.length?`验证结果：补偿后点击中位误差 ${Math.round(med*1000)} 毫秒，${judged.length} 拍里有 ${inp} 拍落在 PERFECT 范围内。手感对了就可以点「完成」，觉得还偏就关掉这里、用延迟滑杆微调，或重新测试。`:'验证没有采到足够的点击，可以再试一次。';
     $('calBtns3').hidden=false; return;
   }
-  if(errs.length<8){ $('calTxt').textContent=`只采到 ${errs.length} 拍有效点击（至少需要 8 拍），这次没法给出可靠的推荐值。跟着节拍放松再测一次。`; $('calApply').disabled=true; $('calBtns2').hidden=false; return; }
+  if(errs.length<8){
+    $('calTxt').textContent = st.raw===0
+      ? '一次点击都没有检测到——确认是点在下面的大按钮上、而不是别处，再试一次。'
+      : st.far>=4
+        ? `你点了 ${st.raw} 下，但大多离节拍太远（超过 0.3 秒）没计入，只采到 ${errs.length} 拍。耳机延迟特别大或者没跟上节拍时都会这样：先听两拍找准节奏再点，放松再测一次。`
+        : `只采到 ${errs.length} 拍有效点击（至少需要 8 拍），这次没法给出可靠的推荐值。跟着节拍放松再测一次。`;
+    $('calApply').disabled=true; $('calBtns2').hidden=false; return; }
   const med=calMedian(errs), mad=calMedian(errs.map(e=>Math.abs(e-med)));
-  if(mad>0.045){ $('calTxt').textContent='这次点击忽快忽慢、不太稳定，没法给出可靠的推荐值。别抢拍，跟着节拍再测一次。'; $('calApply').disabled=true; $('calBtns2').hidden=false; return; }
+  if(mad>0.08){ $('calTxt').textContent='这次点击忽快忽慢、散得太开，没法给出可靠的推荐值。别抢拍，跟着节拍再测一次。'; $('calApply').disabled=true; $('calBtns2').hidden=false; return; }
   calRec=Math.max(-200,Math.min(200,Math.round(med*1000)));
   $('calApply').disabled=false;
-  $('calTxt').textContent=`你整体${calRec>5?'偏晚':calRec<-5?'偏早':'很准'}：点击中位比节拍${calRec>5?'晚':calRec<-5?'早':'只差'}约 ${Math.abs(calRec)} 毫秒，推荐把延迟校准设为 ${calRec} 毫秒。\n推荐值根据本次跟拍估算，可按实际手感微调。`;
+  $('calTxt').textContent=`你整体${calRec>5?'偏晚':calRec<-5?'偏早':'很准'}：点击中位比节拍${calRec>5?'晚':calRec<-5?'早':'只差'}约 ${Math.abs(calRec)} 毫秒，推荐把延迟校准设为 ${calRec} 毫秒。\n推荐值根据本次跟拍估算，可按实际手感微调。${mad>0.045?'这次点击稳定性一般，推荐值仅供参考。':''}${Math.abs(med*1000)>200?'你的总延迟已经超过校准上限 200 毫秒（多半是蓝牙耳机），应用后还能再用延迟滑杆往上补一点。':''}`;
   $('calBtns2').hidden=false;
 }
 function calResetView(){ calStop(); $('calBtns').hidden=false; $('calBtns2').hidden=true; $('calBtns3').hidden=true; $('calProg').textContent='点「开始测试」';
