@@ -1305,7 +1305,7 @@ function hitFx(lane,g){
 }
 const FLICK_WIN=0.3;   // 滑键：按下后多久内要滑到箭头方向
 const pathLane=(n,t)=>{ let l=n.path[0].l; for(const q of n.path){ if(q.t<=t+1e-4) l=q.l; else break; } return l; };
-function completeFlick(n){ if(n.done) return; n.done=true; award(n.grade,n.dt,n.lane); hitFx(n.lane,n.grade); hitFx(Math.max(0,Math.min(3,n.lane+n.flick)),n.grade); G.flickWait=G.flickWait.filter(x=>x!==n); tutorialPassed(n); }
+function completeFlick(n,arrived=true){ if(n.done) return; n.done=true; award(n.grade,n.dt,n.lane); hitFx(n.lane,n.grade); if(arrived) hitFx(Math.max(0,Math.min(3,n.lane+n.flick)),n.grade); G.flickWait=G.flickWait.filter(x=>x!==n); tutorialPassed(n); }
 function press(l,fromSlide){
   if(!G||G.state!=='play'||G.pressed[l]) return;
   if(tutorialPress(l,fromSlide)) return;
@@ -1414,7 +1414,7 @@ function loop(now){
       if(t>=n.end){ n.holding=false; n.done=true; hitFx(n.path?pathLane(n,n.end):n.lane,n.grade); tutorialPassed(n); }
     }
   }
-  for(const f of [...G.flickWait]) if(t-f.at>FLICK_WIN){ f.grade=1; completeFlick(f); }   // 没滑：算 BAD
+  for(const f of [...G.flickWait]) if(t-f.at>FLICK_WIN){ f.grade=1; completeFlick(f,false); }   // 没滑：算 BAD，且没到的那条轨道不放击中特效
   $('prog').style.width=Math.max(0,Math.min(100,t/G.buf.duration*100))+'%';
   draw(t,dt,now);
   const lastEnd=G.meta.len;
