@@ -1309,7 +1309,7 @@ function completeFlick(n){ if(n.done) return; n.done=true; award(n.grade,n.dt,n.
 function press(l,fromSlide){
   if(!G||G.state!=='play'||G.pressed[l]) return;
   if(tutorialPress(l,fromSlide)) return;
-  G.pressed[l]=1; G.flash[l]=1;
+  G.pressed[l]=1; if(!fromSlide) G.flash[l]=1;   // 手指滑进车道只登记按住（折线长按跟随用），不点亮触发光柱
   const t=songTime();
   // 键盘滑键：先按音符所在键，再按箭头方向那一格的键
   for(const f of G.flickWait){ if(f.lane+f.flick===l && t-f.at<=FLICK_WIN){ completeFlick(f); return; } }
@@ -1355,8 +1355,12 @@ gc.addEventListener('pointermove',e=>{
   const l0=ptr.get(e.pointerId); if(l0==null||!G) return; const info=ptrInfo.get(e.pointerId);
   // 手指滑动：滑键判定
   if(info&&info.flick&&!info.flick.done){ const o=geo(), dx=toApp(e.clientX,e.clientY).x-info.x; if(dx*info.flick.flick>o.half*.5*.35) completeFlick(info.flick); }
-  // 手指跨车道：折线长按跟随
+  // 手指跨车道：折线长按跟随（带边界迟滞：压在车道边界附近时不来回跳道，防误触发和断长按）
   const l=laneAt(e.clientX,e.clientY); if(l===l0) return;
+  { const o=geo(), p=toApp(e.clientX,e.clientY);
+    const tt=Math.max(0,Math.min(1,(o.hitY-p.y)/(o.hitY-o.farY))), kk=1-tt*(1-o.pFar), s=Math.max(kk,.9), laneW=o.half*s*.5;
+    const xb=o.cx+((l>l0?l0+1:l0)-2)*laneW;
+    if(Math.abs(p.x-xb)<laneW*.18) return; }
   ptr.set(e.pointerId,l);
   if(![...ptr.values()].includes(l0)) release(l0);
   if(!G.pressed[l]) press(l,true);
@@ -1437,9 +1441,10 @@ function draw(t,dt,now){
   // 轨道面
   quad(L(far.s,far.y),R(far.s,far.y),R(near.s,near.y),L(near.s,near.y));
   const tg=g.createLinearGradient(0,far.y,0,GH); tg.addColorStop(0,'rgba(8,28,16,.35)'); tg.addColorStop(1,'rgba(8,28,16,.92)'); g.fillStyle=tg; g.fill();
-  // 按下时的光柱
+  // 按下时的光柱（常亮底只给正在长按的车道，手指只是压着/滑过的车道不亮）
+  const holdLanes=new Set(); for(const n of G.notes){ if(n.holding) holdLanes.add(n.path?pathLane(n,t):n.lane); if(n.t>t) break; }
   for(let i=0;i<4;i++){
-    G.flash[i]=Math.max(G.pressed[i]?.55:0,G.flash[i]-dt*3.5);
+    G.flash[i]=Math.max(holdLanes.has(i)?.55:0,G.flash[i]-dt*3.5);
     if(G.flash[i]<=0) continue;
     const top=P(Math.min(zMax,.65),o), bot=P(0,o);
     const a={x:laneX(i,top.s,o),y:top.y}, b={x:laneX(i+1,top.s,o),y:top.y}, c={x:laneX(i+1,bot.s,o),y:bot.y}, d={x:laneX(i,bot.s,o),y:bot.y};
@@ -1469,7 +1474,7 @@ function draw(t,dt,now){
     const inset=.16;
     const a={x:laneX(n.lane+inset*2,pt.s,o),y:pt.y}, b={x:laneX(n.lane+1-inset*2,pt.s,o),y:pt.y}, c={x:laneX(n.lane+1-inset*2,ph.s,o),y:ph.y}, d={x:laneX(n.lane+inset*2,ph.s,o),y:ph.y};
     // laneX takes lane index; fractional works because lane width = .5*half
-    quad(a,b,c,d); const hg=g.createLinearGradient(0,ph.y,0,pt.y); hg.addColorStop(0,hexA(col,n.holding?.85:.55)); hg.addColorStop(1,hexA(col,.18)); g.fillStyle=hg; g.fill();
+    quad(a,b,c,d); const hg=g.createLinearGradient(0,ph.y,0,pt.y); hg.addColorStop(0,hexA(col,n.holding?.92:.68)); hg.addColorStop(1,hexA(col,.3)); g.fillStyle=hg; g.fill();
     g.strokeStyle=hexA(col,.9); g.lineWidth=1.5; g.stroke();
     if(!n.holding) drawNote(n.lane,zh,o,col);
     else { g.globalCompositeOperation='lighter'; const r=o.half*.22; const rg=g.createRadialGradient(c.x-(c.x-d.x)/2,o.hitY,0,c.x-(c.x-d.x)/2,o.hitY,r); rg.addColorStop(0,hexA(col,.9)); rg.addColorStop(1,hexA(col,0)); g.fillStyle=rg; g.fillRect(d.x-r,o.hitY-r,(c.x-d.x)+r*2,r*2); g.globalCompositeOperation='source-over'; }
