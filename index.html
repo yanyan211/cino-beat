@@ -1182,7 +1182,7 @@ async function pickLevel(l,prac=null){
 
 /* ---------- 排行榜（香港服务器 /api/rhythm，玩家身份存本地 rr2-rhythm-player） ---------- */
 const API_BASE = location.hostname==='api.cino1018.com' ? '' : 'https://api.cino1018.com';
-const SCORE_VER = 4;   // 成绩版本：谱面/计分规则变化时与服务端 rhythm.js 的 SCORE_VER 同步 +1，旧成绩作历史保留、不混排
+const SCORE_VER = 5;   // 成绩版本：谱面/计分规则变化时与服务端 rhythm.js 的 SCORE_VER 同步 +1，旧成绩作历史保留、不混排
 const slugOf = s => (s && !s.local && s.audio) ? (s.audio.split('/').pop()||'').replace(/\.mp3$/,'') : null;
 let me = store.get('rhythm-player', null);
 let bdLv = 1, bdSeq = 0, flushing = false;
@@ -1619,13 +1619,14 @@ const FLICK_WIN=0.3;   // 滑键：按下后多久内要滑到箭头方向
 const pathLane=(n,t)=>{ let l=n.path[0].l; for(const q of n.path){ if(q.t<=t+1e-4) l=q.l; else break; } return l; };
 function completeFlick(n,arrived=true){ if(n.done) return; n.done=true; if(!arrived) G.fcFail=true; award(n.grade,n.dt,n.lane); hitFx(n.lane,n.grade); if(arrived) hitFx(Math.max(0,Math.min(3,n.lane+n.flick)),n.grade); G.flickWait=G.flickWait.filter(x=>x!==n); tutorialPassed(n); }
 function press(l,fromSlide){
-  if(!G||G.state!=='play'||G.pressed[l]) return;
+  if(!G||G.state!=='play') return;
   if(tutorialPress(l,fromSlide)) return;
   G.pressed[l]=1; if(!fromSlide) G.flash[l]=1;   // 手指滑进车道只登记按住（折线长按跟随用），不点亮触发光柱
   const t=songTime();
-  // 键盘滑键：先按音符所在键，再按箭头方向那一格的键
-  for(const f of G.flickWait){ if(f.lane+f.flick===l && t-f.at<=FLICK_WIN){ completeFlick(f); return; } }
-  if(fromSlide) return;   // 手指滑进新车道，不算新的点击
+  // 按下目标轨先完成等待中的滑键；完成之后继续判定本轨的点按，不吞键（滑键与同刻点按可以同时成立）
+  for(const f of G.flickWait){ if(f.lane+f.flick===l && t-f.at<=FLICK_WIN){ completeFlick(f); break; } }
+  if(fromSlide) return;   // 手指滑进新车道，不算新的点击（防滑动扫键）
+  // 真实的新按下即使该轨正被另一根手指按住，也要判定本轨音符——否则滑入轨的紧接点按会被吞掉
   let n=null;
   for(const x of G.notes){ if(x.judged||x.lane!==l) continue; if(x.t-t>WIN[3]) break; n=x; break; }
   if(!n) return;
@@ -1728,10 +1729,13 @@ function loop(now){
   for(const n of G.notes){
     if(n.t-t>1.5) break;
     if(!n.judged&&t-n.t>WIN[3]){ n.judged=true; n.grade=0; n.done=true; n.broken=n.hold; award(0,null,n.lane); }
-    if(n.path&&n.holding){   // 折线长按：要跟着线换车道（换道后有 0.2 秒宽限）
-      const cl=pathLane(n,t), seg=[...n.path].reverse().find(q=>q.t<=t);
-      if(G.pressed[cl]||t-(seg?seg.t:n.t)<0.2||t<(G.resumeUntil||0)) n.okAt=t;
-      else if(t-n.okAt>0.18){ n.holding=false; n.done=true; n.broken=true; breakHold(n); continue; }
+    if(n.path&&n.holding){   // 折线长按：要跟着线换车道。宽限按当前段长比例给（短段少给、长段封顶 0.15s），宽限后持续走错 0.09s 断开——0.23s 级的短段不能再被整段跳过
+      const cl=pathLane(n,t);
+      let seg=n.path[0], segEnd=n.end;
+      for(let i=0;i<n.path.length;i++){ if(n.path[i].t<=t){ seg=n.path[i]; segEnd=i+1<n.path.length?n.path[i+1].t:n.end; } else break; }
+      const grace=Math.min(0.15,Math.max(0.03,(segEnd-seg.t)*0.4));
+      if(G.pressed[cl]||t-seg.t<grace||t<(G.resumeUntil||0)) n.okAt=t;
+      else if(t-n.okAt>0.09){ n.holding=false; n.done=true; n.broken=true; breakHold(n); continue; }
     }
     if(n.holding){
       while(n.next<=Math.min(t,n.end)){ G.combo++; G.max=Math.max(G.max,G.combo); G.score+=PTS[n.grade]/5*(G.combo>1?1.1:1); n.next+=HOLD_TICK; G.comboPop=.6; hud();
