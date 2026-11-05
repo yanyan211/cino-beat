@@ -361,6 +361,17 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #tutorialFrame .actions button{font-size:15px;min-height:42px}
 /* ---------- 横屏：手机竖着拿时，把整个游戏转 90° 显示成横屏 ---------- */
 #app.rot{left:0;right:auto;top:0;bottom:auto;transform-origin:0 0}
+.hellBtn{color:#8c3038}
+#selModeTag{margin-left:.6em;font-size:.72em;color:#fff;background:#8c3038;border-radius:99px;padding:.12em .7em;vertical-align:.18em}
+#lvHellGo{color:#8c3038}
+.hellRow{display:none}
+#level.hell .hellRow{display:flex}
+#level.hell .lvRow:not(.hellRow){display:none}
+#level.hell .bdTabs{display:none}
+#hpWrap{height:8px;margin:5px 14% 0;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);border-radius:99px;overflow:hidden}
+#hpFill{display:block;height:100%;width:100%;background:#7cf0a6;transition:width .15s}
+#hpFill.low{background:#e2574c}
+#rsStatus{color:#8c3038;font-weight:700}
 </style>
 </head>
 <body>
@@ -373,13 +384,14 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   <section class="screen enter" id="title" tabindex="0" aria-label="点击开始">
     <h1 class="logo"><span class="en">Cino</span><span class="cn">节奏大师</span></h1>
     <div id="touch"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6.2v11.6c0 .8.9 1.3 1.6.9l9.1-5.8a1 1 0 0 0 0-1.8l-9.1-5.8c-.7-.4-1.6.1-1.6.9z" fill="currentColor"/></svg><span id="touchLabel">点击开始</span></div>
+    <button class="gbtn hellBtn" id="hellBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 9-7 9-7-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>地狱模式</span></button>
     <button class="gbtn normal" id="acctBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M5 19.5c1.2-3.2 3.9-4.8 7-4.8s5.8 1.6 7 4.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span id="acctBtnTxt">登录 / 注册</span></button>
   </section>
 
   <!-- 选曲 -->
   <section class="screen off" id="select">
     <div class="frame" id="selFrame">
-      <div class="panel"><div class="hd"><span>选择歌曲</span></div></div>
+      <div class="panel"><div class="hd"><span>选择歌曲</span><span id="selModeTag" hidden>地狱模式</span></div></div>
       <div id="selBody">
         <div id="flow"></div>
         <div id="selInfo"><div id="selName" class="ol">—</div><div id="selMeta">—</div></div>
@@ -389,13 +401,13 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
     </div>
     <div class="selBar">
       <button class="gbtn dark" id="selBack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>返回</span></button>
-      <span class="hint">左右滑动选歌，点中间的封面确认</span>
+      <span class="hint" id="selHint">左右滑动选歌，点中间的封面确认</span>
       <button class="gbtn normal" id="tutorialReplay">重玩教学</button>
     </div>
 
     <div class="dim" id="level" hidden>
       <div class="frame" id="lvFrame">
-        <div class="panel"><div class="hd"><span>选择难度</span></div></div>
+        <div class="panel"><div class="hd"><span id="lvHdTxt">选择难度</span></div></div>
         <button id="lvClose" aria-label="关闭"><svg viewBox="0 0 24 24"><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         <div id="lvBody">
           <div class="lvCol lvLeft">
@@ -409,6 +421,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
             <div class="lvRow"><button class="gbtn lv normal" data-lv="1"><span>普通</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></i></button><span class="lvBest ol" id="best1">0</span></div>
             <div class="lvRow"><button class="gbtn lv hard" data-lv="2"><span>困难</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg viewBox="0 0 24 24"><path d="M12 4.2l2.3 4.8 5.2.7-3.8 3.7.9 5.2L12 16.1l-4.6 2.5.9-5.2-3.8-3.7 5.2-.7z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></i></button><span class="lvBest ol" id="best2">0</span></div>
             <div id="lvLoading"></div>
+            <div class="lvRow hellRow"><button class="gbtn lv hellGo" id="lvHellGo"><span>开始挑战</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l7 9-7 9-7-9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></i></button><span class="lvBest ol" id="best3">0</span></div>
           </div>
           <div class="lvCol lvBoard">
             <div class="bdHead"><span class="bdTitle ol">排行榜</span><div class="bdTabs"><button data-bd="0">简单</button><button data-bd="1" class="on">普通</button><button data-bd="2">困难</button></div></div>
@@ -476,6 +489,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
       <div id="hScore">0000000</div>
       <div id="hRight"><button id="tutorialSkip" hidden>跳过教学</button><button id="pauseBtn" aria-label="暂停"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7v10M15 7v10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button><button id="skipEnd" hidden><span>跳过结尾</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 7.3v9.4c0 .8.9 1.3 1.6.8l6.6-4.7a1 1 0 0 0 0-1.6L8.1 6.5c-.7-.5-1.6 0-1.6.8z" fill="currentColor"/><path d="M17.5 6.5v11" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button></div>
     </div>
+    <div id="hpWrap" hidden><i id="hpFill"></i></div>
   </div>
   <div id="intro"><div class="strip"><b id="inName">—</b><span id="inLv">普通</span></div></div>
 
@@ -501,7 +515,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
     <div class="frame" id="rsFrame">
       <div class="panel pT"><div class="hd"><span>成绩总评</span></div>
         <div class="rsTotal">
-          <div class="rsGrade"><span id="rsSong"></span><b id="rsGrade">S</b><span id="rsAcc">准确率 0%</span><span id="rsMax">最大连击 0</span><span id="rsFC" hidden>全连击</span></div>
+          <div class="rsGrade"><span id="rsSong"></span><b id="rsGrade">S</b><span id="rsAcc">准确率 0%</span><span id="rsMax">最大连击 0</span><span id="rsFC" hidden>全连击</span><span id="rsStatus" hidden></span></div>
           <div class="rsList">
             <div><i class="jt j4">PERFECT</i><b id="c4">0</b></div>
             <div><i class="jt j3">GREAT</i><b id="c3">0</b></div>
@@ -545,7 +559,7 @@ const SONGS = [
 const SKIN = { lane:['#e9f3ec','#f7faf6','#f7faf6','#e9f3ec'],   // 普通音符偏白；绿色留给滑键和折线长按
   keys:['d','f','j','k'], edge:'#a9dcbd' };
 /* 难度 = 下落速度（音符从远处到判定线的秒数），对应原版 简单 / 普通 / 困难 */
-const LEVELS = [{name:'简单',color:'#3c9c5c',lead:2.1},{name:'普通',color:'#21928a',lead:1.5},{name:'困难',color:'#1b4a2e',lead:1.0}];
+const LEVELS = [{name:'简单',color:'#3c9c5c',lead:2.1},{name:'普通',color:'#21928a',lead:1.5},{name:'困难',color:'#1b4a2e',lead:1.0},{name:'地狱',color:'#8c3038',lead:1.0}];
 /* 判定窗口（秒）与得分（沿用原版） */
 const JUDGE={4:{t:'PERFECT',c:'#ffffff'},3:{t:'GREAT',c:'#7cf0a6'},2:{t:'COOL',c:'#9fe0ff'},1:{t:'BAD',c:'#d4e6be'},0:{t:'MISS',c:'#ff9a8f'}};
 const WIN=[0.045,0.085,0.125,0.17], PTS={4:500,3:250,2:100,1:50,0:0}, HOLD_TICK=0.15;
@@ -846,7 +860,11 @@ const isOn=id=>!$(id).classList.contains('off');
 /* =====================================================================
    标题
    ===================================================================== */
-function goSelect(){ if(swapping||tutorialLoading) return; tryLandscape(); ac().resume(); click(); if(!tutorialSeen){ beginTutorial(); return; } shutter('',()=>{ show('select'); place(true); }); }
+let MODE='normal';
+function syncModeUI(){ const hell=MODE==='hell'; $('selModeTag').hidden=!hell; $('selHint').textContent=hell?'地狱模式 · 建议平放设备，使用四指挑战':'左右滑动选歌，点中间的封面确认'; }
+function goSelect(){ if(swapping||tutorialLoading) return; MODE='normal'; syncModeUI(); tryLandscape(); ac().resume(); click(); if(!tutorialSeen){ beginTutorial(); return; } shutter('',()=>{ show('select'); place(true); }); }
+function goHell(){ if(swapping||tutorialLoading) return; MODE='hell'; syncModeUI(); tryLandscape(); ac().resume(); click(); shutter('',()=>{ show('select'); place(true); }); }
+$('hellBtn').addEventListener('click',e=>{ e.stopPropagation(); goHell(); });
 $('title').addEventListener('click',goSelect);
 
 $('title').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ') goSelect(); });
@@ -906,32 +924,50 @@ addEventListener('pointercancel',e=>{ if(drag?.id===e.pointerId){ drag=null; sup
 flow.addEventListener('wheel',e=>{ e.preventDefault(); if(Math.abs(e.deltaX)+Math.abs(e.deltaY)<8) return; if(flow._w) return; flow._w=1; setTimeout(()=>flow._w=0,180); go(Math.round(target)+((e.deltaY||e.deltaX)>0?1:-1)); },{passive:false});
 addEventListener('keydown',e=>{
   if(!isOn('select')) return;
-  if(!$('level').hidden){ if(e.key==='Escape') closeLevel(); if(['1','2','3'].includes(e.key)) pickLevel(+e.key-1); return; }
+  if(!$('level').hidden){ if(e.key==='Escape') closeLevel(); else if($('level').classList.contains('hell')){ if(e.key==='Enter') pickLevel(3); } else if(['1','2','3'].includes(e.key)) pickLevel(+e.key-1); return; }
   if(e.key==='ArrowLeft') go(Math.round(target)-1); else if(e.key==='ArrowRight') go(Math.round(target)+1); else if(e.key==='Enter') confirmSong(Math.round(target));
 });
 /* ---------- 难度面板 ---------- */
 let cur=null;
+let hellMetaSeq=0;
 function confirmSong(i){
   click();
   if(i>=songs.length) return;
   cur=songs[i]; if(!cur.meta||!cur.meta.notes.length) return;
+  const hell = MODE==='hell';
+  $('level').classList.toggle('hell', hell);
+  $('lvHdTxt').textContent = hell ? '地狱模式' : '选择难度';
   [0,1,2].forEach(l=>$('best'+l).textContent=store.get(`best-${key(cur)}-${l}`,0).toLocaleString());
   $('lvLoading').textContent=''; $('level').hidden=false;
   $('lvCover').src = cur.cover || '';
   $('lvSongName').textContent = cur.meta.name;
-  $('lvSongMeta').textContent = `${fmt(cur.meta.len)} · ${cur.meta.notes.length} 个音符`;
-  syncBdTabs(); loadBoard();
+  if(hell){
+    bdLv = 3; syncBdTabs(); loadBoard();
+    $('best3').textContent = store.get(`best-${key(cur)}-3`,0).toLocaleString();
+    const goBtn=$('lvHellGo'); goBtn.disabled=true;
+    $('lvSongMeta').textContent='地狱谱面读取中…';
+    const tk=++hellMetaSeq, song=cur;
+    const done=m=>{ if(tk!==hellMetaSeq||cur!==song) return; song.lvMeta=song.lvMeta||{}; song.lvMeta[3]=m; $('lvSongMeta').textContent=`${fmt(m.len)} · 地狱 ${m.notes.length} 个音符`; goBtn.disabled=false; };
+    if(song.lvMeta && song.lvMeta[3]) done(song.lvMeta[3]);
+    else fetch('songs/'+slugOf(song)+'_hell.txt').then(r=>{ if(!r.ok) throw 0; return r.text(); }).then(t=>done(parseChart(t)))
+      .catch(()=>{ if(tk!==hellMetaSeq||cur!==song) return; $('lvSongMeta').textContent='地狱谱面制作中'; goBtn.disabled=true; });
+  } else {
+    if(bdLv===3) bdLv=1;
+    $('lvSongMeta').textContent = `${fmt(cur.meta.len)} · ${cur.meta.notes.length} 个音符`;
+    syncBdTabs(); loadBoard();
+  }
   getBuffer(cur).catch(()=>{});
 }
 function closeLevel(){ click('back'); ++pickToken; lockLevels(false); $('lvLoading').textContent=''; $('level').hidden=true; }
 $('lvClose').onclick=closeLevel;
+$('lvHellGo').onclick=()=>pickLevel(3);
 $('level').addEventListener('click',e=>{ if(e.target.id==='level') closeLevel(); });
 document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>pickLevel(+b.dataset.lv));
 let offset=store.get('offset',0); $('offset').value=offset; $('offsetVal').textContent=offset+'ms';
 $('offset').oninput=e=>{ offset=+e.target.value; $('offsetVal').textContent=offset+'ms'; store.set('offset',offset); };
 // 选难度后加载期间锁住：再点任何难度都不理会，关面板会作废这次加载，避免同时开出多首歌
 let picking=false, pickToken=0;
-function lockLevels(on){ picking=on; document.querySelectorAll('[data-lv]').forEach(b=>b.disabled=on); }
+function lockLevels(on){ picking=on; document.querySelectorAll('[data-lv]').forEach(b=>b.disabled=on); $('lvHellGo').disabled=on; }
 async function pickLevel(l){
   if(picking||swapping) return;
   bdLv = l; syncBdTabs();
@@ -942,7 +978,9 @@ async function pickLevel(l){
   let buf; try{ buf=await getBuffer(song); }catch(e){ bail('音乐加载失败：'+(e.message||'请换一个文件')); return; }
   clearInterval(lvTimer);
   let meta=song.meta;
-  if(song.charts){ try{ song.lvMeta=song.lvMeta||{}; meta=song.lvMeta[l]||(song.lvMeta[l]=parseChart(await fetch(song.charts[l]).then(r=>{if(!r.ok)throw 0;return r.text()}))); }catch(e){ bail('谱面加载失败'); return; } }
+  try{ song.lvMeta=song.lvMeta||{}; const curl = l===3 ? ('songs/'+slugOf(song)+'_hell.txt') : song.charts?.[l];
+    if(curl) meta=song.lvMeta[l]||(song.lvMeta[l]=parseChart(await fetch(curl).then(r=>{if(!r.ok)throw 0;return r.text()})));
+  }catch(e){ bail(l===3?'地狱谱面制作中':'谱面加载失败'); return; }
   if(token!==pickToken) return;
   $('lvLoading').textContent='';
   startGame(song,l,buf,meta);
@@ -1037,7 +1075,7 @@ $('bdLoginBtn').onclick = ()=>{ click(); closeLevel(); openAcct('login'); };
 
 /* ---------- 账号：登录/注册/个人中心（账号绑定排行榜身份，成绩跟随账号） ---------- */
 const SONG_NAMES = {babys_horizon:"Baby's Horizon", pimple09:"09's Pimple", weiming:'未命名', wobuzhidao:'我不知道', yixiang:'臆想', babe:'BABE', babystep:'baby step', enemy:'enemy', meltingrain:'melting sunny rain', tears:'Tears'};
-const LV_NAMES = ['简单','普通','困难'];
+const LV_NAMES = ['简单','普通','困难','地狱'];
 async function apiJ(path, opt){
   const r = await fetch(API_BASE + path, opt);
   let j = {}; try{ j = await r.json(); }catch(e){}
@@ -1257,12 +1295,13 @@ function startGame(song,lv,buf,meta,teaching=false){
     gc.hidden=false; $('hud').hidden=false; resizeGame();
     const L=LEVELS[lv];
     G={song,lv,lead:L.lead,buf,meta,notes:meta.notes.map(n=>({...n,judged:false,grade:-1,holding:false,broken:false,done:false,next:0})),
-       score:0,combo:0,max:0,counts:{4:0,3:0,2:0,1:0,0:0},pressed:[0,0,0,0],flickWait:[],lastFlickPtr:null,flash:[0,0,0,0],fx:[],sparks:[],judge:null,comboPop:0,state:'play',
+       score:0,combo:0,max:0,counts:{4:0,3:0,2:0,1:0,0:0},hell:lv===3,hp:lv===3?100:0,pressed:[0,0,0,0],flickWait:[],lastFlickPtr:null,flash:[0,0,0,0],fx:[],sparks:[],judge:null,comboPop:0,state:'play',
        born:performance.now(),src:null,startAt:0};
     G.tutorial=teaching?{step:0,frozen:null,gates:[G.notes.find(n=>!n.hold&&!n.flick),G.notes.find(n=>n.hold),G.notes.find(n=>n.flick)]}:null;
     if(teaching) tutorialHint('跟着音乐试一试','先看音符落到白线，第一颗会停下来等你。');
     $('hSong').firstChild.textContent=song.meta.name; $('hLv').textContent=teaching?'新手教学':L.name; $('hLv').style.background=L.color;
     $('inName').textContent=song.meta.name; $('inLv').textContent=L.name;
+    $('hpWrap').hidden=!G.hell; if(G.hell){ const hf=$('hpFill'); hf.style.width='100%'; hf.className=''; }
     const it=$('intro'); it.classList.remove('go'); void it.offsetWidth; it.classList.add('go');
     hud();
     const a=ac(); a.resume();
@@ -1301,7 +1340,7 @@ function dbgFrame(t){
   dbgEl.textContent=`t=${t.toFixed(3)}s  next=${nx?nx.t.toFixed(3)+'s L'+(nx.lane+1):'--'}\nlast=${D.last?((D.last.dt*1000).toFixed(0)+'ms '+(D.last.dt<0?'EARLY':D.last.dt>0?'LATE':'')+' g'+D.last.g):'--'}  n=${dts.length} mean=${(mean*1000).toFixed(1)}ms\n< -45:${bk[0]}  -45~-15:${bk[1]}  ±15:${bk[2]}  15~45:${bk[3]}  >45:${bk[4]}`;
 }
 function stopSong(){ try{G?.src?.stop();}catch(e){} if(G) G.src=null; }
-function hud(){ $('hScore').textContent=G.tutorial?'新手教学':String(Math.round(G.score)).padStart(7,'0'); }
+function hud(){ $('hScore').textContent=G.tutorial?'新手教学':String(Math.round(G.score)).padStart(7,'0'); if(G&&G.hell){ const f=$('hpFill'); if(f){ f.style.width=G.hp+'%'; f.className=G.hp<30?'low':''; } } }
 
 /* 透视：z=0 判定线，z=1 远端 */
 const Z0=0.42;
@@ -1323,13 +1362,16 @@ function gradeOf(dt){ const a=Math.abs(dt); for(let i=0;i<WIN.length;i++) if(a<=
 function award(g,dt,lane){
   G.counts[g]++;
   if(g===0) G.combo=0; else { G.combo++; G.max=Math.max(G.max,G.combo); let p=PTS[g]; if(G.combo>1) p+=p/10; G.score+=p; G.comboPop=1; }
+  if(G.hell) hpAdd(HELL.gain[g]);
   G.judge={g,t:performance.now(),el:(g>0&&g<4&&dt!=null)?(dt<0?'EARLY':'LATE'):''};
   if(DEBUG) dbgNote(dt,g);
   hud();
 }
+const HELL={gain:{4:0.8,3:0.4,2:0,1:-5,0:-9}};   // 地狱生命：PERFECT/GREAT 回一点，BAD/MISS 扣；断长按按与头部判定的差值补扣，保证一符只结算一次
+function hpAdd(d){ if(!G||!G.hell) return; G.hp=Math.max(0,Math.min(100,G.hp+d)); }
 function breakHold(n){   // 长按中途断开：判定改为 MISS 是替换不是叠加，否则总判定数会多于谱面音符数、成绩被服务器拒收
-  if(n.grade>=1) G.counts[n.grade]--;
-  G.counts[0]++; n.grade=0; G.combo=0; G.score-=(n.headPts||0); G.judge={g:0,t:performance.now(),el:''}; hud();
+  const og=n.grade; if(og>=1) G.counts[og]--;
+  G.counts[0]++; n.grade=0; G.combo=0; G.score-=(n.headPts||0); if(G.hell) hpAdd(HELL.gain[0]-HELL.gain[og]); G.judge={g:0,t:performance.now(),el:''}; hud();
 }
 function hitFx(lane,g){
   const o=geo(), x=laneX(lane,1,o)+o.half*.25, y=o.hitY, col=g>=3?SKIN.lane[lane]:g===2?'#9fe0ff':'#c8d8b0';
@@ -1455,6 +1497,7 @@ function loop(now){
   // 歌放完才结算；音符打完后出现「跳过结尾」
   const allDone=t>lastEnd+1.2 && G.notes.every(n=>n.done);
   if(!G.tutorial && allDone && $('skipEnd').hidden && t<G.buf.duration-2) $('skipEnd').hidden=false;
+  if(G.hell&&G.hp<=0){ failFinish(); return; }
   if(t>G.buf.duration+.4){ finish(); return; }
   raf=requestAnimationFrame(loop);
 }
@@ -1633,6 +1676,29 @@ function drawNote(lane,z,o,col){
 /* =====================================================================
    结算
    ===================================================================== */
+function failFinish(){
+  if(!G||G.state!=='play') return;
+  G.state='result'; stopSong(); try{wake?.release()}catch(e){}
+  const judged=G.counts[0]+G.counts[1]+G.counts[2]+G.counts[3]+G.counts[4];
+  const acc=judged? (G.counts[4]+G.counts[3]*.8+G.counts[2]*.5+G.counts[1]*.2)/judged : 0;
+  const prog=G.buf? Math.min(1,Math.max(0,songTime()/G.buf.duration)) : 0;
+  const rk='hellrec-'+key(G.song), prev=store.get(rk,null);
+  if(!prev||prog>(prev.prog||0)) store.set(rk,{prog:+prog.toFixed(3),score:Math.round(G.score),t:Date.now()});
+  shutter('',()=>{
+    gc.hidden=true; $('hud').hidden=true; fxOn=true; requestAnimationFrame(fxLoop);
+    $('rsSong').textContent=G.meta.name+' · 地狱';
+    const st=$('rsStatus'); st.hidden=false; st.textContent=`挑战失败 · 到达 ${Math.round(prog*100)}%`;
+    $('rsGrade').textContent='F';
+    $('rsAcc').textContent='准确率 '+(acc*100).toFixed(1)+'%';
+    $('rsMax').textContent='最大连击 '+G.max;
+    $('rsFC').hidden=true;
+    for(let g=0;g<=4;g++) $('c'+g).textContent=G.counts[g];
+    $('rsScore').textContent=Math.round(G.score).toLocaleString();
+    $('rsBest').textContent=store.get('best-'+key(G.song)+'-3',0).toLocaleString();
+    $('rsNew').hidden=true;
+    show('result'); const r=$('result'); r.classList.remove('show'); void r.offsetWidth; r.classList.add('show');
+  });
+}
 function finish(){
   if(G?.tutorial){ finishTutorial(); return; }
   $('skipEnd').hidden=true;
@@ -1646,7 +1712,8 @@ function finish(){
   if(rSlug && sc > 0) submitScore({song:rSlug, lv:G.lv, score:sc, counts:[c[0],c[1],c[2],c[3],c[4]], max:G.max, acc:+acc.toFixed(4)});
   shutter('',()=>{
     gc.hidden=true; $('hud').hidden=true; fxOn=true; requestAnimationFrame(fxLoop);
-    $('rsSong').textContent=`${G.meta.name} · ${LEVELS[G.lv].name}`; $('rsGrade').textContent=grade; $('rsAcc').textContent=`准确率 ${(acc*100).toFixed(1)}%`; $('rsMax').textContent=`最大连击 ${G.max}`;
+    $('rsSong').textContent=`${G.meta.name} · ${LEVELS[G.lv].name}`;
+    const stEl=$('rsStatus'); if(G.hell){ stEl.hidden=false; stEl.textContent='通关'; } else stEl.hidden=true; $('rsGrade').textContent=grade; $('rsAcc').textContent=`准确率 ${(acc*100).toFixed(1)}%`; $('rsMax').textContent=`最大连击 ${G.max}`;
     $('rsFC').hidden=c[0]>0; [4,3,2,1,0].forEach(i=>$('c'+i).textContent=c[i]);
     $('rsBest').textContent=Math.max(prev,sc).toLocaleString(); $('rsNew').hidden=!isNew;
     show('result'); const r=$('result'); r.classList.remove('show'); void r.offsetWidth; r.classList.add('show');

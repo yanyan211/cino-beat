@@ -141,3 +141,10 @@ python -m http.server 8000     # 不能双击打开，fetch 读歌和谱需要 h
 ## 谱面格式（血泪教训，2026-11-05）
 - 第二字段是**四位字符串掩码**：第 i 位字符为 '1' 表示该行在第 i 车道有一个音符（parseChart 逐字符读）。**绝不能写整数位掩码**（1/2/4/8）——那样除车道 0 外全部音符会被解析丢弃（babystep 开头曾因此丢 13/17 个音符）。
 - 服务端 rhythm.js 按**行数**计音符数校验交分：必须保证「文件行数 == parseChart 解析出的音符数」，任何生成/改谱工具交付前都要用 parseChart 本身验一遍。
+
+## 地狱模式（2026-11-05 上线）
+- 标题页「点击开始」下方有独立「地狱模式」按钮（#hellBtn，必须 stopPropagation）；全局 MODE 区分入口，选歌共用同一 SONGS，地狱面板复用难度弹窗（#level.hell 隐藏三档行与榜单选项卡，显示「开始挑战」#lvHellGo + best3）。
+- 地狱 = lv 3：谱面 `songs/<slug>_hell.txt`（pickLevel/confirmSong 按 slug 拼路径，不进 SONGS.charts）；LEVELS[3] lead 与困难相同 1.0（难度来自谱面密度，不靠缩短预读）；判定窗口不变。
+- 生命条仅地狱：满 100，PERFECT +0.8 / GREAT +0.4 / COOL 0 / BAD −5 / MISS −9（HELL.gain 集中配置）；award() 是唯一结算点，断长按在 breakHold 里按差值补扣，保证一个音符只结算一次生命；主循环帧末 hp<=0 → failFinish()（先结算当帧整组漏键再判失败）。失败不交服务器，只存本地 `hellrec-<key>` 挑战记录（最佳进度）；通关才按 lv=3 交分，榜单与三档独立。
+- 后端 rhythm.js 的 DIFFS 已含 'hell'（lv=3 的 chartInfo 读 <slug>_hell.txt 按行数校验，与三档同规则）；个人中心 LV_NAMES 已加「地狱」。
+- 地狱谱面由 ~/workspace/cino-beat-audit/gen_hell.py 生成：以困难谱面为骨架（时间已验证），新增音符全部取自该曲实际音频的起音事件池，并按四指占用/同轨间隔/密度上限约束，validate_hell.py 独立校验（行数==解析数、同轨间隔、长按/折线占用、同时手指≤4、0.5s 密度、滑键不越界；与困难谱面原样一致的骨架冲突只警告）。
