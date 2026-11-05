@@ -137,3 +137,7 @@ python -m http.server 8000     # 不能双击打开，fetch 读歌和谱需要 h
 - 通过 `tutorialPress` / `tutorialPassed` / `tutorialGate` 接入原判定。长按提前松手、滑键未完成会原地重试；暂停/重来保留教学语义。
 - `finishTutorial` 独立完成页不写正式最佳成绩。完成或主动跳过写入 `rr2-tutorial-v1`；选歌页 `#tutorialReplay` 可重玩。加载令牌 `tutorialToken` 防止跳过后异步加载重开游戏。
 - `mobileDevice()` 区分主要使用鼠标的触屏电脑和手机；电脑窄窗口保持正向，手机竖屏旋转。
+
+## 谱面格式（血泪教训，2026-11-05）
+- 第二字段是**四位字符串掩码**：第 i 位字符为 '1' 表示该行在第 i 车道有一个音符（parseChart 逐字符读）。**绝不能写整数位掩码**（1/2/4/8）——那样除车道 0 外全部音符会被解析丢弃（babystep 开头曾因此丢 13/17 个音符）。
+- 服务端 rhythm.js 按**行数**计音符数校验交分：必须保证「文件行数 == parseChart 解析出的音符数」，任何生成/改谱工具交付前都要用 parseChart 本身验一遍。
