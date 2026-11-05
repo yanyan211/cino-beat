@@ -2,7 +2,7 @@
    - 音频/封面：缓存优先（下过一次存本地，再玩秒开，不再受 Pages 10 分钟缓存限制）
    - 页面/谱面等：网络优先（保证谱面更新立刻生效），断网时回退缓存
    注意：替换同名 mp3/jpg 的内容时，必须把 VERSION 加一，否则老玩家会一直读到旧缓存。 */
-const VERSION = 'cino-beat-v4';   // v2：修复把 404 也写进缓存导致失败重试永远命中坏缓存的问题，顺带清掉旧坏条目
+const VERSION = 'cino-beat-v5';   // v2：修复把 404 也写进缓存导致失败重试永远命中坏缓存的问题，顺带清掉旧坏条目
 const CORE = ['./', 'index.html'];
 
 self.addEventListener('install', e => {

@@ -125,7 +125,7 @@ python -m http.server 8000     # 不能双击打开，fetch 读歌和谱需要 h
    - 计划：静态页面放 `https://api.cino1018.com/<新游戏名>/`；新接口放 `/api/rhythm/...`（player / score / board / me / health），数据用**独立** SQLite（如 `/opt/gugu-server/data/rhythm/rhythm.db`）；新代码写成独立文件，`server.js` 只在请求入口加几行分流；改前备份 `server.js`；保持纯 Node 标准库、不加依赖。
    - 改完重启后**必须验证**：`/api/health` 正常、老游戏的 `/api/board` 和 `/api/stats` 都还能正常返回，才算交付。
    - 服务器是密钥登录 root，**需要 SSH 方式时直接问用户，不要猜密码或暴力尝试**。
-   - 加载优化（已做）：选歌停留 0.5 秒预加载居中歌曲（`getBuffer` 流式下载带进度，加载文案显示百分比）；`sw.js` 缓存音频/封面实现重复游玩秒开。换同名 mp3/jpg 内容时必须同步把 `sw.js` 的 `VERSION` 加一。
+   - 加载优化（已做）：选歌停留 0.5 秒预加载居中歌曲（`getBuffer` 流式下载带进度，加载文案显示百分比）；`sw.js` 缓存音频/封面实现重复游玩秒开。换同名 mp3/jpg 内容时必须同步把 `sw.js` 的 `VERSION` 加一。2026-11-05 晚追加：Caddy 的 /cino-beat/* 已开 `encode gzip`（index 163KB→56KB）+ 媒体 Cache-Control 30 天（mp3/jpg）、文本类（txt/js/根路径）no-cache（原配置备份 Caddyfile.bak-20261105-pre-perf）——没有 SW 的内置浏览器（微信/QQ 打开链接）主要靠这层缓存，别删；排行榜 loadBoard 有会话内缓存 bdCache（歌×难度，60 秒内重开不发请求、先渲染缓存再后台刷新）；选歌时 warmNeighbor 只下不解码地预热左右相邻歌曲（省流/2G 自动跳过）。排行榜后端实测 0.8ms，慢在客户端等待与重复请求，不要往服务端方向查。
    - 上服务器时顺便把字体改成自托管（Google Fonts 在国内打不开），按用到的字裁剪。
    - 前端接口统一指向 `https://api.cino1018.com`，不要用任何旧的 Cloudflare 地址。
 3. 「我不知道」如果用户给了完整版音频，重新打谱。

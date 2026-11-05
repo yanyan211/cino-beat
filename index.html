@@ -1055,8 +1055,15 @@ function recStats(){
 const key=s=>s.local?'local-'+s.meta.name:s.chart;
 function go(i){ i=Math.max(0,Math.min(cards.length-1,i)); if(i!==Math.round(target)) click('tap'); target=i; sel=i; store.set('sel',Math.min(i,songs.length-1)); animate(); schedulePrefetch(); }
 /* 选歌停留半秒就后台预加载居中这首的音频（下载+解码），点难度时多半已就绪 */
-let pfTimer=0;
-function schedulePrefetch(){ clearTimeout(pfTimer); pfTimer=setTimeout(()=>{ const s=songs[Math.round(target)]; if(s&&!s.local&&!s.buf) getBuffer(s).catch(()=>{}); },500); }
+let pfTimer=0, pfWarm=0;
+/* 相邻歌曲只下不解码：先把 mp3 暖进缓存（SW/HTTP），玩家滑过去点开时只剩解码，不再等下载。省流/2G 时不预热，免得白耗流量 */
+function warmNeighbor(i){
+  const c = navigator.connection;
+  if(c && (c.saveData || /^(slow-)?2g$/.test(c.effectiveType || ''))) return;
+  const s = songs[i]; if(!s || s.local || s.buf || s.bufP) return;
+  fetch(s.audio).then(r=>{ if(r.ok) return r.arrayBuffer(); }).catch(()=>{});
+}
+function schedulePrefetch(){ clearTimeout(pfTimer); pfTimer=setTimeout(()=>{ const i=Math.round(target); const s=songs[i]; if(s&&!s.local&&!s.buf) getBuffer(s).catch(()=>{}); clearTimeout(pfWarm); pfWarm=setTimeout(()=>{ warmNeighbor(i-1); warmNeighbor(i+1); },1800); },500); }
 function animate(){ cancelAnimationFrame(anim); const step=()=>{ pos+=(target-pos)*.2; if(Math.abs(target-pos)<.002) pos=target; place(); if(pos!==target) anim=requestAnimationFrame(step); }; anim=requestAnimationFrame(step); }
 $('prev').onclick=()=>go(Math.round(target)-1); $('next').onclick=()=>go(Math.round(target)+1);
 $('selBack').onclick=()=>{ click('back'); shutter('',()=>{ show('title'); }); };
@@ -1257,27 +1264,34 @@ function bdRowEl(rank, name, score, mine){
   const s = document.createElement('span'); s.className = 'bdScore'; s.textContent = score.toLocaleString();
   d.append(r, n, s); return d;
 }
+const bdCache = new Map();   /* 排行榜会话内缓存（歌×难度）：重开先渲染缓存、后台再刷新，60 秒内不重复请求 */
+function renderBoard(b){
+  const list = $('bdList'); list.replaceChildren();
+  if(!b.top.length) list.append(bdMsgEl('暂无成绩，来打第一名吧'));
+  b.top.forEach((row, i)=> list.append(bdRowEl(i+1, row.name, row.score, !!(me && row.pid === me.id))));
+  $('bdMeName').textContent = me ? me.name : '';
+  $('bdMeRank').textContent = b.me ? `第 ${b.me.rank} 名 · ${b.me.score.toLocaleString()} 分` : '暂无成绩';
+}
 async function loadBoard(){
   const list = $('bdList'); if(!list) return;
   syncBdFoot();
   const slug = slugOf(cur);
   if(!slug){ list.replaceChildren(bdMsgEl('本地歌曲暂无排行榜')); $('bdMeRank').textContent = '—'; return; }
   const seq = ++bdSeq;
-  list.replaceChildren(bdMsgEl('加载中…'));
+  const key = slug + '|' + bdLv, hit = bdCache.get(key);
+  if(hit) renderBoard(hit.b); else list.replaceChildren(bdMsgEl('加载中…'));
+  if(hit && Date.now() - hit.ts < 60000) return;
   try{
     await flushPending();
     try{ await ensurePlayer(); }catch(e){}
     const q = new URLSearchParams({song: slug, lv: bdLv});
     if(me){ q.set('id', me.id); q.set('secret', me.secret); }
     const b = await api('/api/rhythm/board?' + q);
+    bdCache.set(key, {b, ts: Date.now()});
     if(seq !== bdSeq) return;
-    list.replaceChildren();
-    if(!b.top.length) list.append(bdMsgEl('暂无成绩，来打第一名吧'));
-    b.top.forEach((row, i)=> list.append(bdRowEl(i+1, row.name, row.score, !!(me && row.pid === me.id))));
-    $('bdMeName').textContent = me ? me.name : '';
-    $('bdMeRank').textContent = b.me ? `第 ${b.me.rank} 名 · ${b.me.score.toLocaleString()} 分` : '暂无成绩';
+    renderBoard(b);
   }catch(e){
-    if(seq !== bdSeq) return;
+    if(seq !== bdSeq || hit) return;   /* 有缓存时刷新失败就静默保留缓存显示，不闪失败文案 */
     list.replaceChildren(bdMsgEl('排行榜加载失败，重开试试'));
   }
 }
