@@ -814,7 +814,10 @@ function makeCover(name,i){
 }
 
 /* ---------- 歌曲载入 ---------- */
-const songs=SONGS.map(s=>({...s,meta:null,buf:null,dlPct:0,cover:s.cover||null,local:false}));
+/* 歌曲与封面走腾讯云 COS（广州）：小服务器出口晚高峰被下载占满，这是治本方案；
+   谱面仍走本站（小、要新鲜）。COS 拉不到时 getBuffer 自动回退本站同名文件（服务器上保留着原文件） */
+const MEDIA_BASE='https://cino-songs-1524353495.cos.ap-guangzhou.myqcloud.com/';
+const songs=SONGS.map(s=>({...s,audio:MEDIA_BASE+s.audio,meta:null,buf:null,dlPct:0,cover:s.cover?MEDIA_BASE+s.cover:null,local:false}));
 async function loadMeta(){
   try{ await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))]); }catch(e){}
   await Promise.all(songs.map(async(s,i)=>{
@@ -826,11 +829,11 @@ async function loadMeta(){
 }
 /* 歌曲下载：流式读带进度；连续 6 秒收不到任何数据判定为卡死，自动从头重试（最多 3 次）——
    拥堵时连接经常半路冻住，没有这个看门狗就会永远停在某个百分比上 */
-async function fetchAudio(s){
+async function fetchAudio(s, url, tries=3){
   let lastErr=null;
-  for(let att=0; att<3; att++){
+  for(let att=0; att<tries; att++){
     try{
-      const r=await fetch(s.audio); if(!r.ok) throw new Error('音乐文件没找到');
+      const r=await fetch(url); if(!r.ok) throw new Error('音乐文件没找到');
       const total=+r.headers.get('Content-Length')||0;
       if(r.body&&r.body.getReader){
         const rd=r.body.getReader(), chunks=[]; let got=0;
@@ -852,7 +855,11 @@ function getBuffer(s){
   if(!s.bufP) s.bufP=(async()=>{
     let ab;
     if(s.local){ ab=s.audioData; s.dlPct=1; }
-    else{ ab=await fetchAudio(s); s.dlPct=1; }
+    else{
+      try{ ab=await fetchAudio(s, s.audio); }
+      catch(e){ const f='songs/'+s.audio.split('/').pop(); if(f===s.audio) throw e; ab=await fetchAudio(s, f, 2); }   /* COS 不可用 → 回退本站同名文件 */
+      s.dlPct=1;
+    }
     return s.buf=await ac().decodeAudioData(ab.slice(0));
   })().catch(e=>{ s.bufP=null; s.dlPct=0; throw e; });
   return s.bufP;
