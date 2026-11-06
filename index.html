@@ -1215,13 +1215,18 @@ async function pickLevel(l,prac=null){
 
 /* ---------- 排行榜（香港服务器 /api/rhythm，玩家身份存本地 rr2-rhythm-player） ---------- */
 const API_BASE = location.hostname==='api.cino1018.com' ? '' : 'https://api.cino1018.com';
+const API_RELAY = 'https://cino-songs.pages.dev';   // 接口中转：直连香港在网络层失败时，经 Cloudflare 转发到同一后端（/api/rhythm/* 有 Pages Function 代理）；服务器正常应答（含报错）不走中转
+async function apiFetch(path, opt){
+  try{ return await fetch(API_BASE + path, opt); }
+  catch(e){ return await fetch(API_RELAY + path, opt); }
+}
 const SCORE_VER = 5;   // 成绩版本：谱面/计分规则变化时与服务端 rhythm.js 的 SCORE_VER 同步 +1，旧成绩作历史保留、不混排
 const slugOf = s => (s && !s.local && s.audio) ? (s.audio.split('/').pop()||'').replace(/\.mp3$/,'') : null;
 let me = store.get('rhythm-player', null);
 let pendingAcctSettings = null;   // 账号设置同步暂存（对局中拉到的设置回菜单再应用；声明提前到这里，避免 show() 在脚本执行完前调用时踩 TDZ）
 let bdLv = 1, bdSeq = 0, flushing = false;
 async function api(path, opt){
-  const r = await fetch(API_BASE + path, opt);
+  const r = await apiFetch(path, opt);
   if(!r.ok) throw new Error('http ' + r.status);
   return r.json();
 }
@@ -1334,7 +1339,7 @@ $('bdLoginBtn').onclick = ()=>{ click(); closeLevel(); openAcct('login'); };
 const SONG_NAMES = {babys_horizon:"Baby's Horizon", pimple09:"09's Pimple", weiming:'未命名', wobuzhidao:'我不知道', yixiang:'臆想', babe:'BABE', babystep:'baby step', enemy:'enemy', meltingrain:'melting sunny rain', tears:'Tears'};
 const LV_NAMES = ['简单','普通','困难','地狱'];
 async function apiJ(path, opt){
-  const r = await fetch(API_BASE + path, opt);
+  const r = await apiFetch(path, opt);
   let j = {}; try{ j = await r.json(); }catch(e){}
   if(!r.ok){ const err = new Error(j.error || ('http ' + r.status)); err.code = j.error; err.status = r.status; throw err; }
   return j;
