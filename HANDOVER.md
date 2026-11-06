@@ -17,7 +17,7 @@
 - `sw.js`：VERSION = `cino-beat-v14`，媒体缓存 = `cino-media-v2`（换同名媒体内容必须 bump 媒体缓存名）
 - 歌曲/封面主源：**Cloudflare Pages** `https://cino-songs.pages.dev/`，连本仓库自动部署——push 后仓库根目录 `songs/` 即自动发布，**加歌/换歌只改仓库 songs/ 并 push，不再往 COS 上传**
 - 回退链：Pages 拉不到时游戏自动回退本站同名文件，所以**服务器上的 songs/ 原文件是兜底、绝不能删**
-- 腾讯云 COS 桶 `cino-songs-1524353495`：`game/` 前缀是整站镜像作备用入口（主站更新后要手动重传才同步）。**2026-11-07 起镜像为「全国内版」**：镜像版 index 的 MEDIA_BASE 指回桶根目录（桶根 `songs/` 的歌曲原文件不要删）、sw 的 MEDIA_HOST 同步、VERSION 比正式版 +1（现 v15）；与正式版只差这 3 处，同步规程见 `~/workspace/cino-mirror/README.md`。主站歌曲流量仍走 Pages（COS 按量曾达 ¥30+/天，别让主站指回 COS；EdgeOne 已否决，别再提议）
+- 腾讯云 COS 桶 `cino-songs-1524353495`：`game/` 前缀是整站镜像作备用入口（主站更新后要手动重传才同步）。**2026-11-07 起镜像为「全国内版」**：镜像版 index 的 MEDIA_BASE 指回桶根目录（桶根 `songs/` 的歌曲原文件不要删）、sw 的 MEDIA_HOST 同步、VERSION 比正式版 +1（现 v15）；与正式版只差这 3 处，同步规程见 `~/workspace/cino-mirror/README.md`。**镜像对外链接必须用静态网站域名** `https://cino-songs-1524353495.cos-website.ap-guangzhou.myqcloud.com/game/index.html`（桶已开静态网站）；默认域名 cos.ap-guangzhou.myqcloud.com 因腾讯对 2024 年后新桶的强制下载规则打不开网页（元数据改不动），只供页面内部取歌曲。主站歌曲流量仍走 Pages（COS 按量曾达 ¥30+/天，别让主站指回 COS；EdgeOne 已否决，别再提议）
 - **接口中转（2026-11-06 上线）**：仓库 `functions/api/rhythm/[[path]].js` 是 Pages Function，把 cino-songs.pages.dev 上的 `/api/rhythm/*` 转发回香港后端，并把 CF-Connecting-IP 写进 x-forwarded-for（后端按 XFF 首地址限流，别删这行）。客户端 `api()/apiJ()` 共用 `apiFetch()`：直连在网络层被拒才改走中转，服务器正常应答不触发。效果：玩家开 Pages 副本（https://cino-songs.pages.dev/ 本身就是一份可玩的游戏）或 COS 镜像时，即使其网络连不上香港，排行榜/账号/交分仍可用。已用「直连指向死端口」的临时页在真实浏览器验证（榜单经中转正常加载）。
 - 后端**不在本仓库**：服务器 `/opt/gugu-server/rhythm.js`（Node 22 + `node:sqlite`，数据库 `/opt/gugu-server/data/rhythm/rhythm.db`）。改后端前先从服务器拉最新版比对，不要凭任何旧副本改。接口：player / score / name / board / health / settings（设置跟账号走）
 - 数据快照（2026-11-06）：注册账号 4,017、提交成绩玩家 3,675、排行榜成绩 9,913 条、近两日对局 16,553 局、地狱模式通关玩家 51 人
