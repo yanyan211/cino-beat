@@ -14,10 +14,11 @@
 
 - 正式站：https://api.cino1018.com/cino-beat/ （香港轻量服务器，目录 `/opt/gugu-server/cino-beat`；部署 = scp 覆盖 + `chmod 644`；旧地址 `/cino/` 是 308 跳转，别再引用）
 - `SCORE_VER = 5`：谱面音符数量变化时才 +1，客户端 `index.html` 与后端 `rhythm.js` 必须同步改
-- `sw.js`：VERSION = `cino-beat-v13`，媒体缓存 = `cino-media-v2`（换同名媒体内容必须 bump 媒体缓存名）
+- `sw.js`：VERSION = `cino-beat-v14`，媒体缓存 = `cino-media-v2`（换同名媒体内容必须 bump 媒体缓存名）
 - 歌曲/封面主源：**Cloudflare Pages** `https://cino-songs.pages.dev/`，连本仓库自动部署——push 后仓库根目录 `songs/` 即自动发布，**加歌/换歌只改仓库 songs/ 并 push，不再往 COS 上传**
 - 回退链：Pages 拉不到时游戏自动回退本站同名文件，所以**服务器上的 songs/ 原文件是兜底、绝不能删**
 - 腾讯云 COS 桶 `cino-songs-1524353495`：只保留 `game/` 前缀的整站静态镜像作备用入口（主站更新后要手动重传才同步），不再承担主站歌曲流量（按量计费曾达 ¥30+/天，已弃用为主源；EdgeOne 免费版因官方明文不支持音频分发也已否决，别再提议）
+- **接口中转（2026-11-06 上线）**：仓库 `functions/api/rhythm/[[path]].js` 是 Pages Function，把 cino-songs.pages.dev 上的 `/api/rhythm/*` 转发回香港后端，并把 CF-Connecting-IP 写进 x-forwarded-for（后端按 XFF 首地址限流，别删这行）。客户端 `api()/apiJ()` 共用 `apiFetch()`：直连在网络层被拒才改走中转，服务器正常应答不触发。效果：玩家开 Pages 副本（https://cino-songs.pages.dev/ 本身就是一份可玩的游戏）或 COS 镜像时，即使其网络连不上香港，排行榜/账号/交分仍可用。已用「直连指向死端口」的临时页在真实浏览器验证（榜单经中转正常加载）。
 - 后端**不在本仓库**：服务器 `/opt/gugu-server/rhythm.js`（Node 22 + `node:sqlite`，数据库 `/opt/gugu-server/data/rhythm/rhythm.db`）。改后端前先从服务器拉最新版比对，不要凭任何旧副本改。接口：player / score / name / board / health / settings（设置跟账号走）
 - 数据快照（2026-11-06）：注册账号 4,017、提交成绩玩家 3,675、排行榜成绩 9,913 条、近两日对局 16,553 局、地狱模式通关玩家 51 人
 
@@ -31,6 +32,7 @@
 - 全平台不再请求全屏；多指 pointercancel 只松被抢走的手指、不再整局暂停
 - 判定文字在轨道远端 P(.78)，连击数在屏幕左侧（不挡下落音符）
 - 歌曲分发：香港服务器 → COS（2026-11-05）→ Cloudflare Pages（2026-11-06），游戏地址始终没变
+- 接口中转上线（2026-11-06）：Pages Function 转发 /api/rhythm/* + 客户端 apiFetch 自动 fallback，备用入口从此全功能
 
 ## 未决事项（不要擅自推进）
 
