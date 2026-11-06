@@ -813,9 +813,11 @@ function makeCover(name,i){
 }
 
 /* ---------- 歌曲载入 ---------- */
-/* 歌曲与封面走腾讯云 COS（广州）：小服务器出口晚高峰被下载占满，这是治本方案；
-   谱面仍走本站（小、要新鲜）。COS 拉不到时 getBuffer 自动回退本站同名文件（服务器上保留着原文件） */
-const MEDIA_BASE='https://cino-songs-1524353495.cos.ap-guangzhou.myqcloud.com/';
+/* 歌曲与封面走 Cloudflare Pages（cino-songs.pages.dev，连 cino-beat 仓库自动部署、流量免费）：
+   小服务器出口扛不住晚高峰、COS 按量流量太贵（曾一天 ¥30+），Pages 是性价比方案（2026-11-06 切换）；
+   谱面仍走本站（小、要新鲜）。Pages 拉不到时 getBuffer 自动回退本站同名文件（服务器上保留着原文件）。
+   COS 桶保留整站镜像 game/ 作备用入口，不再承担主站歌曲流量。 */
+const MEDIA_BASE='https://cino-songs.pages.dev/';
 const songs=SONGS.map(s=>({...s,audio:MEDIA_BASE+s.audio,meta:null,buf:null,dlPct:0,cover:s.cover?MEDIA_BASE+s.cover:null,local:false}));
 async function loadMeta(){
   try{ await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))]); }catch(e){}

@@ -5,9 +5,9 @@
    - 升级时把旧版本缓存里的媒体文件迁移进 MEDIA，再删旧缓存：玩家已下好的歌不丢。
    注意：替换同名 mp3/jpg 的内容时，必须把 MEDIA 的名字加一（如 cino-media-v2），
    否则老玩家会一直读到旧缓存。 */
-const VERSION = 'cino-beat-v12';
-const MEDIA = 'cino-media-v1';
-const MEDIA_HOST = 'cino-songs-1524353495.cos.ap-guangzhou.myqcloud.com';   // 歌曲/封面已迁腾讯云 COS（广州）
+const VERSION = 'cino-beat-v13';
+const MEDIA = 'cino-media-v2';
+const MEDIA_HOST = 'cino-songs.pages.dev';   // 歌曲/封面走 Cloudflare Pages（2026-11-06 由 COS 切换，流量免费）
 const CORE = ['./', 'index.html'];
 const MEDIA_RE = /\.(mp3|jpg|jpeg|png|webp)$/i;
 
@@ -17,7 +17,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     const media = await caches.open(MEDIA);
-    for (const req of await media.keys()) {   // 媒体改走 COS 后，旧的本站地址缓存条目作废，清掉免得占空间
+    for (const req of await media.keys()) {   // 媒体换源后，旧源地址的缓存条目作废，清掉免得占空间
       if (!req.url.startsWith('https://' + MEDIA_HOST + '/')) await media.delete(req);
     }
     for (const k of await caches.keys()) {
